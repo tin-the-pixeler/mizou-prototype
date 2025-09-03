@@ -1,0 +1,325 @@
+/* ---------- SIDEBAR COMPONENT STYLES ---------- */
+
+.sb-sidebar {
+  width: 244px;
+  height: 100%;
+  padding: 16px;
+  background: var(--color-bg);
+  border-right: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* Item */
+.sb-sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  color: var(--color-text);
+  text-decoration: none;
+  font-family: var(--font-sans);
+  font-size: var(--fs-md);
+  font-weight: var(--fw-regular);
+  transition: background .15s ease, color .15s ease, box-shadow .15s ease;
+}
+
+/* Icon chip */
+.sb-sidebar-item__icon-wrap {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+}
+
+.sb-sidebar-item__icon {
+  width: 18px;
+  height: 18px;
+  transition: color .15s ease;
+}
+
+/* Hover */
+.sb-sidebar-item:hover {
+  color: var(--color-brand);
+  background: #f4f5f9;
+}
+
+.sb-sidebar-item__icon:hover {color: var(--color-brand)}
+
+/* Active / Focused */
+.sb-sidebar-item--active {
+  background: var(--color-bg-active);
+  color: var(--color-brand);
+  font-weight: var(--fw-bold);
+}
+.sb-sidebar-item--active .sb-sidebar-item__icon {
+  color: var(--color-brand);
+}
+
+/* Accessible keyboard focus */
+.sb-sidebar-item:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 2px;
+  border-radius: calc(var(--radius-md) + 2px);
+}
+/* Sections */
+.sb-sidebar-section {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.sb-sidebar-section__title {
+  padding: 8px 8px 4px;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-light);
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+/* Divider between sections (skip the first) */
+.sb-sidebar-section + .sb-sidebar-section {
+  border-top: 1px solid var(--color-border);
+  margin-top: 10px;   /* space above the divider */
+  padding-top: 10px;  /* space below the divider */
+}
+/* ----- Sidebar header wrapper (keeps it at the top) ----- */
+.sb-sidebar-header {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.sb-header-row {
+  display: flex;
+  align-items: center;
+  gap: 8px; 
+}
+
+.sb-header-spacer { flex: 1; } 
+
+/* In collapsed rail: hide the org button in that row, keep the toggle visible */
+.sb-sidebar.sb-collapsed .sb-header-row .sb-org-button { display: none; }
+
+/* ----- Organization button (default + hover) ----- */
+.sb-org-button {
+  width: auto;
+  display: inline-flex;
+  align-self: flex-start;
+  align-items: center;
+  justify-content: flex-start;        
+  gap: 12px;
+  padding: 8px;
+  border-radius: 8px;                    /* rounded pill on hover */
+  border: 1px solid transparent;          /* invisible in default */
+  background: transparent;                /* default (top in your mock) */
+  cursor: pointer;
+  text-align: left;
+  transition: background .15s, border-color .15s, box-shadow .15s;
+  font-family: var(--font-sans);
+  margin-bottom: 24px;
+}
+
+/* left cluster (logo + name) */
+.sb-org-left {
+  display: flex;
+  align-items: center;
+  vertical-align: middle;
+  gap: 4px;
+  flex: 0 1 auto;            
+  min-width: 0;      
+}
+/* logo chip */
+.sb-org-button__logo {
+  width: 24px;
+  height: 24px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  position: relative;
+}
+.sb-org-button__logo .sb-icon { width: 24px; height: 24px; }
+
+.sb-org-button__name {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  color: var(--color-text);
+  max-width: 94px;       
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* chevron */
+.sb-org-button__chevron {
+  width: 18px;
+  height: 18px;
+  color: var(--color-muted); 
+  flex: 0 0 auto;
+}
+
+/* HOVER state */
+.sb-org-button:hover {
+  background: #f4f5f9;                   
+  box-shadow: 0 1px 0 rgba(0,0,0,.03);    
+}
+/* =======================
+   Team button
+   ======================= */
+.sb-team-button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);     
+  background: transparent;                   
+  cursor: pointer;
+  text-align: left;
+  transition: background .15s, border-color .15s, box-shadow .15s;
+  font-family: var(--font-sans);
+}
+
+.sb-team-button__menu {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;                 /* click target without a visible box */
+  height: 24px;
+  padding: 0;
+  margin-left: 8px;
+  background: transparent;     /* ← no background */
+  border: none;                /* ← no border */
+  color: var(--color-muted);   /* dots color */
+  cursor: pointer;
+}
+
+/* icon size + inherit color */
+.sb-team-button__menu .sb-icon {
+  width: 16px;
+  height: 16px;
+}
+
+/* hover/focus: just tint the dots, no bg */
+.sb-team-button__menu:hover,
+.sb-team-button__menu:focus-visible {
+  color: var(--color-text);
+  outline: none;               /* remove default focus ring */
+}
+
+/* hide the 3-dots in collapsed rail (keep avatar) */
+.sb-sidebar.sb-collapsed .sb-team-button__menu {
+  display: none;
+}
+
+.sb-team-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;                               /* allow ellipsis */
+}
+
+/* initials chip */
+.sb-team-button__avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  display: grid;
+  place-items: center;
+  background: #b17979;                        /* default chip color */
+  color: #fff;
+  font-size: 14px;
+  font-weight: var(--fw-bold);
+  letter-spacing: .02em;
+}
+
+.sb-team-button__name {
+  font-size: (--fs-md);
+  font-weight: var(--fw-bold);
+  color: var(--color-text);
+  max-width: 160px;                           
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Hover */
+.sb-team-button:hover {
+  background: #f4f5f9;
+  box-shadow: 0 1px 0 rgba(0,0,0,.03);
+}
+
+/* Optional open toggle */
+.sb-team-button[data-state="open"] .sb-team-button__chevron { transform: rotate(180deg); }
+/* ===== Collapsed layout ===== */
+.sb-sidebar { transition: width .2s ease, padding .2s ease; }
+.sb-sidebar.sb-collapsed { width: 76px; padding: 12px; }
+
+/* hide text in collapsed */
+.sb-sidebar.sb-collapsed .sb-org-button__name,
+.sb-sidebar.sb-collapsed .sb-team-button__name,
+.sb-sidebar.sb-collapsed .sb-sidebar-section__title,
+.sb-sidebar.sb-collapsed .sb-sidebar-item > span:last-child { display: none; }
+
+/* center items & tighten */
+.sb-sidebar.sb-collapsed .sb-sidebar-item {
+  justify-content: center;
+  padding: 8px;
+  gap: 0;
+}
+
+/* icon sizing in rail */
+.sb-sidebar.sb-collapsed .sb-sidebar-item__icon-wrap {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  color: inherit;
+}
+
+/* section dividers in rail */
+.sb-sidebar.sb-collapsed .sb-sidebar-section + .sb-sidebar-section {
+  margin-top: 12px;
+  padding-top: 12px;
+  position: relative;
+}
+.sb-sidebar.sb-collapsed .sb-sidebar-section + .sb-sidebar-section::before {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; top: 0;
+  height: 1px; background: var(--color-border);
+}
+
+/* ===== Topbar chevron (separate button) ===== */
+.sb-sidebar-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.sb-top-toggle {
+  width: 28px; height: 28px; border-radius: 8px;
+  display: grid; place-items: center;
+  border: 1px solid transparent; background: transparent;
+  margin-bottom: 24px;
+  color: var(--color-muted);
+  cursor: pointer; transition: background .15s, color .15s, border-color .15s, transform .2s;
+}
+.sb-top-toggle:hover { background: #f4f5f9; color: var(--color-text); }
+
+
+/* rotate chevron when collapsed */
+.sb-sidebar.sb-collapsed .sb-top-toggle svg { transform: rotate(180deg); }
+
+/* team chip style in rail (keeps the rounded square look) */
+.sb-sidebar.sb-collapsed .sb-team-button {
+  justify-content: center;
+  padding: 6px;
+  border-radius: 12px;
+}
+.sb-sidebar.sb-collapsed .sb-team-button__avatar { width: 36px; height: 36px; }

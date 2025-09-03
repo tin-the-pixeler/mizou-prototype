@@ -1,0 +1,25 @@
+{
+  "name": "mizou_prototype",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
+  },
+  "engines": {
+    "node": "22.x",
+    "npm": "10.x"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@storybook/html-vite": "^8.6.14",
+    "@storybook/html-webpack5": "^8.6.14",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "storybook": "^8.6.14",
+    "vite": "^5.4.19"
+  }
+}
