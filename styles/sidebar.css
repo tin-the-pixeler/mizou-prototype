@@ -4,8 +4,8 @@
   width: 244px;
   height: 100%;
   padding: 16px;
-  background: var(--color-bg);
-  border-right: 1px solid var(--color-border);
+  background: var(--surface-raised);
+  border-right: 1px solid var(--border-default);
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -18,7 +18,7 @@
   gap: 4px;
   padding: 4px 8px;
   border-radius: var(--radius-sm);
-  color: var(--color-text);
+  color: var(--text-primary);
   text-decoration: none;
   font-family: var(--font-sans);
   font-size: var(--fs-md);
@@ -42,28 +42,31 @@
 
 /* Hover */
 .sb-sidebar-item:hover {
-  color: var(--color-brand);
-  background: #f4f5f9;
+  color: var(--interactive-primary);
+  background: var(--interactive-secondary);
 }
 
-.sb-sidebar-item__icon:hover {color: var(--color-brand)}
+.sb-sidebar-item__icon:hover {
+  color: var(--interactive-primary);
+}
 
 /* Active / Focused */
 .sb-sidebar-item--active {
-  background: var(--color-bg-active);
-  color: var(--color-brand);
+  background: var(--interactive-secondary-active);
+  color: var(--interactive-primary);
   font-weight: var(--fw-bold);
 }
 .sb-sidebar-item--active .sb-sidebar-item__icon {
-  color: var(--color-brand);
+  color: var(--interactive-primary);
 }
 
 /* Accessible keyboard focus */
 .sb-sidebar-item:focus-visible {
-  outline: 2px solid var(--color-brand);
+  outline: 2px solid var(--interactive-primary);
   outline-offset: 2px;
   border-radius: calc(var(--radius-md) + 2px);
 }
+
 /* Sections */
 .sb-sidebar-section {
   display: flex;
@@ -76,16 +79,18 @@
   padding: 8px 8px 4px;
   font-size: var(--fs-xs);
   font-weight: var(--fw-light);
-  color: var(--color-muted);
+  color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
+
 /* Divider between sections (skip the first) */
 .sb-sidebar-section + .sb-sidebar-section {
-  border-top: 1px solid var(--color-border);
+  border-top: 1px solid var(--border-subtle);
   margin-top: 10px;   /* space above the divider */
   padding-top: 10px;  /* space below the divider */
 }
+
 /* ----- Sidebar header wrapper (keeps it at the top) ----- */
 .sb-sidebar-header {
   display: flex;
@@ -114,9 +119,9 @@
   justify-content: flex-start;        
   gap: 12px;
   padding: 8px;
-  border-radius: 8px;                    /* rounded pill on hover */
-  border: 1px solid transparent;          /* invisible in default */
-  background: transparent;                /* default (top in your mock) */
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  background: transparent;
   cursor: pointer;
   text-align: left;
   transition: background .15s, border-color .15s, box-shadow .15s;
@@ -133,6 +138,7 @@
   flex: 0 1 auto;            
   min-width: 0;      
 }
+
 /* logo chip */
 .sb-org-button__logo {
   width: 24px;
@@ -147,25 +153,27 @@
 .sb-org-button__name {
   font-size: var(--fs-md);
   font-weight: var(--fw-bold);
-  color: var(--color-text);
+  color: var(--text-primary);
   max-width: 94px;       
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
 /* chevron */
 .sb-org-button__chevron {
   width: 18px;
   height: 18px;
-  color: var(--color-muted); 
+  color: var(--text-secondary); 
   flex: 0 0 auto;
 }
 
 /* HOVER state */
 .sb-org-button:hover {
-  background: #f4f5f9;                   
+  background: var(--interactive-secondary);
   box-shadow: 0 1px 0 rgba(0,0,0,.03);    
 }
+
 /* =======================
    Team button
    ======================= */
@@ -176,9 +184,9 @@
   justify-content: space-between;
   gap: 8px;
   padding: 8px;
-  border-radius: 8px;
-  border: 1px solid var(--color-border);     
-  background: transparent;                   
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-default);
+  background: transparent;
   cursor: pointer;
   text-align: left;
   transition: background .15s, border-color .15s, box-shadow .15s;
@@ -189,13 +197,13 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 24px;                 /* click target without a visible box */
+  width: 24px;
   height: 24px;
   padding: 0;
   margin-left: 8px;
-  background: transparent;     /* ← no background */
-  border: none;                /* ← no border */
-  color: var(--color-muted);   /* dots color */
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
   cursor: pointer;
 }
 
@@ -208,8 +216,8 @@
 /* hover/focus: just tint the dots, no bg */
 .sb-team-button__menu:hover,
 .sb-team-button__menu:focus-visible {
-  color: var(--color-text);
-  outline: none;               /* remove default focus ring */
+  color: var(--text-primary);
+  outline: none;
 }
 
 /* hide the 3-dots in collapsed rail (keep avatar) */
@@ -222,7 +230,7 @@
   align-items: center;
   gap: 8px;
   flex: 1;
-  min-width: 0;                               /* allow ellipsis */
+  min-width: 0;
 }
 
 /* initials chip */
@@ -232,18 +240,18 @@
   border-radius: 4px;
   display: grid;
   place-items: center;
-  background: #b17979;                        /* default chip color */
-  color: #fff;
+  background: var(--primitive-rose-base);  /* using accent color for avatar */
+  color: var(--text-inverse);
   font-size: 14px;
   font-weight: var(--fw-bold);
   letter-spacing: .02em;
 }
 
 .sb-team-button__name {
-  font-size: (--fs-md);
+  font-size: var(--fs-md);
   font-weight: var(--fw-bold);
-  color: var(--color-text);
-  max-width: 160px;                           
+  color: var(--text-primary);
+  max-width: 160px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -251,21 +259,31 @@
 
 /* Hover */
 .sb-team-button:hover {
-  background: #f4f5f9;
+  background: var(--interactive-secondary);
   box-shadow: 0 1px 0 rgba(0,0,0,.03);
 }
 
 /* Optional open toggle */
-.sb-team-button[data-state="open"] .sb-team-button__chevron { transform: rotate(180deg); }
+.sb-team-button[data-state="open"] .sb-team-button__chevron { 
+  transform: rotate(180deg); 
+}
+
 /* ===== Collapsed layout ===== */
-.sb-sidebar { transition: width .2s ease, padding .2s ease; }
-.sb-sidebar.sb-collapsed { width: 76px; padding: 12px; }
+.sb-sidebar { 
+  transition: width .2s ease, padding .2s ease; 
+}
+.sb-sidebar.sb-collapsed { 
+  width: 76px; 
+  padding: 12px; 
+}
 
 /* hide text in collapsed */
 .sb-sidebar.sb-collapsed .sb-org-button__name,
 .sb-sidebar.sb-collapsed .sb-team-button__name,
 .sb-sidebar.sb-collapsed .sb-sidebar-section__title,
-.sb-sidebar.sb-collapsed .sb-sidebar-item > span:last-child { display: none; }
+.sb-sidebar.sb-collapsed .sb-sidebar-item > span:last-child { 
+  display: none; 
+}
 
 /* center items & tighten */
 .sb-sidebar.sb-collapsed .sb-sidebar-item {
@@ -278,7 +296,7 @@
 .sb-sidebar.sb-collapsed .sb-sidebar-item__icon-wrap {
   width: 28px;
   height: 28px;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   color: inherit;
 }
 
@@ -291,8 +309,11 @@
 .sb-sidebar.sb-collapsed .sb-sidebar-section + .sb-sidebar-section::before {
   content: "";
   position: absolute;
-  left: 0; right: 0; top: 0;
-  height: 1px; background: var(--color-border);
+  left: 0; 
+  right: 0; 
+  top: 0;
+  height: 1px; 
+  background: var(--border-subtle);
 }
 
 /* ===== Topbar chevron (separate button) ===== */
@@ -302,24 +323,38 @@
   gap: 8px;
   margin-bottom: 8px;
 }
-.sb-top-toggle {
-  width: 28px; height: 28px; border-radius: 8px;
-  display: grid; place-items: center;
-  border: 1px solid transparent; background: transparent;
-  margin-bottom: 24px;
-  color: var(--color-muted);
-  cursor: pointer; transition: background .15s, color .15s, border-color .15s, transform .2s;
-}
-.sb-top-toggle:hover { background: #f4f5f9; color: var(--color-text); }
 
+.sb-top-toggle {
+  width: 28px; 
+  height: 28px; 
+  border-radius: var(--radius-md);
+  display: grid; 
+  place-items: center;
+  border: 1px solid transparent; 
+  background: transparent;
+  margin-bottom: 24px;
+  color: var(--text-secondary);
+  cursor: pointer; 
+  transition: background .15s, color .15s, border-color .15s, transform .2s;
+}
+
+.sb-top-toggle:hover { 
+  background: var(--interactive-secondary);
+  color: var(--text-primary);
+}
 
 /* rotate chevron when collapsed */
-.sb-sidebar.sb-collapsed .sb-top-toggle svg { transform: rotate(180deg); }
+.sb-sidebar.sb-collapsed .sb-top-toggle svg { 
+  transform: rotate(180deg); 
+}
 
 /* team chip style in rail (keeps the rounded square look) */
 .sb-sidebar.sb-collapsed .sb-team-button {
   justify-content: center;
   padding: 6px;
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
 }
-.sb-sidebar.sb-collapsed .sb-team-button__avatar { width: 36px; height: 36px; }
+.sb-sidebar.sb-collapsed .sb-team-button__avatar { 
+  width: 36px; 
+  height: 36px; 
+}

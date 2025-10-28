@@ -1,6 +1,91 @@
 /* ---------- GLOBAL TOKENS ---------- */
 :root {
-  /* Fonts */
+  /* ========== PRIMITIVES ========== */
+  /* Neutrals */
+  --primitive-black: #000000;
+  --primitive-white: #ffffff;
+  --primitive-slate-1: #fcfcfd;
+  --primitive-slate-2: #f9f9fb;
+  --primitive-slate-3: #f2f2f5;
+  --primitive-slate-4: #ebebef;
+  --primitive-slate-5: #e4e4e9;
+  --primitive-slate-6: #dddde3;
+  --primitive-slate-7: #d3d4db;
+  --primitive-slate-8: #b9bbc6;
+  --primitive-slate-9: #8b8d98;
+  --primitive-slate-10: #7e808a;
+  --primitive-slate-11: #60646c;
+  --primitive-slate-12: #1c2024;
+
+  /* Accent Colors */
+  --primitive-indigo-dark: #3730a3;
+  --primitive-indigo-base: #4f46e5;
+  --primitive-indigo-light: #a5b4fc;
+  
+  --primitive-rose-dark: #be123c;
+  --primitive-rose-base: #f43f5e;
+  --primitive-rose-light: #fecdd3;
+  
+  --primitive-emerald-dark: #065f46;
+  --primitive-emerald-base: #34d399;
+  --primitive-emerald-light: #d1fae5;
+  
+  --primitive-amber-dark: #d97706;
+  --primitive-amber-base: #fbbf24;
+  --primitive-amber-light: #fde68a;
+
+  /* ========== SEMANTIC TOKENS ========== */
+  /* Surface Colors */
+  --surface-page: var(--primitive-slate-3);           /* Main page background */
+  --surface-raised: var(--primitive-slate-1);         /* Cards, panels, elevated surfaces */
+  --surface-emphasis: var(--primitive-white);         /* Emphasized surfaces */
+  --surface-overlay: var(--primitive-slate-2);        /* Modals, dropdowns, overlays */
+  --surface-sunken: var(--primitive-slate-4);         /* Wells, disabled inputs */
+
+  /* Border Colors */
+  --border-subtle: var(--primitive-slate-3);          /* Dividers, subtle borders */
+  --border-default: var(--primitive-slate-4);         /* Default borders, input borders */
+  --border-strong: var(--primitive-slate-5);          /* Emphasized borders */
+  --border-contrast: var(--primitive-black);          /* High contrast borders */
+
+  /* Text Colors */
+  --text-primary: var(--primitive-slate-12);          /* Primary text */
+  --text-secondary: var(--primitive-slate-11);        /* Secondary text */
+  --text-inverse: var(--primitive-white);             /* Text on dark backgrounds */
+
+  /* Interactive Colors */
+  --interactive-primary: var(--primitive-indigo-base);
+  --interactive-primary-hover: var(--primitive-indigo-dark);
+  --interactive-primary-active: var(--primitive-indigo-dark);
+  
+  --interactive-secondary: var(--primitive-slate-3);
+  --interactive-secondary-hover: var(--primitive-slate-4);
+  --interactive-secondary-active: var(--primitive-slate-5);
+
+  /* Feedback Colors */
+  --feedback-info: var(--primitive-indigo-base);
+  --feedback-info-bg: rgba(79, 70, 229, 0.2);
+  
+  --feedback-success: var(--primitive-emerald-base);
+  --feedback-success-bg: rgba(52, 211, 153, 0.2);
+  
+  --feedback-error: var(--primitive-rose-base);
+  --feedback-error-bg: rgba(244, 63, 94, 0.2);
+  
+  --feedback-warning: var(--primitive-amber-base);
+  --feedback-warning-bg: rgba(251, 191, 36, 0.2);
+
+  /* ========== LEGACY ALIASES (for backward compatibility) ========== */
+  --color-text: var(--text-primary);
+  --color-muted: var(--text-secondary);
+  --color-brand: var(--interactive-primary);
+  --color-brand-hover: var(--interactive-primary-hover);
+  --color-bg: var(--surface-emphasis);
+  --color-bg-subtle: var(--surface-page);
+  --color-bg-active: var(--interactive-secondary-active);
+  --color-border: var(--border-default);
+
+  /* ========== TYPOGRAPHY ========== */
   --font-sans: "Nunito Sans", ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
 
   /* Font sizes */
@@ -15,29 +100,33 @@
   --fw-medium: 600;
   --fw-bold: 700;
 
-  /* Colors */
-  --color-text: #1C2024;        
-  --color-muted: #60646C;       
-  --color-brand: #4f46E5;       /* brand */
-  --color-brand-hover: #3730A3;
-  --color-bg: #ffffff;
-  --color-bg-subtle: #f7f7fb;
-  --color-bg-active: #E4E4E9;
-  --color-border: #DDDDE3;
+  /* ========== SPACING ========== */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 20px;
+  --radius-full: 999px;
+  
+  /* Component-specific radius */
+  --radius-input: var(--radius-md);
+  --radius-modal: var(--radius-md);
+  --radius-container: var(--radius-lg);
 
-  /* Radius + shadows */
-  --radius-sm: 8px;
-  --radius-md: 12px;
+  /* Shadows */
   --shadow-1: 0 1px 0 rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.05);
 }
 
-/* Base app typography */
-* { box-sizing: border-box; }
+/* ========== BASE STYLES ========== */
+* { 
+  box-sizing: border-box; 
+}
+
 html, body {
   margin: 0;
   padding: 0;
   font-family: var(--font-sans);
   font-size: var(--fs-md);
-  color: var(--color-text);
-  background: var(--color-bg);
+  color: var(--text-primary);
+  background: var(--surface-page);
 }
