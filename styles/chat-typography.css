@@ -1,0 +1,202 @@
+/* Typography Tokens - Nunito Sans Chat Styles */
+
+:root {
+  /* Font Families */
+  --font-family-primary: "Nunito Sans", system-ui, -apple-system, sans-serif;
+  --font-family-mono: "SF Mono", "Monaco", "Courier New", monospace;
+  
+  /* Font Sizes */
+  --font-size-xs: 12px;
+  --font-size-sm: 11px;
+  --font-size-base: 15px;
+  --font-size-lg: 17px;
+  --font-size-xl: 20px;
+  --font-size-2xl: 24px;
+  
+  /* Font Weights */
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  
+  /* Line Heights */
+  --line-height-tight: 1.4;
+  --line-height-normal: 1.6;
+  --line-height-relaxed: 1.75;
+}
+
+/* Body Text */
+body,
+p {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-normal);
+}
+
+/* Headings */
+h1 {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+  margin: 0 0 16px 0;
+}
+
+h2 {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+  margin: 0 0 12px 0;
+}
+
+h3 {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
+  margin: 0 0 8px 0;
+}
+
+/* Emphasis */
+strong,
+b {
+  font-weight: var(--font-weight-bold);
+}
+
+em,
+i {
+  font-style: italic;
+}
+
+/* Code - Inline */
+code {
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+  background: var(--surface-sunken);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+/* Code - Block */
+pre {
+  background: var(--surface-sunken);
+  border-radius: 8px;
+  padding: 16px;
+  overflow-x: auto;
+  margin: 16px 0;
+}
+
+pre code {
+  font-family: var(--font-family-mono);
+  font-size: 13px;
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-relaxed);
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
+}
+
+/* Links */
+a {
+  color: var(--interactive-primary);
+  text-decoration: none;
+  font-weight: var(--font-weight-medium);
+}
+
+a:hover {
+  color: var(--interactive-primary-hover);
+  text-decoration: underline;
+}
+
+/* Lists */
+ul,
+ol {
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-relaxed);
+  padding-left: 24px;
+  margin: 12px 0;
+}
+
+ul {
+  list-style-type: disc;
+}
+
+ol {
+  list-style-type: decimal;
+}
+
+li {
+  margin-bottom: 6px;
+  padding-left: 8px;
+}
+
+/* Nested lists */
+ul ul,
+ol ol,
+ul ol,
+ol ul {
+  margin: 6px 0;
+  padding-left: 24px;
+}
+
+ul ul {
+  list-style-type: circle;
+}
+
+ul ul ul {
+  list-style-type: square;
+}
+
+/* List item content */
+li > p {
+  margin: 0;
+}
+
+li > p + p {
+  margin-top: 6px;
+}
+
+/* Blockquotes */
+blockquote {
+  font-size: var(--font-size-base);
+  font-style: italic;
+  color: var(--text-secondary);
+  border-left: 3px solid var(--border-strong);
+  padding-left: 16px;
+  margin: 16px 0;
+}
+
+/* Small text */
+small {
+  font-size: var(--font-size-sm);
+}
+
+/* Tables */
+table {
+  font-size: var(--font-size-base);
+  border-collapse: collapse;
+  width: 100%;
+  margin: 16px 0;
+}
+
+th {
+  font-weight: var(--font-weight-semibold);
+  text-align: left;
+  padding: 8px 12px;
+  border-bottom: 2px solid var(--border-default);
+}
+
+td {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+/* Horizontal Rule */
+hr {
+  border: none;
+  border-top: 1px solid var(--border-subtle);
+  margin: 24px 0;
+}

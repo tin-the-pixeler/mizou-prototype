@@ -6,18 +6,13 @@ import { iconEl } from '../icons';
 
 /* -------- Types -------- */
 type ItemSpec = { label: string; icon: string; active?: boolean };
-type SectionSpec = { title: string; items: ItemSpec[] };
+type SectionSpec = { items: ItemSpec[] };
 
 /* -------- Helpers -------- */
-function createSection(title: string, items: ItemSpec[]) {
+function createSection(items: ItemSpec[]) {
   const section = document.createElement('div');
   section.className = 'sb-sidebar-section';
 
-  const h = document.createElement('div');
-  h.className = 'sb-sidebar-section__title';
-  h.textContent = title;
-
-  section.appendChild(h);
   items.forEach((i) => section.appendChild(createSidebarItem(i)));
   return section;
 }
@@ -80,7 +75,7 @@ function createSidebarWithSections(sections: SectionSpec[]) {
   /* --- BODY: sections --- */
   const body = document.createElement('div');
   body.className = 'sb-sidebar-body';
-  sections.forEach((s) => body.appendChild(createSection(s.title, s.items)));
+  sections.forEach((s) => body.appendChild(createSection(s.items)));
 
   // Compose (NOTE: no separate "top" element anymore)
   nav.append(header, body);
@@ -97,26 +92,10 @@ export const Sidebar: Story = {
   render: () =>
     createSidebarWithSections([
       {
-        title: 'Create',
         items: [
-          { label: 'New Course', icon: 'new-course' },
-          { label: 'New Simulation', icon: 'new-simulation' },
-        ],
-      },
-      {
-        title: 'Practice',
-        items: [
-          { label: 'Courses', icon: 'courses' },
-          { label: 'Simulations', icon: 'simulations', active: true },
+          { label: 'My Collection', icon: 'my-collection', active: true },
           { label: 'Sessions', icon: 'session-list' },
-          { label: 'Analytics', icon: 'analytics' },
-        ],
-      },
-      {
-        title: 'Assets',
-        items: [
-          { label: 'Persona', icon: 'persona' },
-          { label: 'Skills', icon: 'skills' },
+          { label: 'Discover', icon: 'discover' },
         ],
       },
     ]),

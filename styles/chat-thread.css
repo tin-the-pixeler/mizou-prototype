@@ -1,0 +1,90 @@
+/* ---------- CHAT THREAD COMPONENT STYLES ---------- */
+
+.chat-thread {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+  background: var(--surface-page);
+  max-width: 800px;
+  width: 100%;
+}
+
+/* Individual message */
+.chat-message {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+/* Avatar */
+.chat-message__avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-md);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  color: var(--text-inverse);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.02em;
+}
+
+/* Content wrapper */
+.chat-message__content-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+}
+
+/* Header (role label) */
+.chat-message__header {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+}
+
+/* Message content */
+.chat-message__content {
+  padding: 12px 16px;
+  border-radius: var(--radius-lg);
+  font-size: var(--fs-md);
+  font-weight: var(--fw-regular);
+  line-height: 1.5;
+  color: var(--text-primary);
+}
+
+/* User message styling */
+.chat-message--user .chat-message__content {
+  background: var(--surface-emphasis);
+  border: 1px solid var(--border-default);
+}
+
+/* Assistant message styling */
+.chat-message--assistant .chat-message__content {
+  background: var(--surface-raised);
+  border: 1px solid var(--border-subtle);
+}
+
+/* Timestamp */
+.chat-message__timestamp {
+  font-size: var(--fs-xs);
+  color: var(--text-secondary);
+  padding-left: 2px;
+}
+
+/* Hover effect */
+.chat-message:hover .chat-message__content {
+  border-color: var(--border-strong);
+  transition: border-color 0.15s ease;
+}
+
+/* Optional: Add some spacing at the bottom of the thread */
+.chat-thread::after {
+  content: '';
+  display: block;
+  height: 16px;
+}

@@ -18,7 +18,7 @@ export function createSidebarItem({
 
   const chip = document.createElement('span');
   chip.className = 'sb-sidebar-item__icon-wrap';
-  chip.appendChild(iconEl(icon));
+  chip.appendChild(iconEl(icon, 'sb-icon sb-sidebar-item__icon'));
 
   const text = document.createElement('span');
   text.textContent = label;

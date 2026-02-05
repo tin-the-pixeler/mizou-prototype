@@ -56,7 +56,9 @@
   color: var(--interactive-primary);
   font-weight: var(--fw-bold);
 }
-.sb-sidebar-item--active .sb-sidebar-item__icon {
+/* Ensure icons (both the specific item icon class and generic .sb-icon) inherit the active color */
+.sb-sidebar-item--active .sb-sidebar-item__icon,
+.sb-sidebar-item--active .sb-icon {
   color: var(--interactive-primary);
 }
 

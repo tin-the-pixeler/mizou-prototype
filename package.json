@@ -21,5 +21,8 @@
     "react-dom": "^18.3.1",
     "storybook": "^8.6.14",
     "vite": "^5.4.19"
+  },
+  "dependencies": {
+    "marked": "^16.4.1"
   }
 }
