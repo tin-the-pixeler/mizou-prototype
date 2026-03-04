@@ -6,69 +6,72 @@ import {
   type ButtonVariant,
   type ButtonSize,
 } from '../components/button';
+import { iconNames, type IconName } from '../icons';
 
-const meta: Meta<{
+type ButtonProps = {
   label: string;
   variant: ButtonVariant;
   size: ButtonSize;
   disabled: boolean;
-  pill: boolean;
-}> = {
+  leftIcon: IconName | '';
+  rightIcon: IconName | '';
+};
+
+const iconOptions = ['', ...iconNames];
+
+const meta: Meta<ButtonProps> = {
   title: 'Components/Button',
   argTypes: {
-    label:    { control: 'text' },
-    variant:  { control: 'select', options: buttonVariants },
-    size:     { control: 'select', options: buttonSizes },
-    disabled: { control: 'boolean' },
-    pill:     { control: 'boolean' },
+    label:     { control: 'text' },
+    variant:   { control: 'select', options: buttonVariants },
+    size:      { control: 'select', options: buttonSizes },
+    disabled:  { control: 'boolean' },
+    leftIcon:  { control: 'select', options: iconOptions },
+    rightIcon: { control: 'select', options: iconOptions },
   },
 };
 export default meta;
 
-type Story = StoryObj<{
-  label: string;
-  variant: ButtonVariant;
-  size: ButtonSize;
-  disabled: boolean;
-  pill: boolean;
-}>;
+type Story = StoryObj<ButtonProps>;
 
-/* ---------- Interactive single-button stories ---------- */
+const render = (args: ButtonProps) =>
+  createButton({
+    ...args,
+    leftIcon: args.leftIcon || undefined,
+    rightIcon: args.rightIcon || undefined,
+  });
+
+/* ---------- Individual variant stories ---------- */
 
 export const Primary: Story = {
-  args: { label: 'Label', variant: 'primary', size: 'md', disabled: false, pill: false },
-  render: (args) => createButton(args),
+  args: { label: 'Label', variant: 'primary', size: 'md', disabled: false, leftIcon: '', rightIcon: '' },
+  render,
 };
 
 export const Secondary: Story = {
-  args: { label: 'Label', variant: 'secondary', size: 'md', disabled: false, pill: false },
-  render: (args) => createButton(args),
+  args: { label: 'Label', variant: 'secondary', size: 'md', disabled: false, leftIcon: '', rightIcon: '' },
+  render,
 };
 
-export const Ghost: Story = {
-  args: { label: 'Label', variant: 'ghost', size: 'md', disabled: false, pill: false },
-  render: (args) => createButton(args),
+export const Tertiary: Story = {
+  args: { label: 'Label', variant: 'tertiary', size: 'md', disabled: false, leftIcon: '', rightIcon: '' },
+  render,
 };
 
-export const Tonal: Story = {
-  args: { label: 'Label', variant: 'tonal', size: 'md', disabled: false, pill: false },
-  render: (args) => createButton(args),
-};
-
-export const Dark: Story = {
-  args: { label: 'Label', variant: 'dark', size: 'md', disabled: false, pill: false },
-  render: (args) => createButton(args),
-};
-
-export const Pill: Story = {
-  name: 'Pill Shape',
-  args: { label: 'Label', variant: 'dark', size: 'md', disabled: false, pill: true },
-  render: (args) => createButton(args),
+export const Special: Story = {
+  args: { label: 'Label', variant: 'special', size: 'md', disabled: false, leftIcon: '', rightIcon: '' },
+  render,
 };
 
 export const Disabled: Story = {
-  args: { label: 'Label', variant: 'primary', size: 'md', disabled: true, pill: false },
-  render: (args) => createButton(args),
+  args: { label: 'Label', variant: 'primary', size: 'md', disabled: true, leftIcon: '', rightIcon: '' },
+  render,
+};
+
+export const WithIcons: Story = {
+  name: 'With Icons',
+  args: { label: 'Label', variant: 'primary', size: 'md', disabled: false, leftIcon: 'new-simulation', rightIcon: '' },
+  render,
 };
 
 /* ---------- Grid: all variants x sizes x states ---------- */
@@ -81,9 +84,8 @@ export const AllVariants: Story = {
 
     for (const variant of buttonVariants) {
       const col = document.createElement('div');
-      col.style.cssText = 'display:flex; flex-direction:column; gap:32px;';
+      col.style.cssText = 'display:flex; flex-direction:column; gap:24px;';
 
-      // Section heading
       const heading = document.createElement('h3');
       heading.textContent = variant.charAt(0).toUpperCase() + variant.slice(1);
       heading.style.cssText =
@@ -94,22 +96,11 @@ export const AllVariants: Story = {
         const row = document.createElement('div');
         row.style.cssText = 'display:flex; gap:12px; align-items:center;';
 
-        // Default
         row.appendChild(createButton({ label: 'Label', variant, size }));
-
-        // Disabled
         row.appendChild(createButton({ label: 'Label', variant, size, disabled: true }));
 
         col.appendChild(row);
       }
-
-      // Pill row
-      const pillRow = document.createElement('div');
-      pillRow.style.cssText = 'display:flex; gap:12px; align-items:center; margin-top:8px;';
-      for (const size of buttonSizes) {
-        pillRow.appendChild(createButton({ label: 'Label', variant, size, pill: true }));
-      }
-      col.appendChild(pillRow);
 
       grid.appendChild(col);
     }

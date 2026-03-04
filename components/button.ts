@@ -1,6 +1,7 @@
 // components/button.ts
+import { iconEl, type IconName } from '../icons';
 
-export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'tonal' | 'dark';
+export type ButtonVariant = 'primary' | 'secondary' | 'tertiary' | 'special';
 export type ButtonSize = 'sm' | 'md' | 'lg';
 
 export type ButtonOptions = {
@@ -8,10 +9,11 @@ export type ButtonOptions = {
   variant?: ButtonVariant;
   size?: ButtonSize;
   disabled?: boolean;
-  pill?: boolean;
+  leftIcon?: IconName;
+  rightIcon?: IconName;
 };
 
-export const buttonVariants: ButtonVariant[] = ['primary', 'secondary', 'ghost', 'tonal', 'dark'];
+export const buttonVariants: ButtonVariant[] = ['primary', 'secondary', 'tertiary', 'special'];
 export const buttonSizes: ButtonSize[] = ['sm', 'md', 'lg'];
 
 export function createButton({
@@ -19,17 +21,31 @@ export function createButton({
   variant = 'primary',
   size = 'md',
   disabled = false,
-  pill = false,
+  leftIcon,
+  rightIcon,
 }: ButtonOptions): HTMLButtonElement {
   const btn = document.createElement('button');
   btn.type = 'button';
-
-  const classes = ['sb-button', `sb-button--${variant}`, `sb-button--${size}`];
-  if (pill) classes.push('sb-button--pill');
-  btn.className = classes.join(' ');
-
+  btn.className = `sb-button sb-button--${variant} sb-button--${size}`;
   btn.disabled = disabled;
-  btn.textContent = label;
+
+  if (leftIcon) {
+    const iconWrap = document.createElement('span');
+    iconWrap.className = 'sb-button__icon';
+    iconWrap.appendChild(iconEl(leftIcon, 'sb-icon'));
+    btn.appendChild(iconWrap);
+  }
+
+  const text = document.createElement('span');
+  text.textContent = label;
+  btn.appendChild(text);
+
+  if (rightIcon) {
+    const iconWrap = document.createElement('span');
+    iconWrap.className = 'sb-button__icon';
+    iconWrap.appendChild(iconEl(rightIcon, 'sb-icon'));
+    btn.appendChild(iconWrap);
+  }
 
   return btn;
 }
