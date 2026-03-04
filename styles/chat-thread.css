@@ -28,11 +28,11 @@
   color: var(--text-inverse);
   letter-spacing: 0.02em;
 
-  /* Apply chat small text style for avatar initials */
-  font-family: var(--chat-font-family);
-  font-size: var(--chat-small-font-size);
-  font-weight: var(--chat-body-bold-font-weight);
-  line-height: var(--chat-small-line-height);
+  /* Chat Markdown small-bold style */
+  font-family: var(--cm-font);
+  font-size: var(--cm-small-size);
+  font-weight: var(--cm-body-bold-weight);
+  line-height: var(--cm-small-lh);
 }
 
 /* Content wrapper */
@@ -48,24 +48,18 @@
 .chat-message__header {
   color: var(--text-primary);
 
-  /* Apply chat small text style */
-  font-family: var(--chat-font-family);
-  font-size: var(--chat-small-font-size);
-  font-weight: var(--chat-body-bold-font-weight);
-  line-height: var(--chat-small-line-height);
+  /* Chat Markdown small-bold style */
+  font-family: var(--cm-font);
+  font-size: var(--cm-small-size);
+  font-weight: var(--cm-body-bold-weight);
+  line-height: var(--cm-small-lh);
 }
 
-/* Message content */
+/* Message content — typography comes from .chat-markdown class */
 .chat-message__content {
   padding: 12px 16px;
   border-radius: var(--radius-lg);
   color: var(--text-primary);
-
-  /* Apply chat typography system */
-  font-family: var(--chat-font-family);
-  font-size: var(--chat-body-font-size);
-  font-weight: var(--chat-body-font-weight);
-  line-height: var(--chat-body-line-height);
 }
 
 /* User message styling */
@@ -85,11 +79,11 @@
   color: var(--text-secondary);
   padding-left: 2px;
 
-  /* Apply chat small text style */
-  font-family: var(--chat-font-family);
-  font-size: var(--chat-small-font-size);
-  font-weight: var(--chat-small-font-weight);
-  line-height: var(--chat-small-line-height);
+  /* Chat Markdown small style */
+  font-family: var(--cm-font);
+  font-size: var(--cm-small-size);
+  font-weight: var(--cm-small-weight);
+  line-height: var(--cm-small-lh);
 }
 
 /* Hover effect */

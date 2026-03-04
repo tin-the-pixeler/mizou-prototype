@@ -7,5 +7,5 @@
     "types": ["vite/client"],
     "skipLibCheck": true
   },
-  "include": [".storybook/**/*.ts", "stories/**/*.ts", "icons/**/*.ts"]
+  "include": [".storybook/**/*.ts", "stories/**/*.ts", "icons/**/*.ts", "components/**/*.ts"]
 }

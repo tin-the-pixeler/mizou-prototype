@@ -1,0 +1,172 @@
+/* ==========================================================
+   App Typography
+   Source: Figma → Type System [App]
+   Scope:  Buttons, page titles, cards, navigation, forms —
+           everything OUTSIDE the conversation UI.
+   ========================================================== */
+
+:root {
+  /* ---------- App Typography Tokens ---------- */
+  --app-font: "Nunito Sans", system-ui, -apple-system, sans-serif;
+
+  /* H1 — 45 / ExtraBold / 54px / ls -0.63px */
+  --app-h1-size: 45px;
+  --app-h1-weight: 800;
+  --app-h1-lh: 54px;
+  --app-h1-ls: -0.63px;
+
+  /* H2 — 38 / Bold / 48px / ls -0.42px */
+  --app-h2-size: 38px;
+  --app-h2-weight: 700;
+  --app-h2-lh: 48px;
+  --app-h2-ls: -0.42px;
+
+  /* H3 — 32 / Bold / 42px / ls -0.24px */
+  --app-h3-size: 32px;
+  --app-h3-weight: 700;
+  --app-h3-lh: 42px;
+  --app-h3-ls: -0.24px;
+
+  /* H4 — 27 / Bold / 36px / ls -0.09px */
+  --app-h4-size: 27px;
+  --app-h4-weight: 700;
+  --app-h4-lh: 36px;
+  --app-h4-ls: -0.09px;
+
+  /* Lead (2XL) — 27 / Regular / 36px / ls -0.09px */
+  --app-lead-size: 27px;
+  --app-lead-weight: 400;
+  --app-lead-lh: 36px;
+  --app-lead-ls: -0.09px;
+
+  /* Large — 19 / Regular / 30px / ls 0.15px */
+  --app-lg-size: 19px;
+  --app-lg-weight: 400;
+  --app-lg-lh: 30px;
+  --app-lg-ls: 0.15px;
+
+  /* Large Bold — 19 / Bold / 30px / ls 0.15px */
+  --app-lg-bold-weight: 700;
+
+  /* Paragraph (Base) — 16 / Regular / 24px / ls 0.24px */
+  --app-base-size: 16px;
+  --app-base-weight: 400;
+  --app-base-lh: 24px;
+  --app-base-ls: 0.24px;
+
+  /* Paragraph Bold — 16 / Bold / 24px / ls 0.24px */
+  --app-base-bold-weight: 700;
+
+  /* Small — 13 / Regular / 18px / ls 0.33px */
+  --app-sm-size: 13px;
+  --app-sm-weight: 400;
+  --app-sm-lh: 18px;
+  --app-sm-ls: 0.33px;
+
+  /* Small Bold — 13 / Bold / 18px / ls 0.33px */
+  --app-sm-bold-weight: 700;
+
+  /* X-Small — 11 / Medium / 18px / ls 0.39px */
+  --app-xs-size: 11px;
+  --app-xs-weight: 500;
+  --app-xs-lh: 18px;
+  --app-xs-ls: 0.39px;
+}
+
+/* ========== UTILITY CLASSES ========== */
+
+.app-h1 {
+  font-family: var(--app-font);
+  font-size: var(--app-h1-size);
+  font-weight: var(--app-h1-weight);
+  line-height: var(--app-h1-lh);
+  letter-spacing: var(--app-h1-ls);
+}
+
+.app-h2 {
+  font-family: var(--app-font);
+  font-size: var(--app-h2-size);
+  font-weight: var(--app-h2-weight);
+  line-height: var(--app-h2-lh);
+  letter-spacing: var(--app-h2-ls);
+}
+
+.app-h3 {
+  font-family: var(--app-font);
+  font-size: var(--app-h3-size);
+  font-weight: var(--app-h3-weight);
+  line-height: var(--app-h3-lh);
+  letter-spacing: var(--app-h3-ls);
+}
+
+.app-h4 {
+  font-family: var(--app-font);
+  font-size: var(--app-h4-size);
+  font-weight: var(--app-h4-weight);
+  line-height: var(--app-h4-lh);
+  letter-spacing: var(--app-h4-ls);
+}
+
+.app-lead {
+  font-family: var(--app-font);
+  font-size: var(--app-lead-size);
+  font-weight: var(--app-lead-weight);
+  line-height: var(--app-lead-lh);
+  letter-spacing: var(--app-lead-ls);
+}
+
+.app-lg {
+  font-family: var(--app-font);
+  font-size: var(--app-lg-size);
+  font-weight: var(--app-lg-weight);
+  line-height: var(--app-lg-lh);
+  letter-spacing: var(--app-lg-ls);
+}
+
+.app-lg-bold {
+  font-family: var(--app-font);
+  font-size: var(--app-lg-size);
+  font-weight: var(--app-lg-bold-weight);
+  line-height: var(--app-lg-lh);
+  letter-spacing: var(--app-lg-ls);
+}
+
+.app-base {
+  font-family: var(--app-font);
+  font-size: var(--app-base-size);
+  font-weight: var(--app-base-weight);
+  line-height: var(--app-base-lh);
+  letter-spacing: var(--app-base-ls);
+}
+
+.app-base-bold {
+  font-family: var(--app-font);
+  font-size: var(--app-base-size);
+  font-weight: var(--app-base-bold-weight);
+  line-height: var(--app-base-lh);
+  letter-spacing: var(--app-base-ls);
+}
+
+.app-sm {
+  font-family: var(--app-font);
+  font-size: var(--app-sm-size);
+  font-weight: var(--app-sm-weight);
+  line-height: var(--app-sm-lh);
+  letter-spacing: var(--app-sm-ls);
+}
+
+.app-sm-bold {
+  font-family: var(--app-font);
+  font-size: var(--app-sm-size);
+  font-weight: var(--app-sm-bold-weight);
+  line-height: var(--app-sm-lh);
+  letter-spacing: var(--app-sm-ls);
+}
+
+.app-xs {
+  font-family: var(--app-font);
+  font-size: var(--app-xs-size);
+  font-weight: var(--app-xs-weight);
+  line-height: var(--app-xs-lh);
+  letter-spacing: var(--app-xs-ls);
+}

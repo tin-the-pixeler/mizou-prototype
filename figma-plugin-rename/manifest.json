@@ -1,0 +1,7 @@
+{
+  "name": "Rename Chat Components",
+  "id": "mizou-rename-chat-components",
+  "api": "1.0.0",
+  "main": "code.js",
+  "editorType": ["figma"]
+}

@@ -46,6 +46,7 @@
   --border-subtle: var(--primitive-slate-3);          /* Dividers, subtle borders */
   --border-default: var(--primitive-slate-4);         /* Default borders, input borders */
   --border-strong: var(--primitive-slate-5);          /* Emphasized borders */
+  --border-divider: var(--primitive-slate-6);         /* Section dividers */
   --border-contrast: var(--primitive-black);          /* High contrast borders */
 
   /* Text Colors */
@@ -66,6 +67,7 @@
   /* Feedback Colors */
   --feedback-info: var(--primitive-indigo-base);
   --feedback-info-bg: rgba(79, 70, 229, 0.2);
+  --feedback-info-bg-subtle: rgba(79, 70, 229, 0.08);
   
   --feedback-success: var(--primitive-emerald-base);
   --feedback-success-bg: rgba(52, 211, 153, 0.2);
@@ -92,6 +94,7 @@
   /* Font sizes */
   --fs-xs: 11px;
   --fs-sm: 13px;
+  --fs-base: 14px;
   --fs-md: 16px;
   --fs-lg: 19px;
 

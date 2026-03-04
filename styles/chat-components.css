@@ -1,0 +1,331 @@
+/* ---------- CHAT SUB-COMPONENT STYLES ---------- */
+/* EventLabel, ChatEvent, ChatStream, ThinkingBlock, TaskBlock */
+
+/* ========== EVENT LABEL ========== */
+/* Atomic: icon + status text (7 variants) */
+
+.chat-event-label {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  height: 18px;
+}
+
+.chat-event-label__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 10px;
+  height: 10px;
+  flex-shrink: 0;
+  color: var(--text-secondary);
+}
+
+.chat-event-label__icon svg {
+  width: 10px;
+  height: 10px;
+}
+
+.chat-event-label__text {
+  font-family: var(--font-sans);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+/* Complete variant gets a success tint */
+.chat-event-label--complete .chat-event-label__icon {
+  color: var(--feedback-success);
+}
+
+.chat-event-label--complete .chat-event-label__text {
+  color: var(--feedback-success);
+}
+
+/* ========== CHAT EVENT ========== */
+/* Atomic: EventLabel + description or bullet list */
+
+.chat-event {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.chat-event__description {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-regular);
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+.chat-event__bullets {
+  margin: var(--spacing-3xs) 0 0 0;
+  padding-left: 20px;
+  list-style-type: disc;
+}
+
+.chat-event__bullets li {
+  font-family: var(--font-sans);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-regular);
+  line-height: 18px;
+  letter-spacing: 0.33px;
+  color: var(--text-secondary);
+  margin-bottom: 2px;
+}
+
+/* ========== CHAT STREAM ========== */
+/* Composed: vertical timeline line + stacked events */
+
+.chat-stream {
+  display: flex;
+  gap: var(--spacing-sm);
+  align-items: flex-start;
+  width: 100%;
+}
+
+.chat-stream__line {
+  width: 1px;
+  align-self: stretch;
+  background: repeating-linear-gradient(
+    to bottom,
+    var(--border-strong) 0,
+    var(--border-strong) 4px,
+    transparent 4px,
+    transparent 8px
+  );
+  flex-shrink: 0;
+  margin-top: 4px;
+  margin-bottom: 4px;
+}
+
+.chat-stream__events {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  flex: 1;
+  min-width: 0;
+}
+
+/* ========== THINKING BLOCK ========== */
+/* Composed: collapsible wrapper for ChatStream */
+
+.chat-thinking-block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2xs);
+  width: 100%;
+}
+
+/* Toggle button */
+.chat-thinking-block__toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2xs);
+  background: none;
+  border: none;
+  padding: var(--spacing-3xs) 0;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-medium);
+  color: var(--text-secondary);
+  border-radius: var(--radius-sm);
+  transition: color 0.15s ease;
+}
+
+.chat-thinking-block__toggle:hover {
+  color: var(--text-primary);
+}
+
+.chat-thinking-block__chevron {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 8px;
+  width: 12px;
+  height: 12px;
+  transition: transform 0.15s ease;
+  transform: rotate(90deg);
+}
+
+.chat-thinking-block--collapsed .chat-thinking-block__chevron {
+  transform: rotate(0deg);
+}
+
+.chat-thinking-block__toggle-label {
+  font-family: var(--font-sans);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-medium);
+  line-height: 1.6;
+}
+
+/* Collapsible content */
+.chat-thinking-block__content {
+  overflow: hidden;
+  transition: max-height 0.2s ease, opacity 0.2s ease;
+  max-height: 2000px;
+  opacity: 1;
+}
+
+.chat-thinking-block--collapsed .chat-thinking-block__content {
+  max-height: 0;
+  opacity: 0;
+}
+
+/* Thinking state — just the label, no toggle */
+.chat-thinking-block--thinking {
+  padding: var(--spacing-3xs) 0;
+}
+
+/* ========== TASK BLOCK ========== */
+/* Composed: collapsible task progress */
+
+.chat-task-block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2xs);
+  width: 100%;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  background: var(--surface-raised);
+  padding: var(--spacing-xs);
+}
+
+/* Toggle button */
+.chat-task-block__toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2xs);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.chat-task-block__toggle:hover {
+  color: var(--text-primary);
+}
+
+.chat-task-block__chevron {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 8px;
+  width: 12px;
+  height: 12px;
+  color: var(--text-secondary);
+  transition: transform 0.15s ease;
+  transform: rotate(90deg);
+}
+
+.chat-task-block--collapsed .chat-task-block__chevron {
+  transform: rotate(0deg);
+}
+
+/* Collapsible content */
+.chat-task-block__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  padding-left: 20px;
+  overflow: hidden;
+  transition: max-height 0.2s ease, opacity 0.2s ease;
+  max-height: 2000px;
+  opacity: 1;
+}
+
+.chat-task-block--collapsed .chat-task-block__content {
+  max-height: 0;
+  opacity: 0;
+  padding: 0;
+}
+
+/* State: finished — success tint on border */
+.chat-task-block--finished {
+  border-color: var(--feedback-success);
+}
+
+/* State: in-progress — subtle pulse on the label */
+.chat-task-block--in-progress .chat-event-label__icon {
+  animation: task-pulse 2s ease-in-out infinite;
+}
+
+@keyframes task-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* ========== MIZOU MESSAGE ========== */
+/* AI assistant message: body + optional artifact card + optional footer */
+
+.mizou-message {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  width: 100%;
+}
+
+/* Body text — inherits .chat-markdown typography */
+.mizou-message__body {
+  color: var(--text-primary);
+}
+
+/* Artifact card */
+.mizou-message__artifact {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2xs);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background: var(--feedback-info-bg-subtle);
+  border: 1px solid var(--interactive-primary);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s ease, border-color 0.15s ease;
+  font-family: var(--cm-font);
+}
+
+.mizou-message__artifact:hover {
+  background: var(--feedback-info-bg);
+  border-color: var(--interactive-primary-hover);
+}
+
+.mizou-message__artifact-title {
+  flex: 1;
+  font-size: var(--cm-body-size);
+  font-weight: var(--cm-body-bold-weight);
+  line-height: var(--cm-body-lh);
+  color: var(--text-primary);
+}
+
+.mizou-message__artifact-chevron {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  color: var(--interactive-primary);
+}
+
+.mizou-message__artifact-chevron svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Footer */
+.mizou-message__footer {
+  padding-top: var(--spacing-xs);
+  border-top: 1px solid var(--border-divider);
+  font-family: var(--cm-font);
+  font-size: var(--cm-small-size);
+  font-weight: var(--cm-small-weight);
+  line-height: var(--cm-small-lh);
+  color: var(--text-secondary);
+}
