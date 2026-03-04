@@ -2,86 +2,124 @@
 
 :root {
   /* Font Families */
-  --font-family-primary: "Nunito Sans", system-ui, -apple-system, sans-serif;
-  --font-family-mono: "SF Mono", "Monaco", "Courier New", monospace;
-  
-  /* Font Sizes */
-  --font-size-xs: 12px;
-  --font-size-sm: 11px;
-  --font-size-base: 15px;
-  --font-size-lg: 17px;
-  --font-size-xl: 20px;
-  --font-size-2xl: 24px;
-  
-  /* Font Weights */
-  --font-weight-regular: 400;
-  --font-weight-medium: 500;
-  --font-weight-semibold: 600;
-  --font-weight-bold: 700;
-  
-  /* Line Heights */
-  --line-height-tight: 1.4;
-  --line-height-normal: 1.6;
-  --line-height-relaxed: 1.75;
+  --chat-font-family: "Nunito Sans", system-ui, -apple-system, sans-serif;
+  --chat-font-mono: "SF Mono", "Monaco", "Courier New", monospace;
+
+  /* Chat Typography - Based on Figma Design System */
+
+  /* Heading 1 */
+  --chat-h1-font-size: 24px;
+  --chat-h1-font-weight: 700;
+  --chat-h1-line-height: 140%;
+
+  /* Heading (default) */
+  --chat-heading-font-size: 20px;
+  --chat-heading-font-weight: 700;
+  --chat-heading-line-height: 140%;
+
+  /* Heading 3 */
+  --chat-h3-font-size: 17px;
+  --chat-h3-font-weight: 600;
+  --chat-h3-line-height: 140%;
+
+  /* Body Text (Base) */
+  --chat-body-font-size: 15px;
+  --chat-body-font-weight: 400;
+  --chat-body-line-height: 160%;
+
+  /* Body Text Medium */
+  --chat-body-medium-font-size: 15px;
+  --chat-body-medium-font-weight: 500;
+  --chat-body-medium-line-height: 160%;
+
+  /* Body Text Bold */
+  --chat-body-bold-font-size: 15px;
+  --chat-body-bold-font-weight: 700;
+  --chat-body-bold-line-height: 160%;
+
+  /* Small Text */
+  --chat-small-font-size: 11px;
+  --chat-small-font-weight: 400;
+  --chat-small-line-height: 160%;
+
+  /* Link */
+  --chat-link-font-size: 15px;
+  --chat-link-font-weight: 400;
+  --chat-link-line-height: 160%;
+  --chat-link-color: var(--interactive-primary, #4F46E5);
 }
 
-/* Body Text */
-body,
-p {
-  font-family: var(--font-family-primary);
-  font-size: var(--font-size-base);
-  font-weight: var(--font-weight-regular);
-  line-height: var(--line-height-normal);
+/* ========== CHAT COMPONENT TYPOGRAPHY ========== */
+/* Apply these styles to chat message containers */
+
+.chat-message__content,
+.chat-body {
+  font-family: var(--chat-font-family);
+  font-size: var(--chat-body-font-size);
+  font-weight: var(--chat-body-font-weight);
+  line-height: var(--chat-body-line-height);
 }
 
-/* Headings */
-h1 {
-  font-family: var(--font-family-primary);
-  font-size: var(--font-size-2xl);
-  font-weight: var(--font-weight-bold);
-  line-height: var(--line-height-tight);
+/* Headings within chat */
+.chat-message__content h1,
+.chat-body h1 {
+  font-family: var(--chat-font-family);
+  font-size: var(--chat-h1-font-size);
+  font-weight: var(--chat-h1-font-weight);
+  line-height: var(--chat-h1-line-height);
   margin: 0 0 16px 0;
 }
 
-h2 {
-  font-family: var(--font-family-primary);
-  font-size: var(--font-size-xl);
-  font-weight: var(--font-weight-bold);
-  line-height: var(--line-height-tight);
+.chat-message__content h2,
+.chat-body h2 {
+  font-family: var(--chat-font-family);
+  font-size: var(--chat-heading-font-size);
+  font-weight: var(--chat-heading-font-weight);
+  line-height: var(--chat-heading-line-height);
   margin: 0 0 12px 0;
 }
 
-h3 {
-  font-family: var(--font-family-primary);
-  font-size: var(--font-size-lg);
-  font-weight: var(--font-weight-semibold);
-  line-height: var(--line-height-tight);
+.chat-message__content h3,
+.chat-body h3 {
+  font-family: var(--chat-font-family);
+  font-size: var(--chat-h3-font-size);
+  font-weight: var(--chat-h3-font-weight);
+  line-height: var(--chat-h3-line-height);
   margin: 0 0 8px 0;
 }
 
-/* Emphasis */
-strong,
-b {
-  font-weight: var(--font-weight-bold);
+/* Text emphasis within chat */
+.chat-message__content strong,
+.chat-message__content b,
+.chat-body strong,
+.chat-body b {
+  font-size: var(--chat-body-bold-font-size);
+  font-weight: var(--chat-body-bold-font-weight);
+  line-height: var(--chat-body-bold-line-height);
 }
 
-em,
-i {
+.chat-message__content em,
+.chat-message__content i,
+.chat-body em,
+.chat-body i {
   font-style: italic;
+  font-weight: var(--chat-body-medium-font-weight);
 }
 
 /* Code - Inline */
-code {
-  font-family: var(--font-family-mono);
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-regular);
+.chat-message__content code,
+.chat-body code {
+  font-family: var(--chat-font-mono);
+  font-size: var(--chat-small-font-size);
+  font-weight: var(--chat-body-font-weight);
   background: var(--surface-sunken);
   padding: 2px 6px;
   border-radius: 4px;
 }
 
 /* Code - Block */
-pre {
+.chat-message__content pre,
+.chat-body pre {
   background: var(--surface-sunken);
   border-radius: 8px;
   padding: 16px;
@@ -89,79 +127,104 @@ pre {
   margin: 16px 0;
 }
 
-pre code {
-  font-family: var(--font-family-mono);
+.chat-message__content pre code,
+.chat-body pre code {
+  font-family: var(--chat-font-mono);
   font-size: 13px;
-  font-weight: var(--font-weight-regular);
-  line-height: var(--line-height-relaxed);
+  font-weight: var(--chat-body-font-weight);
+  line-height: var(--chat-body-line-height);
   background: transparent;
   padding: 0;
   border-radius: 0;
 }
 
 /* Links */
-a {
-  color: var(--interactive-primary);
+.chat-message__content a,
+.chat-body a {
+  font-family: var(--chat-font-family);
+  font-size: var(--chat-link-font-size);
+  font-weight: var(--chat-link-font-weight);
+  line-height: var(--chat-link-line-height);
+  color: var(--chat-link-color);
   text-decoration: none;
-  font-weight: var(--font-weight-medium);
 }
 
-a:hover {
+.chat-message__content a:hover,
+.chat-body a:hover {
   color: var(--interactive-primary-hover);
   text-decoration: underline;
 }
 
 /* Lists */
-ul,
-ol {
-  font-size: var(--font-size-base);
-  line-height: var(--line-height-relaxed);
+.chat-message__content ul,
+.chat-message__content ol,
+.chat-body ul,
+.chat-body ol {
+  font-family: var(--chat-font-family);
+  font-size: var(--chat-body-font-size);
+  font-weight: var(--chat-body-medium-font-weight);
+  line-height: var(--chat-body-line-height);
   padding-left: 24px;
   margin: 12px 0;
 }
 
-ul {
+.chat-message__content ul,
+.chat-body ul {
   list-style-type: disc;
 }
 
-ol {
+.chat-message__content ol,
+.chat-body ol {
   list-style-type: decimal;
 }
 
-li {
+.chat-message__content li,
+.chat-body li {
   margin-bottom: 6px;
   padding-left: 8px;
 }
 
 /* Nested lists */
-ul ul,
-ol ol,
-ul ol,
-ol ul {
+.chat-message__content ul ul,
+.chat-message__content ol ol,
+.chat-message__content ul ol,
+.chat-message__content ol ul,
+.chat-body ul ul,
+.chat-body ol ol,
+.chat-body ul ol,
+.chat-body ol ul {
   margin: 6px 0;
   padding-left: 24px;
 }
 
-ul ul {
+.chat-message__content ul ul,
+.chat-body ul ul {
   list-style-type: circle;
 }
 
-ul ul ul {
+.chat-message__content ul ul ul,
+.chat-body ul ul ul {
   list-style-type: square;
 }
 
 /* List item content */
-li > p {
+.chat-message__content li > p,
+.chat-body li > p {
   margin: 0;
 }
 
-li > p + p {
+.chat-message__content li > p + p,
+.chat-body li > p + p {
   margin-top: 6px;
 }
 
 /* Blockquotes */
-blockquote {
-  font-size: var(--font-size-base);
+.chat-message__content blockquote,
+.chat-body blockquote {
+  font-family: var(--chat-font-family);
+  font-size: var(--chat-body-font-size);
+  font-weight: var(--chat-body-font-weight);
+  line-height: var(--chat-body-line-height);
   font-style: italic;
   color: var(--text-secondary);
   border-left: 3px solid var(--border-strong);
@@ -170,33 +233,111 @@ blockquote {
 }
 
 /* Small text */
-small {
-  font-size: var(--font-size-sm);
+.chat-message__content small,
+.chat-body small,
+.chat-small {
+  font-family: var(--chat-font-family);
+  font-size: var(--chat-small-font-size);
+  font-weight: var(--chat-small-font-weight);
+  line-height: var(--chat-small-line-height);
 }
 
 /* Tables */
-table {
-  font-size: var(--font-size-base);
+.chat-message__content table,
+.chat-body table {
+  font-family: var(--chat-font-family);
+  font-size: var(--chat-body-font-size);
+  line-height: var(--chat-body-line-height);
   border-collapse: collapse;
   width: 100%;
   margin: 16px 0;
 }
 
-th {
-  font-weight: var(--font-weight-semibold);
+.chat-message__content th,
+.chat-body th {
+  font-weight: var(--chat-body-bold-font-weight);
   text-align: left;
   padding: 8px 12px;
   border-bottom: 2px solid var(--border-default);
 }
 
-td {
+.chat-message__content td,
+.chat-body td {
   padding: 8px 12px;
   border-bottom: 1px solid var(--border-subtle);
 }
 
 /* Horizontal Rule */
-hr {
+.chat-message__content hr,
+.chat-body hr {
   border: none;
   border-top: 1px solid var(--border-subtle);
   margin: 24px 0;
+}
+
+/* ========== UTILITY CLASSES ========== */
+/* Use these classes to directly apply chat typography styles */
+
+.chat-h1 {
+  font-family: var(--chat-font-family);
+  font-size: var(--chat-h1-font-size);
+  font-weight: var(--chat-h1-font-weight);
+  line-height: var(--chat-h1-line-height);
+}
+
+.chat-heading,
+.chat-h2 {
+  font-family: var(--chat-font-family);
+  font-size: var(--chat-heading-font-size);
+  font-weight: var(--chat-heading-font-weight);
+  line-height: var(--chat-heading-line-height);
+}
+
+.chat-h3 {
+  font-family: var(--chat-font-family);
+  font-size: var(--chat-h3-font-size);
+  font-weight: var(--chat-h3-font-weight);
+  line-height: var(--chat-h3-line-height);
+}
+
+.chat-body-base {
+  font-family: var(--chat-font-family);
+  font-size: var(--chat-body-font-size);
+  font-weight: var(--chat-body-font-weight);
+  line-height: var(--chat-body-line-height);
+}
+
+.chat-body-medium {
+  font-family: var(--chat-font-family);
+  font-size: var(--chat-body-medium-font-size);
+  font-weight: var(--chat-body-medium-font-weight);
+  line-height: var(--chat-body-medium-line-height);
+}
+
+.chat-body-bold {
+  font-family: var(--chat-font-family);
+  font-size: var(--chat-body-bold-font-size);
+  font-weight: var(--chat-body-bold-font-weight);
+  line-height: var(--chat-body-bold-line-height);
+}
+
+.chat-small {
+  font-family: var(--chat-font-family);
+  font-size: var(--chat-small-font-size);
+  font-weight: var(--chat-small-font-weight);
+  line-height: var(--chat-small-line-height);
+}
+
+.chat-link {
+  font-family: var(--chat-font-family);
+  font-size: var(--chat-link-font-size);
+  font-weight: var(--chat-link-font-weight);
+  line-height: var(--chat-link-line-height);
+  color: var(--chat-link-color);
+  text-decoration: none;
+}
+
+.chat-link:hover {
+  color: var(--interactive-primary-hover);
+  text-decoration: underline;
 }

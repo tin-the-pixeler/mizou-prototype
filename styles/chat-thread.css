@@ -26,9 +26,13 @@
   place-items: center;
   flex-shrink: 0;
   color: var(--text-inverse);
-  font-size: var(--fs-sm);
-  font-weight: var(--fw-bold);
   letter-spacing: 0.02em;
+
+  /* Apply chat small text style for avatar initials */
+  font-family: var(--chat-font-family);
+  font-size: var(--chat-small-font-size);
+  font-weight: var(--chat-body-bold-font-weight);
+  line-height: var(--chat-small-line-height);
 }
 
 /* Content wrapper */
@@ -42,19 +46,26 @@
 
 /* Header (role label) */
 .chat-message__header {
-  font-size: var(--fs-sm);
-  font-weight: var(--fw-bold);
   color: var(--text-primary);
+
+  /* Apply chat small text style */
+  font-family: var(--chat-font-family);
+  font-size: var(--chat-small-font-size);
+  font-weight: var(--chat-body-bold-font-weight);
+  line-height: var(--chat-small-line-height);
 }
 
 /* Message content */
 .chat-message__content {
   padding: 12px 16px;
   border-radius: var(--radius-lg);
-  font-size: var(--fs-md);
-  font-weight: var(--fw-regular);
-  line-height: 1.5;
   color: var(--text-primary);
+
+  /* Apply chat typography system */
+  font-family: var(--chat-font-family);
+  font-size: var(--chat-body-font-size);
+  font-weight: var(--chat-body-font-weight);
+  line-height: var(--chat-body-line-height);
 }
 
 /* User message styling */
@@ -71,9 +82,14 @@
 
 /* Timestamp */
 .chat-message__timestamp {
-  font-size: var(--fs-xs);
   color: var(--text-secondary);
   padding-left: 2px;
+
+  /* Apply chat small text style */
+  font-family: var(--chat-font-family);
+  font-size: var(--chat-small-font-size);
+  font-weight: var(--chat-small-font-weight);
+  line-height: var(--chat-small-line-height);
 }
 
 /* Hover effect */
