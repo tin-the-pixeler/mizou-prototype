@@ -5,6 +5,7 @@ import { iconEl } from '../icons';
 
 export type ArtifactCard = {
   title: string;
+  subtitle?: string;
   onClick?: () => void;
 };
 
@@ -37,13 +38,24 @@ export function createMizouMessage({
     card.className = 'mizou-message__artifact';
     card.type = 'button';
 
+    const contentEl = document.createElement('div');
+    contentEl.className = 'mizou-message__artifact-content';
+
     const title = document.createElement('span');
     title.className = 'mizou-message__artifact-title';
     title.textContent = artifact.title;
+    contentEl.appendChild(title);
+
+    if (artifact.subtitle) {
+      const subtitle = document.createElement('span');
+      subtitle.className = 'mizou-message__artifact-subtitle';
+      subtitle.textContent = artifact.subtitle;
+      contentEl.appendChild(subtitle);
+    }
 
     const chevron = iconEl('chevron-right-sm' as any, 'mizou-message__artifact-chevron');
 
-    card.append(title, chevron);
+    card.append(contentEl, chevron);
 
     if (artifact.onClick) {
       card.addEventListener('click', artifact.onClick);

@@ -39,6 +39,7 @@ export const WithArtifact: Story = {
     content: 'message',
     artifact: {
       title: 'Objection handling, building rapport and prospecting a possible lead for a paper company',
+      subtitle: 'Version 1',
     },
   },
 };
@@ -55,6 +56,7 @@ export const FullMessage: Story = {
     content: 'message',
     artifact: {
       title: 'Objection handling, building rapport and prospecting a possible lead for a paper company',
+      subtitle: 'Version 1',
     },
     footer: 'Simulation ready · Click to begin',
   },
