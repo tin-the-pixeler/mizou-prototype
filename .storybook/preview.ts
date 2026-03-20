@@ -10,6 +10,9 @@ import '../styles/chat-components.css';
 import '../styles/chat-page.css';
 import '../styles/ai-avatar.css';
 import '../styles/environment-details-card.css';
+import '../styles/level-chip.css';
+import '../styles/category-chip.css';
+import '../styles/instruction-field.css';
 import type { Preview } from '@storybook/html';
 
 const preview: Preview = {

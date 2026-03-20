@@ -2,15 +2,15 @@
 import { iconEl, type IconName } from '../icons';
 import { createButton } from './button';
 import { createAiAvatar } from './aiAvatar';
+import { createLevelChip, type LevelChipTheme, levelConfigs, levelNames } from './levelChip';
+import { createCategoryChip, type CategoryType, categoryTypes } from './categoryChip';
+import { createInstructionField, type InstructionItem } from './instructionField';
 
 export type SimulationType = 'chatbot' | 'roleplay';
 
 export type DifficultyLevel = 'easy' | 'medium' | 'hard';
 
-export type InstructionItem = {
-  title: string;
-  body: string;
-};
+export type { InstructionItem } from './instructionField';
 
 export type EnvironmentDetailsCardOptions = {
   /** Badge simulation type */
@@ -25,14 +25,14 @@ export type EnvironmentDetailsCardOptions = {
   name: string;
   /** Level/personality chip label (e.g. "Dismissive") */
   levelLabel: string;
-  /** Options for the level dropdown */
-  levelOptions?: string[];
+  /** Level chip theme */
+  levelTheme?: LevelChipTheme;
   /** Difficulty level */
   difficulty?: DifficultyLevel;
-  /** Category chip label (e.g. "Management") */
+  /** Category type */
+  category?: CategoryType;
+  /** Category chip label (e.g. "Management") — kept for backward compat */
   categoryLabel: string;
-  /** Options for the category dropdown */
-  categoryOptions?: string[];
   /** Instruction block header text */
   instructionHeader?: string;
   /** Ordered list of instructions */
@@ -112,9 +112,9 @@ export function createEnvironmentDetailsCard(options: EnvironmentDetailsCardOpti
     role,
     name,
     levelLabel,
-    levelOptions = ['Dismissive', 'Cooperative', 'Aggressive', 'Passive'],
+    levelTheme = 'yellow',
+    category = 'Management',
     categoryLabel,
-    categoryOptions = ['Management', 'Sales', 'HR', 'Engineering'],
     instructionHeader = 'Read instructions',
     instructions,
     primaryActionLabel = 'Test the chatbot',
@@ -198,21 +198,75 @@ export function createEnvironmentDetailsCard(options: EnvironmentDetailsCardOpti
   levelLabel2.textContent = 'Level';
   levelCol.appendChild(levelLabel2);
 
-  const levelChip = document.createElement('span');
-  levelChip.className = 'env-card__chip env-card__chip--warning env-card__chip--interactive';
+  // Build level chip with dropdown that swaps theme/dots on selection
+  let currentLevelLabel = levelLabel;
 
-  const levelText = document.createElement('span');
-  levelText.textContent = levelLabel;
-  levelChip.appendChild(levelText);
+  function buildLevelChip(label: string, theme: LevelChipTheme): HTMLElement {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'env-card__chip-wrapper env-card__chip--interactive';
 
-  const levelChevron = document.createElement('span');
-  levelChevron.className = 'env-card__chip-chevron';
-  levelChevron.appendChild(iconEl('chevron-down-sm' as IconName, 'sb-icon'));
-  levelChip.appendChild(levelChevron);
+    const el = createLevelChip({ label, theme });
 
-  createChipDropdown(levelChip, levelText, levelChevron, levelOptions);
+    const chevron = document.createElement('span');
+    chevron.className = 'env-card__chip-chevron';
+    chevron.appendChild(iconEl('chevron-down-sm' as IconName, 'sb-icon'));
 
-  levelCol.appendChild(levelChip);
+    wrapper.appendChild(el);
+    wrapper.appendChild(chevron);
+
+    let dropdown: HTMLElement | null = null;
+
+    function closeDropdown() {
+      if (dropdown) {
+        dropdown.remove();
+        dropdown = null;
+        wrapper.classList.remove('env-card__chip--open');
+      }
+    }
+
+    function openDropdown() {
+      if (dropdown) { closeDropdown(); return; }
+      wrapper.classList.add('env-card__chip--open');
+
+      dropdown = document.createElement('div');
+      dropdown.className = 'env-card__dropdown';
+
+      levelNames.forEach((opt) => {
+        const item = document.createElement('div');
+        item.className = 'env-card__dropdown-item';
+        if (opt === currentLevelLabel) {
+          item.classList.add('env-card__dropdown-item--selected');
+        }
+        item.textContent = opt;
+        item.addEventListener('click', (ev) => {
+          ev.stopPropagation();
+          closeDropdown();
+          currentLevelLabel = opt;
+          const cfg = levelConfigs[opt];
+          const newChip = buildLevelChip(opt, cfg.theme);
+          levelCol.replaceChild(newChip, levelCol.querySelector('.env-card__chip-wrapper')!);
+        });
+        dropdown!.appendChild(item);
+      });
+
+      wrapper.appendChild(dropdown);
+
+      const onOutside = (e: MouseEvent) => {
+        if (!wrapper.contains(e.target as Node)) {
+          closeDropdown();
+          document.removeEventListener('click', onOutside, true);
+        }
+      };
+      requestAnimationFrame(() => {
+        document.addEventListener('click', onOutside, true);
+      });
+    }
+
+    wrapper.addEventListener('click', openDropdown);
+    return wrapper;
+  }
+
+  levelCol.appendChild(buildLevelChip(levelLabel, levelTheme));
   detailsRight.appendChild(levelCol);
 
   // Divider
@@ -229,58 +283,33 @@ export function createEnvironmentDetailsCard(options: EnvironmentDetailsCardOpti
   catLabelEl.textContent = 'Category';
   catCol.appendChild(catLabelEl);
 
-  const catChip = document.createElement('span');
-  catChip.className = 'env-card__chip env-card__chip--info env-card__chip--interactive';
+  const catWrapper = document.createElement('div');
+  catWrapper.className = 'env-card__chip-wrapper env-card__chip--interactive';
 
-  const catText = document.createElement('span');
-  catText.textContent = categoryLabel;
-  catChip.appendChild(catText);
+  const catChipEl = createCategoryChip({ category });
+
+  const catText = catChipEl.querySelector('.category-chip__label') as HTMLElement;
 
   const catChevron = document.createElement('span');
   catChevron.className = 'env-card__chip-chevron';
   catChevron.appendChild(iconEl('chevron-down-sm' as IconName, 'sb-icon'));
-  catChip.appendChild(catChevron);
 
-  createChipDropdown(catChip, catText, catChevron, categoryOptions);
+  catWrapper.appendChild(catChipEl);
+  catWrapper.appendChild(catChevron);
 
-  catCol.appendChild(catChip);
+  createChipDropdown(catWrapper, catText, catChevron, categoryTypes.filter(c => c !== 'Empty'));
+
+  catCol.appendChild(catWrapper);
   detailsRight.appendChild(catCol);
   details.appendChild(detailsRight);
   descSection.appendChild(details);
 
-  // Instruction block
-  const instrBlock = document.createElement('div');
-  instrBlock.className = 'env-card__instructions';
-
-  // Header
-  const instrHeader = document.createElement('div');
-  instrHeader.className = 'env-card__instructions-header';
-
-  const instrTitle = document.createElement('span');
-  instrTitle.className = 'env-card__instructions-header-title';
-  instrTitle.textContent = instructionHeader;
-  instrHeader.appendChild(instrTitle);
-
-  instrBlock.appendChild(instrHeader);
-
-  // Body — single unified editable text field
-  const instrBody = document.createElement('div');
-  instrBody.className = 'env-card__instructions-body env-card__editable';
-  instrBody.contentEditable = 'true';
-
-  // Build initial HTML content from instructions
-  const htmlParts = instructions.map((item) => {
-    let html = `<div class="env-card__list-item"><div class="env-card__list-item-header"><div class="env-card__list-bullet"><div class="env-card__list-bullet-dot"></div></div><span class="env-card__list-item-title">${item.title}</span></div>`;
-    if (item.body) {
-      html += `<div class="env-card__list-item-body">${item.body}</div>`;
-    }
-    html += '</div>';
-    return html;
+  // Instruction block — using the InstructionField component
+  const instrField = createInstructionField({
+    header: instructionHeader,
+    items: instructions,
   });
-  instrBody.innerHTML = `<div class="env-card__instructions-list">${htmlParts.join('')}</div>`;
-
-  instrBlock.appendChild(instrBody);
-  descSection.appendChild(instrBlock);
+  descSection.appendChild(instrField);
 
   card.appendChild(descSection);
 

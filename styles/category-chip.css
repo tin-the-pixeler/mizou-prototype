@@ -1,0 +1,24 @@
+/* ---------- CATEGORY CHIP ---------- */
+
+.category-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-3xs);
+  padding: var(--spacing-3xs) 6px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-divider);
+  background: var(--surface-emphasis);
+  font-family: var(--font-sans);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-bold);
+  line-height: 18px;
+  letter-spacing: 0.33px;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+/* ========== EMPTY STATE ========== */
+
+.category-chip--empty {
+  color: var(--primitive-slate-8);
+}

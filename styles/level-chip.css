@@ -1,0 +1,41 @@
+/* ---------- LEVEL CHIP ---------- */
+
+.level-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--spacing-3xs) var(--spacing-2xs);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-sans);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-bold);
+  line-height: 18px;
+  letter-spacing: 0.33px;
+  white-space: nowrap;
+}
+
+/* ========== LABEL ========== */
+
+.level-chip__label {
+  position: relative;
+}
+
+/* ========== THEME: GREEN ========== */
+
+.level-chip--green {
+  color: var(--feedback-success);
+  background: var(--feedback-success-bg);
+}
+
+/* ========== THEME: YELLOW ========== */
+
+.level-chip--yellow {
+  color: var(--primitive-amber-dark);
+  background: var(--feedback-warning-bg);
+}
+
+/* ========== THEME: RED ========== */
+
+.level-chip--red {
+  color: var(--feedback-error);
+  background: var(--feedback-error-bg);
+}

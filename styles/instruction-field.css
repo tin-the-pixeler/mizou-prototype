@@ -1,0 +1,100 @@
+/* ---------- INSTRUCTION FIELD ---------- */
+
+.instruction-field {
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-default);
+  background: var(--primitive-white);
+  overflow: hidden;
+}
+
+/* ========== HEADER ========== */
+
+.instruction-field__header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm);
+  background: var(--feedback-info-bg, rgba(79, 70, 229, 0.12));
+}
+
+.instruction-field__header-title {
+  font-size: var(--app-base-size);
+  font-weight: var(--app-base-bold-weight);
+  line-height: var(--app-base-lh);
+  color: var(--text-primary);
+}
+
+/* ========== BODY ========== */
+
+.instruction-field__body {
+  padding: var(--spacing-md);
+  max-height: 244px;
+  overflow-y: auto;
+  transition: background 0.15s ease;
+}
+
+/* Hover state: light grey background on the body */
+.instruction-field__body:hover {
+  background: var(--surface-page, #f5f5f5);
+}
+
+/* Active/focus-within state: white background, editing */
+.instruction-field__body:focus-within {
+  background: var(--surface-page, #f5f5f5);
+}
+
+/* ========== LIST ========== */
+
+.instruction-field__list {
+  list-style: disc;
+  display: flex;
+  flex-direction: column;
+  gap: 21px;
+  margin: 0;
+  padding: 0 0 0 20px;
+  outline: none;
+}
+
+.instruction-field__list-item {
+  display: list-item;
+  font-size: var(--app-base-size);
+  font-weight: var(--app-base-weight);
+  line-height: var(--app-base-lh);
+  color: var(--text-primary);
+}
+
+.instruction-field__list-item::marker {
+  font-size: 10px;
+  color: var(--text-primary);
+}
+
+.instruction-field__item-title {
+  font-weight: var(--app-base-bold-weight);
+}
+
+.instruction-field__item-body {
+  white-space: pre-wrap;
+}
+
+/* ========== SCROLLBAR ========== */
+
+.instruction-field__body::-webkit-scrollbar {
+  width: calc(4px + var(--spacing-2xs));
+}
+
+.instruction-field__body::-webkit-scrollbar-track {
+  background: var(--surface-page);
+  border-right: var(--spacing-2xs) solid transparent;
+  background-clip: padding-box;
+  border-radius: 2px;
+  margin: var(--spacing-2xs) 0;
+}
+
+.instruction-field__body::-webkit-scrollbar-thumb {
+  background: var(--primitive-slate-8);
+  border-right: var(--spacing-2xs) solid transparent;
+  background-clip: padding-box;
+  border-radius: 2px;
+}

@@ -326,6 +326,14 @@
 
 /* ========== INTERACTIVE CHIPS ========== */
 
+.env-card__chip-wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  position: relative;
+}
+
 .env-card__chip--interactive {
   cursor: pointer;
   position: relative;
@@ -337,7 +345,6 @@
   justify-content: center;
   width: 12px;
   height: 12px;
-  margin-left: 2px;
 }
 
 .env-card__chip-chevron .sb-icon {

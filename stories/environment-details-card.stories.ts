@@ -5,6 +5,8 @@ import {
   type SimulationType,
   type DifficultyLevel,
 } from '../components/environmentDetailsCard';
+import { levelChipThemes } from '../components/levelChip';
+import { categoryTypes } from '../components/categoryChip';
 
 type StoryProps = EnvironmentDetailsCardOptions;
 
@@ -17,7 +19,9 @@ const meta: Meta<StoryProps> = {
     role: { control: 'text' },
     name: { control: 'text' },
     levelLabel: { control: 'text' },
+    levelTheme: { control: 'select', options: levelChipThemes },
     difficulty: { control: 'select', options: ['easy', 'medium', 'hard'] as DifficultyLevel[] },
+    category: { control: 'select', options: categoryTypes },
     categoryLabel: { control: 'text' },
     instructionHeader: { control: 'text' },
     primaryActionLabel: { control: 'text' },
@@ -61,7 +65,9 @@ export const Default: Story = {
     role: 'Senior Staff Auditor',
     name: 'Jason Westlake',
     levelLabel: 'Dismissive',
+    levelTheme: 'yellow',
     difficulty: 'hard',
+    category: 'Management',
     categoryLabel: 'Management',
     instructionHeader: 'Read instructions',
     instructions: sampleInstructions,
