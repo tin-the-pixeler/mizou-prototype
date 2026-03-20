@@ -8,6 +8,8 @@ import '../styles/chat-typography.css';
 import '../styles/button.css';
 import '../styles/chat-components.css';
 import '../styles/chat-page.css';
+import '../styles/ai-avatar.css';
+import '../styles/environment-details-card.css';
 import type { Preview } from '@storybook/html';
 
 const preview: Preview = {

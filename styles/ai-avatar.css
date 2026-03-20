@@ -1,0 +1,44 @@
+/* ---------- AI AVATAR COMPONENT ---------- */
+
+.ai-avatar {
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.ai-avatar__img {
+  border-radius: 50%;
+  border: 2px solid var(--primitive-white);
+  object-fit: cover;
+}
+
+/* ========== SIZES ========== */
+
+.ai-avatar--sm {
+  width: 40px;
+  height: 40px;
+}
+
+.ai-avatar--sm .ai-avatar__img {
+  width: 40px;
+  height: 40px;
+}
+
+.ai-avatar--md {
+  width: 56px;
+  height: 56px;
+}
+
+.ai-avatar--md .ai-avatar__img {
+  width: 56px;
+  height: 56px;
+}
+
+.ai-avatar--lg {
+  width: 88px;
+  height: 88px;
+}
+
+.ai-avatar--lg .ai-avatar__img {
+  width: 88px;
+  height: 88px;
+}

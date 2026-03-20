@@ -2,7 +2,7 @@
 import { iconEl, type IconName } from '../icons';
 
 export type ButtonVariant = 'primary' | 'secondary' | 'tertiary' | 'special';
-export type ButtonSize = 'sm' | 'md' | 'lg';
+export type ButtonSize = 'xs' | 'sm' | 'md' | 'lg';
 
 export type ButtonOptions = {
   label: string;
@@ -14,7 +14,7 @@ export type ButtonOptions = {
 };
 
 export const buttonVariants: ButtonVariant[] = ['primary', 'secondary', 'tertiary', 'special'];
-export const buttonSizes: ButtonSize[] = ['sm', 'md', 'lg'];
+export const buttonSizes: ButtonSize[] = ['xs', 'sm', 'md', 'lg'];
 
 export function createButton({
   label,
