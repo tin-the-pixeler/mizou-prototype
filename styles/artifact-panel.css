@@ -1,0 +1,191 @@
+/* ---------- ARTIFACT PANEL ---------- */
+
+.artifact-panel {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 1440px;
+  height: 928px;
+  border-radius: var(--radius-lg);
+  border: 2px solid var(--border-subtle);
+  background: var(--surface-raised, #FCFCFD);
+  overflow: hidden;
+  font-family: var(--font-sans);
+  transition: border-color 0.15s ease;
+}
+
+/* ========== EDIT MODE ========== */
+
+.artifact-panel--editing {
+  border-color: var(--interactive-primary);
+  background: #e4e3f0;
+}
+
+.artifact-panel--editing .artifact-panel__action-bar ~ .artifact-panel__body {
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  overflow: hidden;
+}
+
+.artifact-panel--editing .artifact-panel__action-bar {
+  background: #e4e3f0;
+}
+
+/* ========== ACTION BAR (top, edit mode only) ========== */
+
+.artifact-panel__action-bar {
+  display: none;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: #e4e3f0;
+  flex-shrink: 0;
+}
+
+.artifact-panel--editing .artifact-panel__action-bar {
+  display: flex;
+}
+
+/* ========== MAIN LAYOUT ========== */
+
+.artifact-panel__body {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  min-height: 0;
+}
+
+/* ========== LEFT SIDEBAR ========== */
+
+.artifact-panel__sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3xs);
+  width: 200px;
+  flex-shrink: 0;
+  padding: var(--spacing-2xs);
+  background: var(--primitive-white);
+  border-right: 1px solid var(--border-subtle);
+}
+
+/* ========== NAV ITEM ========== */
+
+.artifact-panel__nav-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--spacing-2xs);
+  padding: var(--spacing-2xs);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  user-select: none;
+  text-decoration: none;
+  transition: background 0.12s ease;
+}
+
+.artifact-panel__nav-item:hover {
+  background: var(--surface-overlay);
+}
+
+.artifact-panel__nav-item--active {
+  background: var(--interactive-secondary-active);
+}
+
+.artifact-panel__nav-item--active:hover {
+  background: var(--interactive-secondary-active);
+}
+
+.artifact-panel__nav-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  color: var(--primitive-slate-8);
+  flex-shrink: 0;
+}
+
+.artifact-panel__nav-icon .sb-icon {
+  width: 14px;
+  height: 14px;
+}
+
+.artifact-panel__nav-icon svg {
+  width: 14px;
+  height: 14px;
+}
+
+.artifact-panel__nav-item--active .artifact-panel__nav-icon {
+  color: var(--text-primary);
+}
+
+.artifact-panel__nav-label {
+  font-size: var(--app-sm-size);
+  font-weight: var(--app-sm-weight);
+  line-height: var(--app-sm-lh);
+  letter-spacing: var(--app-sm-ls);
+  color: var(--text-primary);
+}
+
+.artifact-panel__nav-item--active .artifact-panel__nav-label {
+  font-weight: var(--app-sm-bold-weight);
+}
+
+/* ========== SIDEBAR DIVIDER ========== */
+
+.artifact-panel__sidebar-divider {
+  width: 100%;
+  height: 1px;
+  background: var(--border-subtle);
+  flex-shrink: 0;
+}
+
+/* ========== RIGHT CONTENT ========== */
+
+.artifact-panel__content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  background: var(--surface-raised, #FCFCFD);
+  overflow-y: auto;
+}
+
+/* ========== CARD WRAPPER ========== */
+
+.artifact-panel__card-wrapper {
+  display: flex;
+  justify-content: center;
+  padding: 0 var(--spacing-lg);
+  margin-top: -64px;
+  position: relative;
+  z-index: 1;
+}
+
+.artifact-panel__card-wrapper .env-card {
+  max-width: 750px;
+  width: 100%;
+  box-shadow: var(--shadow-md);
+}
+
+/* ========== PRIMARY ACTION ========== */
+
+.artifact-panel__primary-action {
+  display: flex;
+  justify-content: center;
+  padding: var(--spacing-md) 0;
+}
+
+/* ========== TAB CONTENT PLACEHOLDER ========== */
+
+.artifact-panel__tab-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  color: var(--text-tertiary);
+  font-size: var(--app-lg-size);
+  font-weight: var(--app-lg-weight);
+  line-height: var(--app-lg-lh);
+}

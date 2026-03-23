@@ -13,6 +13,8 @@ import '../styles/environment-details-card.css';
 import '../styles/level-chip.css';
 import '../styles/category-chip.css';
 import '../styles/instruction-field.css';
+import '../styles/artifact-thumbnail.css';
+import '../styles/artifact-panel.css';
 import type { Preview } from '@storybook/html';
 
 const preview: Preview = {

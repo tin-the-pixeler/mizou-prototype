@@ -314,21 +314,6 @@
   border-radius: 2px;
 }
 
-/* ========== ACTION SECTION ========== */
-
-.env-card__actions {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  gap: var(--spacing-lg);
-  padding-bottom: var(--spacing-sm);
-}
-
-.env-card__actions--edit {
-  justify-content: flex-end;
-  gap: var(--spacing-sm);
-}
-
 /* ========== INTERACTIVE CHIPS ========== */
 
 .env-card__chip-wrapper {
@@ -358,7 +343,8 @@
 }
 
 .env-card__chip--interactive:hover .env-card__chip-chevron,
-.env-card__chip--open .env-card__chip-chevron {
+.env-card__chip--open .env-card__chip-chevron,
+.env-card--editing .env-card__chip-chevron {
   display: flex;
 }
 

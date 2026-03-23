@@ -1,6 +1,5 @@
 // components/environmentDetailsCard.ts
 import { iconEl, type IconName } from '../icons';
-import { createButton } from './button';
 import { createAiAvatar } from './aiAvatar';
 import { createLevelChip, type LevelChipTheme, levelConfigs, levelNames } from './levelChip';
 import { createCategoryChip, type CategoryType, categoryTypes } from './categoryChip';
@@ -313,45 +312,8 @@ export function createEnvironmentDetailsCard(options: EnvironmentDetailsCardOpti
 
   card.appendChild(descSection);
 
-  // — Action section —
-  const actions = document.createElement('div');
-  actions.className = 'env-card__actions';
-
-  const primaryBtn = createButton({
-    label: primaryActionLabel,
-    variant: 'special',
-    size: 'lg',
-  });
-  if (onPrimaryAction) {
-    primaryBtn.addEventListener('click', onPrimaryAction);
-  }
-  actions.appendChild(primaryBtn);
-
-  // Edit-mode buttons (hidden by default)
-  const editActions = document.createElement('div');
-  editActions.className = 'env-card__actions env-card__actions--edit';
-  editActions.style.display = 'none';
-
-  const cancelBtn = createButton({
-    label: 'Cancel',
-    variant: 'tertiary',
-    size: 'sm',
-  });
-  editActions.appendChild(cancelBtn);
-
-  const saveBtn = createButton({
-    label: 'Save changes',
-    variant: 'primary',
-    size: 'sm',
-  });
-  editActions.appendChild(saveBtn);
-
-  card.appendChild(actions);
-  card.appendChild(editActions);
-
   // — Edit mode tracking —
   let isEditMode = false;
-  // Snapshot of values before edit
   let snapshot = {
     title: title,
     role: role,
@@ -366,7 +328,6 @@ export function createEnvironmentDetailsCard(options: EnvironmentDetailsCardOpti
   function enterEditMode() {
     if (isEditMode) return;
     isEditMode = true;
-    // Take snapshot of current values
     snapshot = {
       title: titleEl.textContent || '',
       role: roleEl.textContent || '',
@@ -375,14 +336,7 @@ export function createEnvironmentDetailsCard(options: EnvironmentDetailsCardOpti
       categoryText: catText.textContent || '',
       instrHtml: instrList ? instrList.innerHTML : '',
     };
-    actions.style.display = 'none';
-    editActions.style.display = 'flex';
-  }
-
-  function exitEditMode() {
-    isEditMode = false;
-    actions.style.display = 'flex';
-    editActions.style.display = 'none';
+    card.dispatchEvent(new CustomEvent('env-card:edit-enter', { bubbles: true }));
   }
 
   // Listen for focus on any editable field inside the card
@@ -397,7 +351,6 @@ export function createEnvironmentDetailsCard(options: EnvironmentDetailsCardOpti
   });
 
   // Also enter edit mode when a chip dropdown is opened
-  const origAddEventListener = card.addEventListener;
   card.addEventListener('click', (e) => {
     const target = e.target as HTMLElement;
     if (target.closest('.env-card__chip-wrapper')) {
@@ -405,13 +358,12 @@ export function createEnvironmentDetailsCard(options: EnvironmentDetailsCardOpti
     }
   });
 
-  // Cancel — revert all values
-  cancelBtn.addEventListener('click', () => {
+  // Expose revert and commit methods on the card element
+  (card as any).revertSnapshot = () => {
     titleEl.textContent = snapshot.title;
     roleEl.textContent = snapshot.role;
     nameEl.textContent = snapshot.name;
 
-    // Revert level chip
     if (snapshot.levelLabel !== currentLevelLabel) {
       currentLevelLabel = snapshot.levelLabel;
       const cfg = levelConfigs[currentLevelLabel];
@@ -419,25 +371,20 @@ export function createEnvironmentDetailsCard(options: EnvironmentDetailsCardOpti
       levelCol.replaceChild(newChip, levelCol.querySelector('.env-card__chip-wrapper')!);
     }
 
-    // Revert category chip text
     catText.textContent = snapshot.categoryText;
 
-    // Revert instruction field
     if (instrList) {
       instrList.innerHTML = snapshot.instrHtml;
     }
 
-    // Blur any focused element
     (document.activeElement as HTMLElement)?.blur?.();
-    exitEditMode();
-  });
+    isEditMode = false;
+  };
 
-  // Save — keep current values, just exit edit mode
-  saveBtn.addEventListener('click', () => {
-    // Blur any focused element
+  (card as any).commitEdit = () => {
     (document.activeElement as HTMLElement)?.blur?.();
-    exitEditMode();
-  });
+    isEditMode = false;
+  };
 
   return card;
 }
