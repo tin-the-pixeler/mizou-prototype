@@ -324,6 +324,11 @@
   padding-bottom: var(--spacing-sm);
 }
 
+.env-card__actions--edit {
+  justify-content: flex-end;
+  gap: var(--spacing-sm);
+}
+
 /* ========== INTERACTIVE CHIPS ========== */
 
 .env-card__chip-wrapper {

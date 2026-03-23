@@ -327,7 +327,117 @@ export function createEnvironmentDetailsCard(options: EnvironmentDetailsCardOpti
   }
   actions.appendChild(primaryBtn);
 
+  // Edit-mode buttons (hidden by default)
+  const editActions = document.createElement('div');
+  editActions.className = 'env-card__actions env-card__actions--edit';
+  editActions.style.display = 'none';
+
+  const cancelBtn = createButton({
+    label: 'Cancel',
+    variant: 'tertiary',
+    size: 'sm',
+  });
+  editActions.appendChild(cancelBtn);
+
+  const saveBtn = createButton({
+    label: 'Save changes',
+    variant: 'primary',
+    size: 'sm',
+  });
+  editActions.appendChild(saveBtn);
+
   card.appendChild(actions);
+  card.appendChild(editActions);
+
+  // — Edit mode tracking —
+  let isEditMode = false;
+  // Snapshot of values before edit
+  let snapshot = {
+    title: title,
+    role: role,
+    name: name,
+    levelLabel: levelLabel,
+    categoryText: categoryLabel || (category as string),
+    instrHtml: '',
+  };
+
+  const instrList = instrField.querySelector('.instruction-field__list') as HTMLElement;
+
+  function enterEditMode() {
+    if (isEditMode) return;
+    isEditMode = true;
+    // Take snapshot of current values
+    snapshot = {
+      title: titleEl.textContent || '',
+      role: roleEl.textContent || '',
+      name: nameEl.textContent || '',
+      levelLabel: currentLevelLabel,
+      categoryText: catText.textContent || '',
+      instrHtml: instrList ? instrList.innerHTML : '',
+    };
+    actions.style.display = 'none';
+    editActions.style.display = 'flex';
+  }
+
+  function exitEditMode() {
+    isEditMode = false;
+    actions.style.display = 'flex';
+    editActions.style.display = 'none';
+  }
+
+  // Listen for focus on any editable field inside the card
+  card.addEventListener('focusin', (e) => {
+    const target = e.target as HTMLElement;
+    if (
+      target.classList.contains('env-card__editable') ||
+      target.closest('.instruction-field__list')
+    ) {
+      enterEditMode();
+    }
+  });
+
+  // Also enter edit mode when a chip dropdown is opened
+  const origAddEventListener = card.addEventListener;
+  card.addEventListener('click', (e) => {
+    const target = e.target as HTMLElement;
+    if (target.closest('.env-card__chip-wrapper')) {
+      enterEditMode();
+    }
+  });
+
+  // Cancel — revert all values
+  cancelBtn.addEventListener('click', () => {
+    titleEl.textContent = snapshot.title;
+    roleEl.textContent = snapshot.role;
+    nameEl.textContent = snapshot.name;
+
+    // Revert level chip
+    if (snapshot.levelLabel !== currentLevelLabel) {
+      currentLevelLabel = snapshot.levelLabel;
+      const cfg = levelConfigs[currentLevelLabel];
+      const newChip = buildLevelChip(currentLevelLabel, cfg.theme);
+      levelCol.replaceChild(newChip, levelCol.querySelector('.env-card__chip-wrapper')!);
+    }
+
+    // Revert category chip text
+    catText.textContent = snapshot.categoryText;
+
+    // Revert instruction field
+    if (instrList) {
+      instrList.innerHTML = snapshot.instrHtml;
+    }
+
+    // Blur any focused element
+    (document.activeElement as HTMLElement)?.blur?.();
+    exitEditMode();
+  });
+
+  // Save — keep current values, just exit edit mode
+  saveBtn.addEventListener('click', () => {
+    // Blur any focused element
+    (document.activeElement as HTMLElement)?.blur?.();
+    exitEditMode();
+  });
 
   return card;
 }
