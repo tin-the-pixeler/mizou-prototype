@@ -1,0 +1,146 @@
+/* ========== BUTTON ICON ========== */
+/* Circular icon-only button: primary, secondary, tertiary, destructive */
+/* Sizes: xs (24px), sm (32px), md (48px) */
+
+.sb-btn-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  border-radius: var(--radius-full);
+  padding: 0;
+  cursor: pointer;
+  flex-shrink: 0;
+  position: relative;
+  transition: background 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
+}
+
+.sb-btn-icon:focus-visible {
+  outline: 2px solid var(--interactive-primary);
+  outline-offset: 2px;
+}
+
+/* ===== Sizes ===== */
+
+.sb-btn-icon--xs {
+  width: 24px;
+  height: 24px;
+}
+
+.sb-btn-icon--xs .sb-btn-icon__icon {
+  width: 12px;
+  height: 12px;
+}
+
+.sb-btn-icon--xs .sb-btn-icon__icon svg {
+  width: 12px;
+  height: 12px;
+}
+
+.sb-btn-icon--sm {
+  width: 32px;
+  height: 32px;
+}
+
+.sb-btn-icon--sm .sb-btn-icon__icon {
+  width: 16px;
+  height: 16px;
+}
+
+.sb-btn-icon--sm .sb-btn-icon__icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.sb-btn-icon--md {
+  width: 48px;
+  height: 48px;
+}
+
+.sb-btn-icon--md .sb-btn-icon__icon {
+  width: 24px;
+  height: 24px;
+}
+
+.sb-btn-icon--md .sb-btn-icon__icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* ===== Icon wrapper ===== */
+
+.sb-btn-icon__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ===== Disabled (all actions) ===== */
+
+.sb-btn-icon:disabled {
+  opacity: var(--alpha-disabled);
+  cursor: not-allowed;
+}
+
+/* ===== Action: Primary ===== */
+
+.sb-btn-icon--primary {
+  background: var(--interactive-primary);
+  color: var(--text-inverse);
+}
+
+.sb-btn-icon--primary:hover:not(:disabled) {
+  background: var(--interactive-primary-hover);
+}
+
+.sb-btn-icon--primary:active:not(:disabled) {
+  background: var(--interactive-primary-active);
+}
+
+/* ===== Action: Secondary ===== */
+
+.sb-btn-icon--secondary {
+  background: var(--interactive-secondary);
+  color: var(--text-primary);
+}
+
+.sb-btn-icon--secondary:hover:not(:disabled) {
+  background: var(--interactive-secondary-hover);
+}
+
+.sb-btn-icon--secondary:active:not(:disabled) {
+  background: var(--interactive-secondary-clicked);
+  color: var(--text-inverse);
+}
+
+/* ===== Action: Tertiary ===== */
+
+.sb-btn-icon--tertiary {
+  background: transparent;
+  border-color: var(--border-strong);
+  color: var(--text-primary);
+}
+
+.sb-btn-icon--tertiary:hover:not(:disabled) {
+  background: var(--interactive-secondary-hover);
+}
+
+.sb-btn-icon--tertiary:active:not(:disabled) {
+  background: var(--interactive-secondary-clicked);
+  color: var(--text-inverse);
+}
+
+/* ===== Action: Destructive ===== */
+
+.sb-btn-icon--destructive {
+  background: var(--interactive-destructive);
+  color: var(--text-inverse);
+}
+
+.sb-btn-icon--destructive:hover:not(:disabled) {
+  background: var(--interactive-destructive-hover);
+}
+
+.sb-btn-icon--destructive:active:not(:disabled) {
+  background: var(--interactive-destructive-active);
+}

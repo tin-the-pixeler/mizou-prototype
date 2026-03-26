@@ -1,17 +1,18 @@
-// components/chatInputField.ts
-// Chat AI input field with textarea, action buttons, and two states.
+// components/inputFieldChatThread.ts
+// Compact chat input field used inside the chat thread view.
+// Features: textarea, plus button, format pill (xs), Create pill, mic button, send button.
 
 import { iconEl, type IconName } from '../icons';
 
-export type ChatInputFieldState = 'default' | 'populated';
+export type InputFieldChatThreadState = 'default' | 'populated';
 
-export type ChatInputFieldOptions = {
+export type InputFieldChatThreadOptions = {
   /** Placeholder text shown in the input */
   placeholder?: string;
   /** Current value of the input */
   value?: string;
   /** Visual state: default (empty) or populated (has content) */
-  state?: ChatInputFieldState;
+  state?: InputFieldChatThreadState;
   /** Label for the format pill button (default: "Select format") */
   formatLabel?: string;
   /** Whether the format pill is in selected/active state (dark bg) */
@@ -20,23 +21,23 @@ export type ChatInputFieldOptions = {
   onSend?: (value: string) => void;
 };
 
-export function createChatInputField({
-  placeholder = 'Type your message',
+export function createInputFieldChatThread({
+  placeholder = 'Ask or describe what you\'d like to do...',
   value = '',
   state = 'default',
   formatLabel = 'Select format',
   formatSelected = false,
   onSend,
-}: ChatInputFieldOptions = {}): HTMLElement {
+}: InputFieldChatThreadOptions = {}): HTMLElement {
   const container = document.createElement('div');
-  container.className = 'chat-input-field';
+  container.className = 'input-field-chat-thread';
 
   // --- Input container ---
   const inputContainer = document.createElement('div');
-  inputContainer.className = 'chat-input-field__input-container';
+  inputContainer.className = 'input-field-chat-thread__input-container';
 
   const textarea = document.createElement('div');
-  textarea.className = 'chat-input-field__textarea';
+  textarea.className = 'input-field-chat-thread__textarea';
   textarea.contentEditable = 'true';
   textarea.setAttribute('role', 'textbox');
   textarea.setAttribute('data-placeholder', placeholder);
@@ -48,8 +49,8 @@ export function createChatInputField({
   // Update state on input
   textarea.addEventListener('input', () => {
     const hasContent = textarea.textContent!.trim().length > 0;
-    container.classList.toggle('chat-input-field--populated', hasContent);
-    container.classList.toggle('chat-input-field--default', !hasContent);
+    container.classList.toggle('input-field-chat-thread--populated', hasContent);
+    container.classList.toggle('input-field-chat-thread--default', !hasContent);
   });
 
   inputContainer.appendChild(textarea);
@@ -57,28 +58,28 @@ export function createChatInputField({
 
   // --- Actions bar ---
   const actions = document.createElement('div');
-  actions.className = 'chat-input-field__actions';
+  actions.className = 'input-field-chat-thread__actions';
 
   // Left side
   const leftSide = document.createElement('div');
-  leftSide.className = 'chat-input-field__left';
+  leftSide.className = 'input-field-chat-thread__left';
 
-  const plusBtn = createIconButton('plus-sm' as IconName, 'chat-input-field__icon-btn chat-input-field__icon-btn--secondary');
+  const plusBtn = createIconButton('plus-sm' as IconName, 'input-field-chat-thread__icon-btn input-field-chat-thread__icon-btn--secondary');
   const formatBtn = createPillButton(formatLabel, 'chevron-down-sm' as IconName);
   if (formatSelected) {
-    formatBtn.classList.add('chat-input-field__pill-btn--selected');
+    formatBtn.classList.add('input-field-chat-thread__pill-btn--selected');
   }
 
   leftSide.append(plusBtn, formatBtn);
 
   // Right side
   const rightSide = document.createElement('div');
-  rightSide.className = 'chat-input-field__right';
+  rightSide.className = 'input-field-chat-thread__right';
 
   const createBtn = createPillButton('Create', 'chevron-down-sm' as IconName);
-  const micBtn = createIconButton('mic-fill' as IconName, 'chat-input-field__icon-btn chat-input-field__icon-btn--outlined');
-  const sendBtn = createIconButton('arrow-up' as IconName, 'chat-input-field__icon-btn chat-input-field__icon-btn--primary');
-  sendBtn.classList.add('chat-input-field__send-btn');
+  const micBtn = createIconButton('mic-fill' as IconName, 'input-field-chat-thread__icon-btn input-field-chat-thread__icon-btn--outlined');
+  const sendBtn = createIconButton('arrow-up' as IconName, 'input-field-chat-thread__icon-btn input-field-chat-thread__icon-btn--primary');
+  sendBtn.classList.add('input-field-chat-thread__send-btn');
 
   if (onSend) {
     sendBtn.addEventListener('click', () => {
@@ -94,7 +95,7 @@ export function createChatInputField({
 
   // Set initial state class
   container.classList.add(
-    state === 'populated' ? 'chat-input-field--populated' : 'chat-input-field--default',
+    state === 'populated' ? 'input-field-chat-thread--populated' : 'input-field-chat-thread--default',
   );
 
   return container;
@@ -106,7 +107,7 @@ function createIconButton(icon: IconName, className: string): HTMLButtonElement 
   btn.type = 'button';
   btn.className = className;
 
-  const iconSpan = iconEl(icon, 'chat-input-field__icon');
+  const iconSpan = iconEl(icon, 'input-field-chat-thread__icon');
   btn.appendChild(iconSpan);
 
   return btn;
@@ -116,13 +117,13 @@ function createIconButton(icon: IconName, className: string): HTMLButtonElement 
 function createPillButton(label: string, chevronIcon: IconName): HTMLButtonElement {
   const btn = document.createElement('button');
   btn.type = 'button';
-  btn.className = 'chat-input-field__pill-btn';
+  btn.className = 'input-field-chat-thread__pill-btn';
 
   const labelSpan = document.createElement('span');
-  labelSpan.className = 'chat-input-field__pill-label';
+  labelSpan.className = 'input-field-chat-thread__pill-label';
   labelSpan.textContent = label;
 
-  const chevron = iconEl(chevronIcon, 'chat-input-field__pill-chevron');
+  const chevron = iconEl(chevronIcon, 'input-field-chat-thread__pill-chevron');
 
   btn.append(labelSpan, chevron);
   return btn;

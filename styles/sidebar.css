@@ -3,6 +3,7 @@
 .sb-sidebar {
   width: 244px;
   height: 100%;
+  min-height: 100vh;
   padding: 16px;
   background: var(--surface-raised);
   border-right: 1px solid var(--border-default);
@@ -109,46 +110,32 @@
 
 .sb-header-spacer { flex: 1; } 
 
-/* In collapsed rail: hide the org button in that row, keep the toggle visible */
-.sb-sidebar.sb-collapsed .sb-header-row .sb-org-button { display: none; }
-
 /* ----- Organization button (default + hover) ----- */
 .sb-org-button {
   width: auto;
   display: inline-flex;
   align-self: flex-start;
   align-items: center;
-  justify-content: flex-start;        
-  gap: 12px;
-  padding: 8px;
+  justify-content: flex-start;
+  gap: var(--spacing-3xs);
+  padding: var(--spacing-3xs);
   border-radius: var(--radius-md);
   border: 1px solid transparent;
   background: transparent;
   cursor: pointer;
   text-align: left;
-  transition: background .15s, border-color .15s, box-shadow .15s;
+  transition: background .15s, border-color .15s, border-radius .15s;
   font-family: var(--font-sans);
   margin-bottom: 24px;
-}
-
-/* left cluster (logo + name) */
-.sb-org-left {
-  display: flex;
-  align-items: center;
-  vertical-align: middle;
-  gap: 4px;
-  flex: 0 1 auto;            
-  min-width: 0;      
 }
 
 /* logo chip */
 .sb-org-button__logo {
   width: 24px;
   height: 24px;
-  border-radius: 10px;
   display: grid;
   place-items: center;
-  position: relative;
+  flex-shrink: 0;
 }
 .sb-org-button__logo .sb-icon { width: 24px; height: 24px; }
 
@@ -156,24 +143,129 @@
   font-size: var(--fs-md);
   font-weight: var(--fw-bold);
   color: var(--text-primary);
-  max-width: 94px;       
+  max-width: 94px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
+/* letter avatar chip (alternative to SVG logo) */
+.sb-org-button__avatar {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-sm);
+  background: #6963FC;
+  color: var(--text-inverse);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.33px;
+}
+
 /* chevron */
 .sb-org-button__chevron {
-  width: 18px;
-  height: 18px;
-  color: var(--text-secondary); 
+  width: 16px;
+  height: 16px;
+  color: var(--text-secondary);
   flex: 0 0 auto;
 }
 
-/* HOVER state */
+/* Hover / Active state */
 .sb-org-button:hover {
-  background: var(--interactive-secondary);
-  box-shadow: 0 1px 0 rgba(0,0,0,.03);    
+  background: var(--interactive-secondary-active);
+  border-radius: var(--radius-md);
+}
+
+/* ===== Organization button — minimized (logo only) ===== */
+.sb-org-button--minimized {
+  padding: var(--spacing-3xs);
+  gap: 0;
+  margin-bottom: 0;
+}
+
+.sb-org-button--minimized:hover {
+  background: var(--interactive-secondary-active);
+  border-radius: var(--radius-md);
+}
+
+/* ===== Org toggle button (collapsed sidebar) =====
+   Shows logo by default, reveals chevron-bar-right on hover.
+   Used in both Free and Enterprise collapsed sidebars.       */
+.sb-org-toggle-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: var(--spacing-3xs);
+  border: none;
+  border-radius: var(--radius-md);
+  background: transparent;
+  cursor: pointer;
+  position: relative;
+  transition: background .15s;
+}
+
+.sb-org-toggle-btn:hover {
+  background: var(--interactive-secondary-active);
+}
+
+/* Logo layer: visible by default */
+.sb-org-toggle-btn__logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  transition: opacity .15s;
+}
+
+.sb-org-toggle-btn__logo .sb-icon {
+  width: 24px;
+  height: 24px;
+}
+
+/* Chevron layer: hidden by default, shown on hover */
+.sb-org-toggle-btn__chevron {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  position: absolute;
+  opacity: 0;
+  transition: opacity .15s;
+  color: var(--text-secondary);
+}
+
+.sb-org-toggle-btn__chevron .sb-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.sb-org-toggle-btn:hover .sb-org-toggle-btn__logo {
+  opacity: 0;
+}
+
+.sb-org-toggle-btn:hover .sb-org-toggle-btn__chevron {
+  opacity: 1;
+}
+
+/* Free variant: letter avatar chip in collapsed toggle */
+.sb-org-toggle-btn__avatar {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-sm);
+  background: #6963FC;
+  color: var(--text-inverse);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.33px;
 }
 
 /* =======================
@@ -184,14 +276,14 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
-  padding: 8px;
+  gap: var(--spacing-2xs);
+  padding: var(--spacing-2xs);
   border-radius: var(--radius-md);
   border: 1px solid var(--border-default);
   background: transparent;
   cursor: pointer;
   text-align: left;
-  transition: background .15s, border-color .15s, box-shadow .15s;
+  transition: background .15s, border-color .15s;
   font-family: var(--font-sans);
 }
 
@@ -199,38 +291,31 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
+  width: 16px;
+  height: 16px;
   padding: 0;
-  margin-left: 8px;
   background: transparent;
   border: none;
   color: var(--text-secondary);
   cursor: pointer;
+  flex-shrink: 0;
 }
 
-/* icon size + inherit color */
 .sb-team-button__menu .sb-icon {
   width: 16px;
   height: 16px;
 }
 
-/* hover/focus: just tint the dots, no bg */
 .sb-team-button__menu:hover,
 .sb-team-button__menu:focus-visible {
   color: var(--text-primary);
   outline: none;
 }
 
-/* hide the 3-dots in collapsed rail (keep avatar) */
-.sb-sidebar.sb-collapsed .sb-team-button__menu {
-  display: none;
-}
-
 .sb-team-left {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--spacing-2xs);
   flex: 1;
   min-width: 0;
 }
@@ -239,35 +324,45 @@
 .sb-team-button__avatar {
   width: 24px;
   height: 24px;
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
   display: grid;
   place-items: center;
-  background: var(--primitive-rose-base);  /* using accent color for avatar */
+  background: var(--primitive-rose-base);
   color: var(--text-inverse);
-  font-size: 14px;
+  font-size: 13px;
   font-weight: var(--fw-bold);
-  letter-spacing: .02em;
+  letter-spacing: 0.33px;
+  flex-shrink: 0;
 }
 
 .sb-team-button__name {
   font-size: var(--fs-md);
   font-weight: var(--fw-bold);
   color: var(--text-primary);
-  max-width: 160px;
+  line-height: 24px;
+  letter-spacing: 0.24px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  flex: 1;
+  min-width: 0;
 }
 
-/* Hover */
+/* Hover / Active */
 .sb-team-button:hover {
   background: var(--interactive-secondary);
-  box-shadow: 0 1px 0 rgba(0,0,0,.03);
 }
 
-/* Optional open toggle */
-.sb-team-button[data-state="open"] .sb-team-button__chevron { 
-  transform: rotate(180deg); 
+/* ===== Team button — minimized (avatar only) ===== */
+/* Same padding, border, and radius as expanded — just no name/dots */
+.sb-team-button--minimized {
+  width: auto;
+  padding: var(--spacing-2xs);
+  justify-content: center;
+}
+
+.sb-team-button--minimized:hover {
+  background: var(--interactive-secondary);
 }
 
 /* ===== Collapsed layout ===== */
@@ -350,13 +445,65 @@
   transform: rotate(180deg); 
 }
 
-/* team chip style in rail (keeps the rounded square look) */
-.sb-sidebar.sb-collapsed .sb-team-button {
+
+/* ===== Sidebar divider ===== */
+.sb-sidebar-divider {
+  width: 100%;
+  border: none;
+  border-top: 1px solid var(--border-subtle);
+  margin: 4px 0;
+}
+
+/* ===== Feedback button (pinned to sidebar bottom) ===== */
+.sb-sidebar__feedback-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  font-family: var(--font-sans);
+  font-size: var(--fs-md);
+  font-weight: var(--fw-regular);
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: background 0.15s ease;
+}
+
+.sb-sidebar__feedback-btn:hover {
+  background: var(--interactive-secondary);
+}
+
+.sb-sidebar__feedback-btn .sb-icon {
+  width: 18px;
+  height: 18px;
+}
+
+/* ===== Create button wrapper ===== */
+.sb-sidebar__create-wrap {
+  display: flex;
   justify-content: center;
-  padding: 6px;
-  border-radius: var(--radius-lg);
 }
-.sb-sidebar.sb-collapsed .sb-team-button__avatar { 
-  width: 36px; 
-  height: 36px; 
+
+/* ===== Feedback wrapper in collapsed ===== */
+.sb-sidebar__feedback-wrap {
+  display: flex;
+  justify-content: center;
 }
+
+/* ===== Collapsed: hide logo, center items ===== */
+.sb-sidebar.sb-collapsed .sb-sidebar__logo {
+  display: none;
+}
+
+/* In collapsed, center the header row (just the toggle) */
+.sb-sidebar.sb-collapsed .sb-header-row {
+  justify-content: center;
+}
+
+/* Hide divider next to toggle in collapsed */
+.sb-sidebar.sb-collapsed .sb-top-divider {
+  display: none;
+}
+

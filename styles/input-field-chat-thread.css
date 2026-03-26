@@ -1,0 +1,197 @@
+/* ========== INPUT FIELD — CHAT THREAD ========== */
+/* Compact chat input used inside the conversation thread view. */
+/* 24px icon buttons, xs pill text, Create pill + mic + send on right. */
+
+.input-field-chat-thread {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-xs);
+  background: var(--surface-raised);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-input);
+  max-width: 600px;
+  width: 100%;
+}
+
+/* Input container */
+.input-field-chat-thread__input-container {
+  display: flex;
+  align-items: flex-start;
+  width: 100%;
+  overflow-x: clip;
+  overflow-y: auto;
+}
+
+/* Editable textarea */
+.input-field-chat-thread__textarea {
+  flex: 1;
+  min-height: 21px;
+  font-family: var(--font-sans);
+  font-size: var(--cm-body-size);
+  line-height: var(--cm-body-lh);
+  color: var(--text-primary);
+  font-weight: var(--fw-regular);
+  outline: none;
+  word-break: break-word;
+}
+
+/* Placeholder via data attribute */
+.input-field-chat-thread__textarea:empty::before {
+  content: attr(data-placeholder);
+  color: var(--primitive-slate-8);
+  font-weight: var(--fw-medium);
+  pointer-events: none;
+}
+
+/* Actions bar */
+.input-field-chat-thread__actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.input-field-chat-thread__left {
+  display: flex;
+  flex: 1;
+  gap: var(--spacing-2xs);
+  align-items: center;
+}
+
+.input-field-chat-thread__right {
+  display: flex;
+  flex: 1;
+  gap: var(--spacing-3xs);
+  align-items: center;
+  justify-content: flex-end;
+}
+
+/* Icon button base — 24px */
+.input-field-chat-thread__icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-full);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s ease, opacity 0.15s ease;
+}
+
+/* Icon inside button — 12px */
+.input-field-chat-thread__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 12px;
+  height: 12px;
+}
+
+.input-field-chat-thread__icon svg {
+  width: 12px;
+  height: 12px;
+}
+
+/* Secondary variant (gray bg) */
+.input-field-chat-thread__icon-btn--secondary {
+  background: var(--interactive-secondary);
+  color: var(--text-primary);
+}
+
+.input-field-chat-thread__icon-btn--secondary:hover {
+  background: var(--interactive-secondary-hover);
+}
+
+/* Outlined variant (white bg, border) */
+.input-field-chat-thread__icon-btn--outlined {
+  background: var(--surface-emphasis);
+  border: 1px solid var(--border-strong);
+  color: var(--text-primary);
+}
+
+.input-field-chat-thread__icon-btn--outlined:hover {
+  border-color: var(--border-divider);
+}
+
+/* Primary variant (indigo bg, send button) */
+.input-field-chat-thread__icon-btn--primary {
+  background: var(--interactive-primary);
+  color: var(--text-inverse);
+}
+
+.input-field-chat-thread__icon-btn--primary:hover {
+  background: var(--interactive-primary-hover);
+}
+
+/* Send button disabled in default state */
+.input-field-chat-thread--default .input-field-chat-thread__send-btn {
+  opacity: var(--alpha-disabled);
+  pointer-events: none;
+}
+
+.input-field-chat-thread--populated .input-field-chat-thread__send-btn {
+  opacity: 1;
+}
+
+/* Pill button (Select format, Create) */
+.input-field-chat-thread__pill-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2xs);
+  height: 24px;
+  padding: var(--spacing-3xs) var(--spacing-2xs);
+  background: var(--surface-emphasis);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.input-field-chat-thread__pill-btn:hover {
+  border-color: var(--border-divider);
+}
+
+/* Selected/active variant (dark bg, white text) */
+.input-field-chat-thread__pill-btn--selected {
+  background: var(--interactive-primary);
+  border-color: var(--interactive-primary);
+  color: var(--text-inverse);
+}
+
+.input-field-chat-thread__pill-btn--selected .input-field-chat-thread__pill-label {
+  color: var(--text-inverse);
+}
+
+.input-field-chat-thread__pill-btn--selected:hover {
+  background: var(--interactive-primary-hover);
+  border-color: var(--interactive-primary-hover);
+}
+
+.input-field-chat-thread__pill-label {
+  font-family: var(--font-sans);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-medium);
+  line-height: 18px;
+  letter-spacing: 0.11px;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+.input-field-chat-thread__pill-chevron {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+}
+
+.input-field-chat-thread__pill-chevron svg {
+  width: 12px;
+  height: 12px;
+}

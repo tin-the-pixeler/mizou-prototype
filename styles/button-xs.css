@@ -1,0 +1,110 @@
+/* ========== BUTTON XS ========== */
+/* XS pill button with optional left/right icons. Default + Ocean themes. */
+
+.sb-btn-xs {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 24px;
+  padding: var(--spacing-3xs) var(--spacing-2xs);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-full);
+  background: var(--surface-emphasis);
+  cursor: pointer;
+  flex-shrink: 0;
+  font-family: var(--font-sans);
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.sb-btn-xs:focus-visible {
+  outline: 2px solid var(--interactive-primary);
+  outline-offset: 2px;
+}
+
+/* ===== Label ===== */
+
+.sb-btn-xs__label {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-medium);
+  line-height: 18px;
+  letter-spacing: 0.11px;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+/* ===== Icon ===== */
+
+.sb-btn-xs__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+}
+
+.sb-btn-xs__icon .sb-icon {
+  width: 12px;
+  height: 12px;
+}
+
+/* ===== Theme: Default ===== */
+
+.sb-btn-xs--default {
+  background: var(--surface-emphasis);
+  border-color: var(--border-strong);
+}
+
+.sb-btn-xs--default:hover:not(:disabled) {
+  background: var(--interactive-secondary-hover);
+}
+
+.sb-btn-xs--default:active:not(:disabled) {
+  background: var(--interactive-secondary-clicked);
+  color: var(--text-inverse);
+}
+
+.sb-btn-xs--default:active:not(:disabled) .sb-btn-xs__label {
+  color: var(--text-inverse);
+}
+
+/* ===== Theme: Ocean ===== */
+
+.sb-btn-xs--ocean {
+  background: transparent;
+  border-color: var(--feedback-success);
+}
+
+.sb-btn-xs--ocean .sb-btn-xs__label {
+  background: var(--ocean-gradient-diagonal);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: var(--fw-semibold);
+  letter-spacing: 0.28px;
+}
+
+.sb-btn-xs--ocean:hover:not(:disabled) {
+  background: linear-gradient(
+    245deg,
+    rgba(52, 211, 153, 0.12) 66%,
+    rgba(79, 70, 229, 0.12) 155%
+  );
+}
+
+.sb-btn-xs--ocean:active:not(:disabled) {
+  background: var(--ocean-gradient-diagonal);
+}
+
+.sb-btn-xs--ocean:active:not(:disabled) .sb-btn-xs__label {
+  background: none;
+  -webkit-text-fill-color: var(--text-inverse);
+  color: var(--text-inverse);
+}
+
+/* ===== Disabled ===== */
+
+.sb-btn-xs:disabled {
+  opacity: var(--alpha-disabled);
+  cursor: not-allowed;
+}

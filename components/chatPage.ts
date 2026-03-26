@@ -3,7 +3,10 @@
 
 import { createChatPanelHeader, type ChatPanelHeaderOptions } from './chatPanelHeader';
 import { createChatThread, type ThreadMessage } from './chatThread';
-import { createChatInputField, type ChatInputFieldOptions } from './chatInputField';
+import { createInputFieldChatThread, type InputFieldChatThreadOptions } from './inputFieldChatThread';
+
+/** @deprecated Use InputFieldChatThreadOptions directly */
+type ChatInputFieldOptions = InputFieldChatThreadOptions;
 
 export type ChatPageOptions = {
   /** Header config */
@@ -46,7 +49,7 @@ export function createChatPage({
   chatWrapper.appendChild(createChatThread({ messages }));
 
   // Input field (pinned bottom)
-  chatWrapper.appendChild(createChatInputField(input));
+  chatWrapper.appendChild(createInputFieldChatThread(input));
 
   contentWrapper.appendChild(chatWrapper);
   panel.appendChild(contentWrapper);

@@ -23,3 +23,8 @@ export const CustomColor: Story = {
   args: { name: 'Research Team', initials: 'RT', color: '#6f8ccf', open: false },
   render: (args) => createTeamButton(args),
 };
+
+export const Minimized: Story = {
+  args: { name: 'Team Name', initials: 'TN', color: '#b17979', open: false },
+  render: (args) => createTeamButton({ ...args, minimized: true }),
+};

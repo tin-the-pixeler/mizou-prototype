@@ -1,0 +1,70 @@
+/* ========== MODE TOGGLE ========== */
+/* Pill-shaped Create / Plan segmented control. */
+/* Indigo-tinted background with inner shadow, active tab is solid indigo. */
+
+.mode-toggle {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px;
+  gap: 0;
+  background: rgba(79, 70, 229, 0.12);
+  border-radius: var(--radius-full);
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.16);
+}
+
+/* Tab button */
+.mode-toggle__tab {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 80px;
+  height: 34px;
+  padding: 0 16px;
+  border: none;
+  border-radius: var(--radius-full);
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+/* Label */
+.mode-toggle__label {
+  font-family: var(--font-sans);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-regular);
+  line-height: 18px;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+/* Active tab */
+.mode-toggle__tab--active {
+  background: var(--interactive-primary);
+  cursor: default;
+}
+
+.mode-toggle__tab--active .mode-toggle__label {
+  font-weight: var(--fw-bold);
+  color: var(--text-inverse);
+}
+
+/* Hover on inactive tab */
+.mode-toggle__tab:not(.mode-toggle__tab--active):hover {
+  background: rgba(79, 70, 229, 0.08);
+}
+
+/* ===== Plan mode — green color scheme ===== */
+.mode-toggle[data-mode="plan"] {
+  background: rgba(52, 211, 153, 0.12);
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.16);
+}
+
+.mode-toggle[data-mode="plan"] .mode-toggle__tab--active {
+  background: var(--feedback-success);
+}
+
+.mode-toggle[data-mode="plan"] .mode-toggle__tab:not(.mode-toggle__tab--active):hover {
+  background: rgba(52, 211, 153, 0.08);
+}
