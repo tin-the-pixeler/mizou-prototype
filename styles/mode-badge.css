@@ -1,0 +1,92 @@
+/* ========== MODE BADGE ========== */
+/* Compact pill showing current mode (Create / Plan) with a chevron. */
+
+/* Wrapper — provides relative positioning context for tooltip */
+.mode-badge-wrapper {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+/* Tooltip above the badge — hidden by default, shown on hover */
+.mode-badge-wrapper__tooltip {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+  z-index: 100;
+  width: max-content;
+}
+
+.mode-badge-wrapper:hover .mode-badge-wrapper__tooltip {
+  opacity: 1;
+}
+
+.mode-badge {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2xs);
+  height: 24px;
+  padding: var(--spacing-3xs) var(--spacing-2xs);
+  border-radius: var(--radius-full);
+  border: 1px solid;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: opacity 0.15s ease;
+}
+
+.mode-badge:hover {
+  opacity: 0.85;
+}
+
+/* Create — indigo */
+.mode-badge--create {
+  background: var(--feedback-info-bg);
+  border-color: var(--interactive-primary);
+  color: var(--interactive-primary);
+}
+
+/* Plan — green */
+.mode-badge--plan {
+  background: var(--feedback-success-bg);
+  border-color: var(--feedback-success);
+  color: var(--feedback-success);
+}
+
+/* Inner root row */
+.mode-badge__root {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+/* Label */
+.mode-badge__label {
+  font-family: var(--font-sans);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-medium);
+  line-height: 18px;
+  letter-spacing: 0.11px;
+  white-space: nowrap;
+  color: inherit;
+}
+
+/* Chevron icon */
+.mode-badge__chevron {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+  color: inherit;
+}
+
+.mode-badge__chevron svg {
+  width: 12px;
+  height: 12px;
+}

@@ -1,0 +1,38 @@
+/* ========== TOOLTIP ========== */
+/* Indigo pill with a centered downward arrow. */
+
+.tooltip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 300px;
+  padding: var(--spacing-3xs);
+  background: var(--interactive-primary);
+  border-radius: var(--radius-sm);
+  pointer-events: none;
+  white-space: normal;
+}
+
+.tooltip__text {
+  font-family: var(--font-sans);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-medium);
+  line-height: 18px;
+  letter-spacing: 0.11px;
+  color: var(--text-inverse);
+  text-align: center;
+}
+
+/* Downward-pointing arrow */
+.tooltip__arrow {
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 4px solid var(--interactive-primary);
+}

@@ -12,10 +12,14 @@ const meta: Meta<InputFieldChatThreadOptions> = {
     value: { control: 'text' },
     state: {
       control: 'select',
-      options: ['default', 'populated'],
+      options: ['default', 'populated', 'generating'],
     },
     formatLabel: { control: 'text' },
     formatSelected: { control: 'boolean' },
+    mode: {
+      control: 'select',
+      options: ['create', 'plan'],
+    },
   },
 };
 
@@ -43,5 +47,12 @@ export const FormatSelected: Story = {
     state: 'populated',
     formatLabel: 'Chatbot',
     formatSelected: true,
+    formatIcon: 'chat-ai',
+  },
+};
+
+export const Generating: Story = {
+  args: {
+    state: 'generating',
   },
 };

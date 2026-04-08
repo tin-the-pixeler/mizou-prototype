@@ -3,31 +3,44 @@
 // Features: textarea, plus button, format pill (xs), Create pill, mic button, send button.
 
 import { iconEl, type IconName } from '../icons';
+import { createModeBadge, type ModeBadgeMode } from './modeBadge';
 
-export type InputFieldChatThreadState = 'default' | 'populated';
+export type InputFieldChatThreadState = 'default' | 'populated' | 'generating';
 
 export type InputFieldChatThreadOptions = {
   /** Placeholder text shown in the input */
   placeholder?: string;
   /** Current value of the input */
   value?: string;
-  /** Visual state: default (empty) or populated (has content) */
+  /** Visual state: default (empty), populated (has content), or generating (awaiting response) */
   state?: InputFieldChatThreadState;
   /** Label for the format pill button (default: "Select format") */
   formatLabel?: string;
   /** Whether the format pill is in selected/active state (dark bg) */
   formatSelected?: boolean;
+  /** Icon shown in the format pill when a format is selected */
+  formatIcon?: IconName;
   /** Callback when send button is clicked */
   onSend?: (value: string) => void;
+  /** Callback when stop button is clicked (generating state) */
+  onStop?: () => void;
+  /** Active mode shown in the mode badge (default: 'create') */
+  mode?: ModeBadgeMode;
+  /** Callback when mode badge is clicked */
+  onModeClick?: (mode: ModeBadgeMode) => void;
 };
 
 export function createInputFieldChatThread({
-  placeholder = 'Ask or describe what you\'d like to do...',
+  placeholder = 'Type your message',
   value = '',
   state = 'default',
   formatLabel = 'Select format',
   formatSelected = false,
+  formatIcon,
   onSend,
+  onStop,
+  mode = 'create',
+  onModeClick,
 }: InputFieldChatThreadOptions = {}): HTMLElement {
   const container = document.createElement('div');
   container.className = 'input-field-chat-thread';
@@ -65,7 +78,8 @@ export function createInputFieldChatThread({
   leftSide.className = 'input-field-chat-thread__left';
 
   const plusBtn = createIconButton('plus-sm' as IconName, 'input-field-chat-thread__icon-btn input-field-chat-thread__icon-btn--secondary');
-  const formatBtn = createPillButton(formatLabel, 'chevron-down-sm' as IconName);
+  // Only show icon when a format is actively selected
+  const formatBtn = createPillButton(formatLabel, 'chevron-down-sm' as IconName, formatSelected ? (formatIcon ?? 'chat-ai' as IconName) : undefined);
   if (formatSelected) {
     formatBtn.classList.add('input-field-chat-thread__pill-btn--selected');
   }
@@ -76,27 +90,37 @@ export function createInputFieldChatThread({
   const rightSide = document.createElement('div');
   rightSide.className = 'input-field-chat-thread__right';
 
-  const createBtn = createPillButton('Create', 'chevron-down-sm' as IconName);
-  const micBtn = createIconButton('mic-fill' as IconName, 'input-field-chat-thread__icon-btn input-field-chat-thread__icon-btn--outlined');
-  const sendBtn = createIconButton('arrow-up' as IconName, 'input-field-chat-thread__icon-btn input-field-chat-thread__icon-btn--primary');
-  sendBtn.classList.add('input-field-chat-thread__send-btn');
+  const createBtn = createModeBadge({ mode, onClick: onModeClick });
 
-  if (onSend) {
-    sendBtn.addEventListener('click', () => {
-      const text = textarea.textContent?.trim() ?? '';
-      if (text) onSend(text);
-    });
+  // Single dynamic action button — changes per state
+  let actionBtn: HTMLButtonElement;
+  if (state === 'generating') {
+    actionBtn = createIconButton('stop' as IconName, 'input-field-chat-thread__icon-btn input-field-chat-thread__icon-btn--destructive');
+    if (onStop) actionBtn.addEventListener('click', onStop);
+  } else if (state === 'populated') {
+    actionBtn = createIconButton('arrow-up' as IconName, 'input-field-chat-thread__icon-btn input-field-chat-thread__icon-btn--primary');
+    if (onSend) {
+      actionBtn.addEventListener('click', () => {
+        const text = textarea.textContent?.trim() ?? '';
+        if (text) onSend(text);
+      });
+    }
+  } else {
+    actionBtn = createIconButton('mic-fill' as IconName, 'input-field-chat-thread__icon-btn input-field-chat-thread__icon-btn--outlined');
   }
 
-  rightSide.append(createBtn, micBtn, sendBtn);
+  rightSide.append(createBtn, actionBtn);
 
   actions.append(leftSide, rightSide);
   container.appendChild(actions);
 
   // Set initial state class
-  container.classList.add(
-    state === 'populated' ? 'input-field-chat-thread--populated' : 'input-field-chat-thread--default',
-  );
+  const stateClass = state === 'populated'
+    ? 'input-field-chat-thread--populated'
+    : state === 'generating'
+      ? 'input-field-chat-thread--generating'
+      : 'input-field-chat-thread--default';
+  container.classList.add(stateClass);
 
   return container;
 }
@@ -113,18 +137,27 @@ function createIconButton(icon: IconName, className: string): HTMLButtonElement 
   return btn;
 }
 
-// --- Helper: pill button with label + chevron ---
-function createPillButton(label: string, chevronIcon: IconName): HTMLButtonElement {
+// --- Helper: pill button with optional leading icon + label + chevron ---
+function createPillButton(label: string, chevronIcon: IconName, leadingIcon?: IconName): HTMLButtonElement {
   const btn = document.createElement('button');
   btn.type = 'button';
   btn.className = 'input-field-chat-thread__pill-btn';
 
+  const root = document.createElement('span');
+  root.className = 'input-field-chat-thread__pill-root';
+
+  if (leadingIcon) {
+    const icon = iconEl(leadingIcon, 'input-field-chat-thread__pill-icon');
+    root.appendChild(icon);
+  }
+
   const labelSpan = document.createElement('span');
   labelSpan.className = 'input-field-chat-thread__pill-label';
   labelSpan.textContent = label;
+  root.appendChild(labelSpan);
 
   const chevron = iconEl(chevronIcon, 'input-field-chat-thread__pill-chevron');
 
-  btn.append(labelSpan, chevron);
+  btn.append(root, chevron);
   return btn;
 }

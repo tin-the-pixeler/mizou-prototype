@@ -127,21 +127,43 @@
   background: var(--interactive-primary-hover);
 }
 
-/* Send button disabled in default state */
-.input-field-chat-thread--default .input-field-chat-thread__send-btn {
-  opacity: var(--alpha-disabled);
-  pointer-events: none;
+/* Destructive variant (red bg, stop button) */
+.input-field-chat-thread__icon-btn--destructive {
+  background: var(--feedback-error);
+  color: var(--text-inverse);
 }
 
-.input-field-chat-thread--populated .input-field-chat-thread__send-btn {
-  opacity: 1;
+.input-field-chat-thread__icon-btn--destructive:hover {
+  background: var(--primitive-rose-600, #e11d48);
+}
+
+/* Pill root row (icon + label) */
+.input-field-chat-thread__pill-root {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Leading icon inside pill */
+.input-field-chat-thread__pill-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+}
+
+.input-field-chat-thread__pill-icon svg {
+  width: 12px;
+  height: 12px;
 }
 
 /* Pill button (Select format, Create) */
 .input-field-chat-thread__pill-btn {
   display: flex;
   align-items: center;
-  gap: var(--spacing-2xs);
+  gap: var(--spacing-2xs); /* gap between root group and chevron */
   height: 24px;
   padding: var(--spacing-3xs) var(--spacing-2xs);
   background: var(--surface-emphasis);
@@ -156,10 +178,10 @@
   border-color: var(--border-divider);
 }
 
-/* Selected/active variant (dark bg, white text) */
+/* Selected/active variant (dark slate bg, white text) */
 .input-field-chat-thread__pill-btn--selected {
-  background: var(--interactive-primary);
-  border-color: var(--interactive-primary);
+  background: var(--interactive-secondary-clicked);
+  border-color: var(--interactive-secondary-clicked);
   color: var(--text-inverse);
 }
 
@@ -168,8 +190,9 @@
 }
 
 .input-field-chat-thread__pill-btn--selected:hover {
-  background: var(--interactive-primary-hover);
-  border-color: var(--interactive-primary-hover);
+  background: var(--interactive-secondary-clicked);
+  border-color: var(--interactive-secondary-clicked);
+  opacity: 0.85;
 }
 
 .input-field-chat-thread__pill-label {

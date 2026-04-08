@@ -18,6 +18,8 @@ import '../styles/artifact-panel.css';
 import '../styles/input-field-chat-thread.css';
 import '../styles/input-field-landing-page.css';
 import '../styles/mode-toggle.css';
+import '../styles/mode-badge.css';
+import '../styles/tooltip.css';
 import '../styles/prompt-card.css';
 import '../styles/simulation-builder-page.css';
 import '../styles/button-icon.css';
