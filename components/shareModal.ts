@@ -639,15 +639,6 @@ export function createShareModal(options: ShareModalOptions = {}): HTMLElement {
   // ---- Initial render ----
   renderAll();
 
-  // Auto-open first dropdown after mount
-  requestAnimationFrame(() => {
-    if (dropdownInstances[0]) {
-      dropdownInstances[0].isOpen = true;
-      dropdownInstances[0].field.classList.add('is-open');
-      dropdownInstances[0].dropdown.classList.add('is-open');
-    }
-  });
-
   root.append(tabsEl, stage);
   return root;
 }
