@@ -499,7 +499,7 @@ export function createShareModal(options: ShareModalOptions = {}): HTMLElement {
     const desc = document.createElement('p');
     desc.className = 'share-modal__desc';
     desc.innerHTML =
-      'Select your sharing option. Choose a <b>Public</b> link where anyone can join or assign / invite specific team members.';
+      'Select your sharing option. Choose a <b>Public</b> link where anyone can join or assign a team or specific team members.';
 
     const linkTitle = document.createElement('h3');
     linkTitle.className = 'share-modal__section-title';
@@ -523,7 +523,7 @@ export function createShareModal(options: ShareModalOptions = {}): HTMLElement {
 
     const inviteTitle = document.createElement('h3');
     inviteTitle.className = 'share-modal__section-title';
-    inviteTitle.textContent = 'Invite team members';
+    inviteTitle.textContent = 'Assign a team or a member';
 
     const assignWidget = buildAssignWidget("Select or enter member's name");
 
