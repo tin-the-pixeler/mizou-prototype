@@ -1,7 +1,7 @@
 // components/shareModal.ts
 // Share simulation modal — auto-assign pattern (Pattern B).
 // Two tabs: "Share simulation" and "Simulation published", both sharing
-// the same member-selection state.
+// the same member-selection state and team-assigned state.
 
 import '../styles/share-modal.css';
 import { iconEl } from '../icons';
@@ -128,10 +128,10 @@ export function createShareModal(options: ShareModalOptions = {}): HTMLElement {
 
   // ---- Shared state ----
   const selected = new Set<string>(initialSelected);
+  let teamAssigned = false;
   let activeTab: ShareModalTab = initialTab;
 
-  // References populated during DOM construction, used by re-render functions
-  const dropdownInstances: Array<{
+  type DropdownInstance = {
     field: HTMLButtonElement;
     dropdown: HTMLElement;
     fieldContent: HTMLElement;
@@ -140,7 +140,13 @@ export function createShareModal(options: ShareModalOptions = {}): HTMLElement {
     teamLabelEl: HTMLElement;
     placeholder: string;
     isOpen: boolean;
-  }> = [];
+    /** The field+chev group — hidden when teamAssigned */
+    fieldGroup: HTMLElement;
+    /** The team-assigned banner — shown when teamAssigned */
+    banner: HTMLElement;
+  };
+
+  const dropdownInstances: DropdownInstance[] = [];
 
   // ---- Root ----
   const root = document.createElement('div');
@@ -185,16 +191,17 @@ export function createShareModal(options: ShareModalOptions = {}): HTMLElement {
     setTimeout(() => t.remove(), 2400);
   }
 
-  // ---- Re-render helpers (called on every state change) ----
+  // ---- Re-render helpers ----
 
   function renderAll() {
     dropdownInstances.forEach(inst => {
       renderField(inst);
       renderMemberList(inst);
+      renderTeamBanner(inst);
     });
   }
 
-  function renderField(inst: typeof dropdownInstances[number]) {
+  function renderField(inst: DropdownInstance) {
     const ids = [...selected];
     inst.fieldContent.innerHTML = '';
     if (ids.length === 0) {
@@ -226,16 +233,10 @@ export function createShareModal(options: ShareModalOptions = {}): HTMLElement {
     }
   }
 
-  function renderMemberList(inst: typeof dropdownInstances[number]) {
-    // Update team button
-    const allSelected = members.every(m => selected.has(m.id));
-    if (allSelected) {
-      inst.teamLabelEl.innerHTML = `Remove team assignment: <b>${teamName}</b>`;
-      inst.teamBtn.classList.add('is-remove');
-    } else {
-      inst.teamLabelEl.innerHTML = `Assign to all members of team: <b>${teamName}</b>`;
-      inst.teamBtn.classList.remove('is-remove');
-    }
+  function renderMemberList(inst: DropdownInstance) {
+    // Team button label
+    inst.teamLabelEl.innerHTML = `Assign to all members of team: <b>${teamName}</b>`;
+    inst.teamBtn.classList.remove('is-remove');
 
     // Rebuild member rows
     inst.memberListEl.innerHTML = '';
@@ -274,11 +275,29 @@ export function createShareModal(options: ShareModalOptions = {}): HTMLElement {
     });
   }
 
+  /** Show/hide the field vs. the team-assigned banner.
+   *  Uses style.display directly because CSS `display:flex` on the banner
+   *  overrides the UA-stylesheet rule that backs the `hidden` attribute. */
+  function renderTeamBanner(inst: DropdownInstance) {
+    inst.fieldGroup.style.display = teamAssigned ? 'none' : '';
+    inst.banner.style.display     = teamAssigned ? 'flex' : 'none';
+    // Close the dropdown when the banner takes over
+    if (teamAssigned && inst.isOpen) {
+      inst.isOpen = false;
+      inst.field.classList.remove('is-open');
+      inst.dropdown.classList.remove('is-open');
+    }
+  }
+
   // ---- Build a dropdown assign widget ----
 
   function buildAssignWidget(placeholder: string): HTMLElement {
     const wrap = document.createElement('div');
     wrap.className = 'share-modal__field-wrap';
+
+    // ---- Field group (field + chev + dropdown) ----
+    const fieldGroup = document.createElement('div');
+    fieldGroup.className = 'share-modal__field-group';
 
     // Trigger button
     const field = document.createElement('button');
@@ -305,9 +324,9 @@ export function createShareModal(options: ShareModalOptions = {}): HTMLElement {
     const teamSection = document.createElement('div');
     teamSection.className = 'share-modal__dd-team';
 
-    const teamLabel = document.createElement('div');
-    teamLabel.className = 'share-modal__section-label';
-    teamLabel.textContent = 'Team';
+    const teamSectionLabel = document.createElement('div');
+    teamSectionLabel.className = 'share-modal__section-label';
+    teamSectionLabel.textContent = 'Team';
 
     const teamBtn = document.createElement('button');
     teamBtn.type = 'button';
@@ -315,7 +334,7 @@ export function createShareModal(options: ShareModalOptions = {}): HTMLElement {
 
     const teamLabelEl = document.createElement('span');
     teamBtn.appendChild(teamLabelEl);
-    teamSection.append(teamLabel, teamBtn);
+    teamSection.append(teamSectionLabel, teamBtn);
 
     // Members section
     const membersLabel = document.createElement('div');
@@ -340,12 +359,41 @@ export function createShareModal(options: ShareModalOptions = {}): HTMLElement {
     footer.append(footerText, doneBtn);
 
     dropdown.append(scroll, footer);
-    wrap.append(field, chev, dropdown);
+    fieldGroup.append(field, chev, dropdown);
 
-    // Register instance
-    const inst = {
+    // ---- Team-assigned banner ----
+    const banner = document.createElement('div');
+    banner.className = 'share-modal__team-banner';
+    banner.style.display = 'none'; // controlled by renderTeamBanner
+
+    const bannerBody = document.createElement('div');
+    bannerBody.className = 'share-modal__team-banner-body';
+
+    const bannerTitle = document.createElement('p');
+    bannerTitle.className = 'share-modal__team-banner-title';
+    bannerTitle.textContent = `Assigned to ${teamName}`;
+
+    const bannerSub = document.createElement('p');
+    bannerSub.className = 'share-modal__team-banner-sub';
+    bannerSub.textContent =
+      'Everyone on this team has access. To assign specific members instead, unassign first.';
+
+    bannerBody.append(bannerTitle, bannerSub);
+
+    const unassignBtn = document.createElement('button');
+    unassignBtn.type = 'button';
+    unassignBtn.className = 'share-modal__unassign-btn';
+    unassignBtn.textContent = 'Unassign team';
+
+    banner.append(bannerBody, unassignBtn);
+
+    wrap.append(fieldGroup, banner);
+
+    // ---- Register instance ----
+    const inst: DropdownInstance = {
       field, dropdown, fieldContent, memberListEl,
       teamBtn, teamLabelEl, placeholder, isOpen: false,
+      fieldGroup, banner,
     };
     dropdownInstances.push(inst);
 
@@ -370,7 +418,6 @@ export function createShareModal(options: ShareModalOptions = {}): HTMLElement {
     memberListEl.addEventListener('click', e => {
       const target = e.target as HTMLElement;
 
-      // Click on remove button inside a row
       const removeBtn = target.closest<HTMLElement>('[data-remove-id]');
       if (removeBtn && removeBtn.classList.contains('share-modal__member-remove')) {
         e.stopPropagation();
@@ -380,7 +427,6 @@ export function createShareModal(options: ShareModalOptions = {}): HTMLElement {
         return;
       }
 
-      // Click on the row itself
       const row = target.closest<HTMLElement>('.share-modal__dd-row');
       if (!row) return;
       const id = row.dataset.memberId!;
@@ -394,16 +440,13 @@ export function createShareModal(options: ShareModalOptions = {}): HTMLElement {
       renderAll();
     });
 
+    // Team button → assign whole team, show banner
     teamBtn.addEventListener('click', () => {
-      const allSel = members.every(m => selected.has(m.id));
-      if (allSel) {
-        selected.clear();
-        showToast('Team assignment removed!');
-      } else {
-        members.forEach(m => selected.add(m.id));
-        showToast('Team assigned!');
-      }
+      selected.clear();
+      teamAssigned = true;
+      closeDD();
       renderAll();
+      showToast(`${teamName} assigned!`);
     });
 
     // Chip remove inside field
@@ -421,6 +464,14 @@ export function createShareModal(options: ShareModalOptions = {}): HTMLElement {
       closeDD();
     });
 
+    // Unassign team → restore field, clear state
+    unassignBtn.addEventListener('click', () => {
+      teamAssigned = false;
+      selected.clear();
+      renderAll();
+      showToast('Team unassigned!');
+    });
+
     document.addEventListener('mousedown', e => {
       if (inst.isOpen && !wrap.contains(e.target as Node)) closeDD();
     });
@@ -434,7 +485,6 @@ export function createShareModal(options: ShareModalOptions = {}): HTMLElement {
     const card = document.createElement('div');
     card.className = 'share-modal__card';
 
-    // Close
     const closeBtn = document.createElement('button');
     closeBtn.type = 'button';
     closeBtn.className = 'share-modal__close';
@@ -442,18 +492,15 @@ export function createShareModal(options: ShareModalOptions = {}): HTMLElement {
     closeBtn.appendChild(svgClose());
     closeBtn.addEventListener('click', () => onClose?.());
 
-    // Title
     const title = document.createElement('h2');
     title.className = 'share-modal__title';
     title.textContent = 'Share';
 
-    // Desc
     const desc = document.createElement('p');
     desc.className = 'share-modal__desc';
     desc.innerHTML =
       'Select your sharing option. Choose a <b>Public</b> link where anyone can join or assign / invite specific team members.';
 
-    // Public link section
     const linkTitle = document.createElement('h3');
     linkTitle.className = 'share-modal__section-title';
     linkTitle.textContent = 'Public link — anyone with the link can join';
@@ -467,24 +514,19 @@ export function createShareModal(options: ShareModalOptions = {}): HTMLElement {
     copyBtn.type = 'button';
     copyBtn.className = 'share-modal__copy-btn';
     copyBtn.appendChild(svgLink());
-    const copyLabel = document.createElement('span');
-    copyLabel.textContent = 'Copy link';
-    copyBtn.appendChild(copyLabel);
+    copyBtn.appendChild(Object.assign(document.createElement('span'), { textContent: 'Copy link' }));
     copyBtn.addEventListener('click', e => { e.stopPropagation(); showToast('Link copied!'); });
     urlRow.append(urlText, copyBtn);
 
-    // Divider
     const divider = document.createElement('div');
     divider.className = 'share-modal__divider';
 
-    // Invite section
     const inviteTitle = document.createElement('h3');
     inviteTitle.className = 'share-modal__section-title';
     inviteTitle.textContent = 'Invite team members';
 
     const assignWidget = buildAssignWidget("Select or enter member's name");
 
-    // Embed button
     const embedBtn = document.createElement('button');
     embedBtn.type = 'button';
     embedBtn.className = 'share-modal__embed';
@@ -502,7 +544,6 @@ export function createShareModal(options: ShareModalOptions = {}): HTMLElement {
     const card = document.createElement('div');
     card.className = 'share-modal__card share-modal__card--published';
 
-    // Close
     const closeBtn = document.createElement('button');
     closeBtn.type = 'button';
     closeBtn.className = 'share-modal__close';
@@ -510,7 +551,6 @@ export function createShareModal(options: ShareModalOptions = {}): HTMLElement {
     closeBtn.appendChild(svgClose());
     closeBtn.addEventListener('click', () => onClose?.());
 
-    // Success block
     const success = document.createElement('div');
     success.className = 'share-modal__success';
     const halo = document.createElement('div');
@@ -527,7 +567,6 @@ export function createShareModal(options: ShareModalOptions = {}): HTMLElement {
     pubSub.textContent = 'Ready to share with learners';
     success.append(halo, pubTitle, pubSub);
 
-    // URL row
     const urlRow = document.createElement('div');
     urlRow.className = 'share-modal__url-row';
     urlRow.style.marginTop = '18px';
@@ -542,7 +581,6 @@ export function createShareModal(options: ShareModalOptions = {}): HTMLElement {
     copyBtn.addEventListener('click', e => { e.stopPropagation(); showToast('Link copied!'); });
     urlRow.append(urlText, copyBtn);
 
-    // Invite section
     const inviteTitle = document.createElement('h3');
     inviteTitle.className = 'share-modal__section-title';
     inviteTitle.style.marginTop = '22px';
@@ -550,7 +588,6 @@ export function createShareModal(options: ShareModalOptions = {}): HTMLElement {
 
     const assignWidget = buildAssignWidget('Select or enter a member to assign content');
 
-    // Embed button (centered)
     const embedWrap = document.createElement('div');
     embedWrap.style.cssText = 'text-align:center; margin-top:18px;';
     const embedBtn = document.createElement('button');
@@ -561,7 +598,6 @@ export function createShareModal(options: ShareModalOptions = {}): HTMLElement {
     embedBtn.addEventListener('click', e => { e.stopPropagation(); showToast('Embed code copied!'); });
     embedWrap.appendChild(embedBtn);
 
-    // Divider + back link
     const divider = document.createElement('div');
     divider.className = 'share-modal__divider';
     const backWrap = document.createElement('div');
