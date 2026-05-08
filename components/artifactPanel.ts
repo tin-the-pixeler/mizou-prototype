@@ -6,6 +6,7 @@ import {
 } from './environmentDetailsCard';
 import { createArtifactThumbnail } from './artifactThumbnail';
 import { createButton } from './button';
+import { createScorecardContent, type ScorecardElement } from './scorecard';
 
 export type ArtifactTab = 'Preview' | 'Persona' | 'Scorecard' | 'Sources';
 
@@ -115,7 +116,7 @@ export function createArtifactPanel(options: ArtifactPanelOptions): HTMLElement 
   const content = document.createElement('div');
   content.className = 'artifact-panel__content';
 
-  // Track current env card for edit mode
+  // Track current editable content for edit mode (env card or scorecard)
   let currentEnvCard: HTMLElement | null = null;
 
   // Build Preview tab content
@@ -161,11 +162,20 @@ export function createArtifactPanel(options: ArtifactPanelOptions): HTMLElement 
     return el;
   }
 
+  // Build Scorecard tab content
+  function buildScorecardContent(): HTMLElement {
+    const scorecardEl = createScorecardContent();
+    currentEnvCard = scorecardEl as unknown as HTMLElement;
+    return scorecardEl;
+  }
+
   function showTabContent(tab: ArtifactTab) {
     content.innerHTML = '';
     currentEnvCard = null;
     if (tab === 'Preview') {
       content.appendChild(buildPreviewContent());
+    } else if (tab === 'Scorecard') {
+      content.appendChild(buildScorecardContent());
     } else {
       content.appendChild(buildPlaceholder(tab));
     }

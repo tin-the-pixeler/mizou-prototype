@@ -1,0 +1,362 @@
+/* ============================================================
+   Scorecard Tab — styles
+   ============================================================ */
+
+/* ---- Container ---- */
+
+.scorecard {
+  padding: 32px 40px 48px;
+  max-width: 980px;
+  font-family: var(--font-sans);
+}
+
+.scorecard__title {
+  margin: 0 0 28px;
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+  color: var(--text-primary);
+}
+
+.scorecard__intro {
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--text-primary);
+  margin-bottom: 20px;
+}
+
+.scorecard__intro-header {
+  font-size: 17px;
+  font-weight: 700;
+  margin: 0 0 10px;
+}
+
+.scorecard__intro-list {
+  margin: 0;
+  padding-left: 22px;
+}
+
+.scorecard__intro-list li {
+  margin-bottom: 4px;
+}
+
+.scorecard__description {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--text-primary);
+  margin: 0 0 28px;
+  max-width: 760px;
+}
+
+/* ---- Table shell ---- */
+
+.scorecard-table-wrap {
+  background: #fff;
+  border: 1px solid var(--border-default);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.scorecard-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  table-layout: fixed;
+}
+
+.scorecard-table thead tr {
+  background: var(--primitive-slate-2);
+}
+
+.scorecard-table th {
+  text-align: left;
+  padding: 14px 20px;
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-default);
+  letter-spacing: 0.1px;
+}
+
+/* ---- Readonly table ---- */
+
+.scorecard-table--readonly col.col-competency { width: 24%; }
+.scorecard-table--readonly col.col-criteria   { width: 56%; }
+.scorecard-table--readonly col.col-weight     { width: 20%; }
+
+/* competency cell */
+.scorecard-table__competency-cell {
+  padding: 18px 20px;
+  font-weight: 700;
+  color: var(--text-primary);
+  vertical-align: middle;
+  border-right: 1px solid var(--border-subtle);
+  background: var(--primitive-slate-1);
+  cursor: text;
+}
+
+/* criteria cell */
+.scorecard-table__criteria-cell {
+  padding: 12px 14px;
+  color: var(--text-primary);
+}
+
+.scorecard-table__criteria-hover {
+  padding: 8px 10px;
+  margin: -4px -6px;
+  border-radius: 6px;
+  cursor: text;
+  transition: background 0.12s ease;
+  line-height: 1.5;
+  color: var(--text-primary);
+}
+
+.scorecard-table__criteria-hover:hover {
+  background: var(--primitive-slate-3);
+}
+
+/* weight cell */
+.scorecard-table__weight-cell {
+  padding: 12px 14px;
+  text-align: left;
+  border-left: 1px solid var(--border-subtle);
+}
+
+.scorecard-table__weight-hover {
+  display: inline-flex;
+  padding: 4px;
+  margin: -4px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.12s ease;
+}
+
+.scorecard-table__weight-hover:hover {
+  background: var(--primitive-slate-3);
+}
+
+/* ---- Weight chip ---- */
+
+.scorecard-weight-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 14px;
+  border-radius: 6px;
+  min-width: 64px;
+  font-weight: 600;
+  font-size: 13px;
+  font-family: var(--font-sans);
+}
+
+.scorecard-weight-chip--high   { background: var(--feedback-error-bg);   color: var(--primitive-rose-dark); }
+.scorecard-weight-chip--medium { background: var(--feedback-warning-bg); color: var(--primitive-amber-dark); }
+.scorecard-weight-chip--low    { background: var(--feedback-success-bg); color: var(--primitive-emerald-dark); }
+
+/* ---- Edit mode table ---- */
+
+.scorecard-table--editing col.col-competency { width: 22%; }
+.scorecard-table--editing col.col-criteria   { width: 50%; }
+.scorecard-table--editing col.col-weight     { width: 20%; }
+.scorecard-table--editing col.col-delete     { width: 8%; }
+
+/* competency cell (edit) */
+.scorecard-table__edit-competency-cell {
+  padding: 14px 12px;
+  vertical-align: middle;
+  border-right: 1px solid var(--border-subtle);
+  background: var(--primitive-slate-1);
+  position: relative;
+}
+
+.scorecard-table__edit-competency-cell.is-group-hovered {
+  box-shadow:
+    inset 2px 0 0 var(--primitive-indigo-light),
+    inset 0 2px 0 var(--primitive-indigo-light),
+    inset 0 -2px 0 var(--primitive-indigo-light);
+}
+
+/* competency hover actions (duplicate + delete) */
+.scorecard-table__comp-actions {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity 0.12s ease;
+  pointer-events: none;
+}
+
+.scorecard-table__edit-competency-cell:hover .scorecard-table__comp-actions {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.scorecard-table__comp-action-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: 0;
+  background: #fff;
+  box-shadow: var(--shadow-1);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+}
+
+.scorecard-table__comp-action-btn--delete {
+  color: var(--primitive-rose-base);
+}
+
+/* editable textarea */
+.scorecard-table__edit-textarea {
+  width: 100%;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-family: var(--font-sans);
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--text-primary);
+  background: transparent;
+  outline: none;
+  resize: none;
+  overflow: hidden;
+  display: block;
+}
+
+.scorecard-table__edit-textarea:hover {
+  background: var(--primitive-slate-2);
+}
+
+.scorecard-table__edit-textarea:focus {
+  background: #fff;
+  border-color: var(--primitive-indigo-light);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.10);
+}
+
+/* weight select overlay */
+.scorecard-table__weight-select-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 6px 4px 12px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 13px;
+  font-family: var(--font-sans);
+  position: relative;
+  cursor: pointer;
+}
+
+.scorecard-table__weight-select-wrap--high   { background: var(--feedback-error-bg);   color: var(--primitive-rose-dark); }
+.scorecard-table__weight-select-wrap--medium { background: var(--feedback-warning-bg); color: var(--primitive-amber-dark); }
+.scorecard-table__weight-select-wrap--low    { background: var(--feedback-success-bg); color: var(--primitive-emerald-dark); }
+
+.scorecard-table__weight-select {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* delete criteria cell */
+.scorecard-table__delete-cell {
+  padding: 8px 6px;
+  text-align: center;
+  border-left: 1px solid var(--border-subtle);
+}
+
+.scorecard-table__delete-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  border: 0;
+  background: transparent;
+  color: var(--primitive-rose-base);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.12s ease;
+}
+
+.scorecard-table__delete-btn:hover {
+  background: var(--feedback-error-bg);
+}
+
+/* add criteria row */
+.scorecard-table__add-criteria-row td {
+  padding: 6px 14px 12px;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.scorecard-table__add-criteria-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  padding: 6px 8px;
+  border-radius: 6px;
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.scorecard-table__add-criteria-btn:hover {
+  background: var(--primitive-slate-3);
+}
+
+/* footer */
+.scorecard-table__footer td {
+  padding: 14px 20px;
+  text-align: center;
+  border-top: 1px solid var(--border-divider);
+  background: var(--primitive-slate-1);
+}
+
+.scorecard-table__add-competency-btn {
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  color: var(--interactive-primary);
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.scorecard-table__add-competency-btn:hover {
+  text-decoration: underline;
+}
+
+/* ---- Group highlight helpers (applied via JS on hover) ---- */
+
+.scorecard-table__group-row--hovered-top td {
+  box-shadow: inset 0 2px 0 var(--primitive-indigo-light);
+}
+
+.scorecard-table__group-row--hovered-top td:last-child {
+  box-shadow: inset 0 2px 0 var(--primitive-indigo-light), inset -2px 0 0 var(--primitive-indigo-light);
+}
+
+.scorecard-table__group-row--hovered-bottom td {
+  box-shadow: inset 0 -2px 0 var(--primitive-indigo-light);
+}
+
+.scorecard-table__group-row--hovered-bottom td:last-child {
+  box-shadow: inset 0 -2px 0 var(--primitive-indigo-light), inset -2px 0 0 var(--primitive-indigo-light);
+}
+
+.scorecard-table__group-row--hovered-right td:last-child {
+  box-shadow: inset -2px 0 0 var(--primitive-indigo-light);
+}

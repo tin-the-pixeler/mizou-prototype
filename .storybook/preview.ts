@@ -15,6 +15,7 @@ import '../styles/category-chip.css';
 import '../styles/instruction-field.css';
 import '../styles/artifact-thumbnail.css';
 import '../styles/artifact-panel.css';
+import '../styles/scorecard.css';
 import '../styles/input-field-chat-thread.css';
 import '../styles/input-field-landing-page.css';
 import '../styles/mode-toggle.css';
