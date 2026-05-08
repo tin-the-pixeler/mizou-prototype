@@ -40,6 +40,13 @@
   margin-bottom: 4px;
 }
 
+.scorecard__validation-msg {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--primitive-rose-dark);
+  margin: 0 0 12px;
+}
+
 .scorecard__description {
   font-size: 15px;
   line-height: 1.6;

@@ -219,10 +219,11 @@ export function createArtifactPanel(options: ArtifactPanelOptions): HTMLElement 
     exitPanelEditMode();
   });
 
-  // Save — commit and exit
+  // Save — commit and exit (only if commit succeeds)
   saveBtn.addEventListener('click', () => {
     if (currentEnvCard && (currentEnvCard as any).commitEdit) {
-      (currentEnvCard as any).commitEdit();
+      const ok = (currentEnvCard as any).commitEdit();
+      if (ok === false) return;
     }
     exitPanelEditMode();
   });

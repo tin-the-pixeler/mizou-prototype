@@ -15,7 +15,8 @@ export interface ScorecardGroup {
 
 export type ScorecardElement = HTMLElement & {
   revertSnapshot(): void;
-  commitEdit(): void;
+  /** Returns true if commit succeeded, false if validation failed. */
+  commitEdit(): boolean;
 };
 
 const DEFAULT_SCORECARD: ScorecardGroup[] = [
@@ -537,9 +538,24 @@ export function createScorecardContent(
     "To customise your scorecard, simply describe the changes you'd like to make in the chat.";
   root.appendChild(description);
 
+  // Validation message (shown above table in edit mode when invalid)
+  const validationMsg = document.createElement('p');
+  validationMsg.className = 'scorecard__validation-msg';
+  validationMsg.textContent = 'At least one competency with 1 criteria required';
+  validationMsg.style.display = 'none';
+
   // Table area (swapped between read/edit)
   const tableArea = document.createElement('div');
+  root.appendChild(validationMsg);
   root.appendChild(tableArea);
+
+  function isValid(): boolean {
+    return committed.some(g => g.rows.length > 0);
+  }
+
+  function updateValidationMsg() {
+    validationMsg.style.display = editing && !isValid() ? 'block' : 'none';
+  }
 
   function enterEditMode() {
     if (editing) return;
@@ -555,11 +571,13 @@ export function createScorecardContent(
       tableArea.appendChild(
         buildEditTable(committed, next => {
           committed = next;
+          updateValidationMsg();
         }),
       );
     } else {
       tableArea.appendChild(buildReadonlyTable(committed, enterEditMode));
     }
+    updateValidationMsg();
   }
 
   // Exposed methods for artifact panel cancel/save
@@ -570,9 +588,14 @@ export function createScorecardContent(
   };
 
   root.commitEdit = () => {
+    if (!isValid()) {
+      updateValidationMsg();
+      return false;
+    }
     snapshot = cloneData(committed);
     editing = false;
     renderTable();
+    return true;
   };
 
   renderTable();
