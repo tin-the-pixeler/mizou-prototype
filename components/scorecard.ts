@@ -554,7 +554,11 @@ export function createScorecardContent(
   }
 
   function updateValidationMsg() {
-    validationMsg.style.display = editing && !isValid() ? 'block' : 'none';
+    const invalid = editing && !isValid();
+    validationMsg.style.display = invalid ? 'block' : 'none';
+    root.dispatchEvent(
+      new CustomEvent('scorecard:validation', { bubbles: true, detail: { valid: !invalid } }),
+    );
   }
 
   function enterEditMode() {

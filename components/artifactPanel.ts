@@ -195,6 +195,9 @@ export function createArtifactPanel(options: ArtifactPanelOptions): HTMLElement 
   }
 
   function exitPanelEditMode() {
+    saveBtn.disabled = false;
+    saveBtn.style.opacity = '';
+    saveBtn.style.cursor = '';
     panel.classList.remove('artifact-panel--editing');
     if (currentEnvCard) {
       currentEnvCard.classList.remove('env-card--editing');
@@ -209,6 +212,14 @@ export function createArtifactPanel(options: ArtifactPanelOptions): HTMLElement 
   // Listen for edit-enter events from the env card
   panel.addEventListener('env-card:edit-enter', () => {
     enterPanelEditMode();
+  });
+
+  // Enable/disable Save based on scorecard validation
+  panel.addEventListener('scorecard:validation', (e: Event) => {
+    const valid = (e as CustomEvent<{ valid: boolean }>).detail.valid;
+    saveBtn.disabled = !valid;
+    saveBtn.style.opacity = valid ? '' : '0.45';
+    saveBtn.style.cursor = valid ? '' : 'not-allowed';
   });
 
   // Cancel — revert and exit
