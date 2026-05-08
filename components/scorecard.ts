@@ -400,6 +400,16 @@ function buildEditTable(
           const delTd = document.createElement('td');
           delTd.className = 'scorecard-table__delete-cell';
           if (rowIdx !== 0) delTd.style.borderTop = '1px solid var(--border-subtle)';
+
+          const delBtn = document.createElement('button');
+          delBtn.className = 'scorecard-table__delete-btn';
+          delBtn.title = 'Delete criterion';
+          delBtn.innerHTML = TRASH_SVG;
+          delBtn.style.opacity = '0.35';
+          delBtn.addEventListener('click', () => {
+            (critTd.querySelector('textarea') as HTMLTextAreaElement).value = '';
+          });
+          delTd.appendChild(delBtn);
           tr.appendChild(delTd);
 
           tbody.appendChild(tr);
