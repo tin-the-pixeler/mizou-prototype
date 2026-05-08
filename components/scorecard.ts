@@ -550,7 +550,7 @@ export function createScorecardContent(
   root.appendChild(tableArea);
 
   function isValid(): boolean {
-    return committed.some(g => g.rows.length > 0);
+    return committed.length > 0 && committed.every(g => g.rows.length > 0);
   }
 
   function updateValidationMsg() {
