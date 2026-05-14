@@ -26,6 +26,7 @@ import '../styles/simulation-builder-page.css';
 import '../styles/button-icon.css';
 import '../styles/button-xs.css';
 import '../styles/create-button.css';
+import '../styles/simulation-card.css';
 import type { Preview } from '@storybook/html';
 
 const preview: Preview = {
