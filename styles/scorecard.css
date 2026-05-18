@@ -62,6 +62,16 @@
   border: 1px solid var(--border-default);
   border-radius: 16px;
   overflow: hidden;
+  transition: border-color 0.12s ease, box-shadow 0.12s ease;
+}
+
+.scorecard-table--readonly {
+  cursor: text;
+}
+
+.scorecard-table-wrap:has(.scorecard-table--readonly):hover {
+  border-color: var(--primitive-indigo-light);
+  box-shadow: 0 0 0 1px var(--primitive-indigo-light);
 }
 
 .scorecard-table {
@@ -101,6 +111,11 @@
   border-right: 1px solid var(--border-subtle);
   background: var(--primitive-slate-1);
   cursor: text;
+  transition: background 0.12s ease;
+}
+
+.scorecard-table__competency-cell:hover {
+  background: var(--primitive-slate-3);
 }
 
 /* criteria cell */
