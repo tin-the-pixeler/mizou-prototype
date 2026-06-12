@@ -60,11 +60,15 @@
   outline-offset: 2px;
 }
 
-.sfb__pill--active,
+.sfb__pill--active {
+  background: var(--feedback-info-bg);
+  border-color: transparent;
+  color: var(--interactive-primary);
+}
+
 .sfb__pill--active:hover {
-  background: var(--primitive-slate-12);
-  border-color: var(--primitive-slate-12);
-  color: var(--text-inverse);
+  background: var(--feedback-info-bg);
+  color: var(--interactive-primary-hover);
 }
 
 /* ── Divider ── */
@@ -326,12 +330,12 @@
 .sfb__search-input {
   width: 200px;
   padding: 8px 36px 8px 14px;
-  border: 1px solid var(--border-strong);
-  border-radius: var(--radius-full);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-input);
   font-family: var(--font-sans);
   font-size: var(--fs-sm);
   color: var(--text-primary);
-  background: var(--surface-emphasis);
+  background: var(--primitive-slate-2);
   transition: border-color 0.15s ease;
 }
 

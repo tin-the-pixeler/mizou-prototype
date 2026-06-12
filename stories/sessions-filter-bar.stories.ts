@@ -1,17 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/html';
 import {
   createSessionsFilterBar,
-  sessionFilterPredicate,
   type SessionsFilterBarOptions,
-  type SessionsFilterState,
 } from '../components/sessionsFilterBar';
-import {
-  createSessionsTable,
-  sortSessions,
-  DEFAULT_SORT,
-  type SortState,
-} from '../components/sessionsTable';
-import { LEARNER_OPTIONS, SIMULATION_OPTIONS, SESSION_ROWS } from './sessions-demo-data';
+import { LEARNER_OPTIONS, SIMULATION_OPTIONS } from './sessions-demo-data';
 
 const meta: Meta<SessionsFilterBarOptions> = {
   title: 'Components/Sessions Filter Bar',
@@ -141,67 +133,9 @@ export const TabletDrawerOpen: Story = {
   },
 };
 
-// ─── Full Sessions page (interactive) ────────────────────────────────────────
-// Bar + table wired together: bar narrows the rows, headers sort them.
-
-export const SessionsPage: Story = {
-  name: 'Sessions Page (interactive)',
-  render: () => {
-    const wrapper = page();
-
-    const title = document.createElement('h1');
-    title.textContent = 'Sessions';
-    title.style.cssText = 'font-family:var(--font-sans);font-size:24px;font-weight:var(--fw-bold);margin:0 0 16px;color:var(--text-primary);';
-    wrapper.appendChild(title);
-
-    const container = card();
-    wrapper.appendChild(container);
-
-    let filterState: SessionsFilterState = {
-      formats: [], learners: [], simulations: [], progress: null, showArchived: false, search: '',
-    };
-    let sort: SortState = DEFAULT_SORT;
-
-    const tableHost = document.createElement('div');
-    tableHost.className = 'sst-scroll';
-
-    const visibleRows = () => {
-      const keep = sessionFilterPredicate(filterState);
-      return SESSION_ROWS.filter((row) =>
-        keep({
-          format: row.simulation.format,
-          learnerId: row.learner.id,
-          simulationId: row.simulation.id,
-          progress: row.progress,
-          archived: row.archived,
-          searchText: `${row.learner.name} ${row.simulation.title}`,
-        }),
-      );
-    };
-
-    const renderTable = () => {
-      tableHost.replaceChildren(
-        createSessionsTable({
-          rows: sortSessions(visibleRows(), sort),
-          sort,
-          onSortChange: (next) => { sort = next; renderTable(); },
-        }),
-      );
-    };
-
-    const bar = createSessionsFilterBar(
-      baseOptions({
-        onChange: (state) => { filterState = state; renderTable(); },
-      }),
-    );
-
-    container.append(bar, tableHost);
-    renderTable();
-    return wrapper;
-  },
-};
-
 // ─── Documentation ───────────────────────────────────────────────────────────
+// The full interactive Sessions page (bar + table wired together) lives under
+// Pages/Sessions — see stories/sessions-page.stories.ts.
 
 export const Documentation: Story = {
   name: 'Docs',
@@ -215,11 +149,11 @@ export const Documentation: Story = {
 
       <h2 style="font-size:18px;margin:24px 0 8px;">Anatomy (left → right)</h2>
       <ol style="margin:0;padding-left:20px;">
-        <li><strong>Format pills</strong> — Chatbot / Voice Role Play / Video Role Play. Multi-toggle: outline = no filter (all formats); filled (slate-12 bg, white text) = filtered to that format. Multiple can be active (OR within the group).</li>
+        <li><strong>Format pills</strong> — Chatbot / Voice Role Play / Video Role Play. Multi-toggle: outline = no filter (all formats); active = Mizou blue tint (<code>--feedback-info-bg</code> fill, <code>--interactive-primary</code> text/icon). Multiple can be active (OR within the group).</li>
         <li><strong>Vertical divider</strong> — 1px <code>--border-divider</code>, ~24px tall.</li>
         <li><strong>Dropdown triggers</strong> — Learners / Simulations / Progress. Pill-shaped (<code>--radius-full</code>), same silhouette as format pills, never rectangles. Trailing <code>chevron-down-sm</code>. Applied triggers tint <code>--feedback-info-bg-subtle</code> with <code>--interactive-primary</code> border/text.</li>
         <li><strong>Clear filters</strong> — text link at the end of the trigger group, visible only when ≥1 filter is active.</li>
-        <li><strong>Search input</strong> — right-aligned pill input, placeholder "Search", trailing search icon.</li>
+        <li><strong>Search input</strong> — right-aligned rounded-rectangle input (<code>--radius-input</code>, subtle slate fill), placeholder "Search", trailing search icon.</li>
       </ol>
 
       <h2 style="font-size:18px;margin:24px 0 8px;">Trigger labels when applied</h2>
