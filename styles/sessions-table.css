@@ -1,0 +1,315 @@
+/* ========== SESSIONS TABLE (Sortable Table Header pattern) ========== */
+/* Companion to sessions-filter-bar.css — sorting lives here, in the column
+   headers. Header row sits on a light slate band. */
+
+.sst {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-sans);
+}
+
+/* ── Header ── */
+.sst__head-row {
+  background: var(--primitive-slate-3);
+}
+
+.sst__th {
+  text-align: left;
+  padding: 10px var(--spacing-sm);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-medium);
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.sst__th-label {
+  font-size: var(--fs-xs);
+  font-weight: inherit;
+}
+
+/* "1 new" indigo annotation in the Learners header */
+.sst__th-new {
+  margin-left: var(--spacing-2xs);
+  color: var(--interactive-primary);
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-xs);
+}
+
+/* Sortable header button */
+.sst__sort {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-3xs);
+  border: none;
+  background: none;
+  padding: 0;
+  font-family: var(--font-sans);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-medium);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.sst__sort:hover {
+  color: var(--text-primary);
+}
+
+.sst__sort:focus-visible {
+  outline: 2px solid var(--interactive-primary);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* Active sort: emphasized (extrabold, darker) label + single direction arrow */
+.sst__sort--active {
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.sst__sort-icon {
+  display: inline-flex;
+  width: 12px;
+  height: 12px;
+  transition: transform 0.15s ease;
+}
+
+.sst__sort-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.sst__sort-icon--asc {
+  transform: rotate(180deg);
+}
+
+/* Inactive sortable: muted stacked up/down indicator (stand-in glyph) */
+.sst__sort-icon--neutral {
+  color: var(--primitive-slate-8);
+}
+
+/* ── Rows ── */
+.sst__row {
+  background: var(--surface-emphasis);
+  border-bottom: 1px solid var(--border-subtle);
+  transition: background 0.15s ease;
+}
+
+.sst__row:hover {
+  background: var(--primitive-slate-2);
+}
+
+.sst__td {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: var(--fs-sm);
+  color: var(--text-primary);
+  vertical-align: middle;
+}
+
+/* ── Learner cell ── */
+.sst__learner {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2xs);
+  min-width: 160px;
+}
+
+.sst__avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full);
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.sst__learner-name {
+  font-weight: var(--fw-bold);
+  white-space: nowrap;
+}
+
+.sst__new-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-full);
+  background: var(--interactive-primary);
+  flex-shrink: 0;
+}
+
+/* ── Simulation cell ── */
+.sst__sim {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-2xs);
+  max-width: 280px;
+}
+
+.sst__sim-icon {
+  display: inline-flex;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  margin-top: 1px;
+  color: var(--text-secondary);
+}
+
+.sst__sim-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.sst__sim-title {
+  font-size: var(--fs-sm);
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ── Score pill (no % sign) ── */
+.sst__score-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 56px;
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-bold);
+}
+
+.sst__score-pill--high {
+  background: var(--primitive-emerald-light);
+  color: var(--primitive-emerald-dark);
+}
+
+.sst__score-pill--mid {
+  background: var(--primitive-amber-light);
+  color: var(--primitive-amber-dark);
+}
+
+.sst__score-pill--low {
+  background: var(--primitive-rose-light);
+  color: var(--primitive-rose-dark);
+}
+
+/* Ongoing / not-started: empty dashed-outline pill */
+.sst__score-pill--empty {
+  border: 1px dashed var(--border-strong);
+  background: transparent;
+  min-height: 24px;
+}
+
+/* ── Duration ── */
+.sst__duration--live {
+  color: var(--primitive-rose-base);
+  font-weight: var(--fw-medium);
+}
+
+/* ── Progress (learner journey — "Status" is reserved for simulation lifecycle) ── */
+.sst__progress-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+}
+
+.sst__progress-chip--completed {
+  background: var(--primitive-emerald-light);
+  color: var(--primitive-emerald-dark);
+}
+
+.sst__progress-chip--not-started {
+  background: var(--primitive-slate-4);
+  color: var(--text-secondary);
+}
+
+.sst__progress-ongoing {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--primitive-rose-base);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+}
+
+/* Pulsing rose dot — reuses the system task-pulse keyframe (chat-components.css) */
+.sst__progress-pulse {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-full);
+  background: var(--primitive-rose-base);
+  animation: task-pulse 2s ease-in-out infinite;
+}
+
+/* ── Row actions ── */
+.sst__td--actions {
+  width: 40px;
+  text-align: right;
+}
+
+.sst__action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: var(--radius-full);
+  background: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.sst__action-btn:hover {
+  background: var(--interactive-secondary);
+}
+
+.sst__action-btn:focus-visible {
+  outline: 2px solid var(--interactive-primary);
+  outline-offset: 2px;
+}
+
+.sst__action-icon {
+  display: inline-flex;
+  width: 16px;
+  height: 16px;
+}
+
+.sst__action-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* ── Shared raised container for bar + table (page-level) ── */
+/* No overflow:hidden — dropdown menus must escape the card. Rounded corners
+   are handled on the last row's cells instead. */
+.sessions-card {
+  background: var(--surface-emphasis);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-container);
+}
+
+.sst tbody tr:last-child {
+  border-bottom: none;
+}
+
+.sst tbody tr:last-child td:first-child {
+  border-bottom-left-radius: var(--radius-container);
+}
+
+.sst tbody tr:last-child td:last-child {
+  border-bottom-right-radius: var(--radius-container);
+}
+
+/* Tablet: table scrolls horizontally, Learners + Simulation prioritized */
+.sessions-card--tablet .sst-scroll {
+  overflow-x: auto;
+}
+
+.sst-scroll {
+  width: 100%;
+}

@@ -27,6 +27,8 @@ import '../styles/button-icon.css';
 import '../styles/button-xs.css';
 import '../styles/create-button.css';
 import '../styles/simulation-card.css';
+import '../styles/sessions-filter-bar.css';
+import '../styles/sessions-table.css';
 import type { Preview } from '@storybook/html';
 
 const preview: Preview = {
