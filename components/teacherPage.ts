@@ -440,10 +440,10 @@ export function createTeacherPage({ userInitial = 'JD' }: TeacherPageOptions = {
   nsWrap.id = 'tp-col-subnav';
   const nsCreations = h('div', 'tp-ns-item');
   nsCreations.id = 'tp-ns-creations';
-  nsCreations.textContent = 'My Creations';
+  nsCreations.textContent = 'My Publications';
   const nsTemplates = h('div', 'tp-ns-item');
   nsTemplates.id = 'tp-ns-templates';
-  nsTemplates.textContent = 'Templates';
+  nsTemplates.textContent = 'Templates Library';
   nsWrap.appendChild(nsCreations);
   nsWrap.appendChild(nsTemplates);
   navSection.appendChild(nsWrap);
@@ -546,10 +546,10 @@ export function createTeacherPage({ userInitial = 'JD' }: TeacherPageOptions = {
   const colTabBar = h('div', 'tp-tab-bar');
   const tabCreations = h('div', 'tp-tab act');
   tabCreations.id = 'tp-tab-creations';
-  tabCreations.textContent = 'My Creations';
+  tabCreations.textContent = 'My Publications';
   const tabTemplates = h('div', 'tp-tab');
   tabTemplates.id = 'tp-tab-templates';
-  tabTemplates.textContent = 'Templates';
+  tabTemplates.textContent = 'Templates Library';
   colTabBar.appendChild(tabCreations);
   colTabBar.appendChild(tabTemplates);
   pageCollections.appendChild(colTabBar);
