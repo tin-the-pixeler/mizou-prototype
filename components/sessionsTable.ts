@@ -40,6 +40,8 @@ export type SessionsTableOptions = {
   onRowAction?: (row: SessionRowData) => void;
   /** Tick ongoing durations up once per second (default true). */
   live?: boolean;
+  /** Show the Simulation column. Default true; set false on single-simulation pages where every row shares one simulation. */
+  showSimulationColumn?: boolean;
 };
 
 // ─── Stand-in icons ──────────────────────────────────────────────────────────
@@ -51,15 +53,17 @@ export type SessionsTableOptions = {
 const SORT_NEUTRAL_SVG =
   '<svg viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.5 4.5L6 2l2.5 2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M3.5 7.5L6 10l2.5-2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
-const COLUMNS: { key: string; label: string; sortable: boolean }[] = [
-  { key: 'learner', label: 'Learners', sortable: false },
-  { key: 'simulation', label: 'Simulation', sortable: false },
-  { key: 'score', label: 'Score', sortable: true },
-  { key: 'duration', label: 'Duration', sortable: true },
-  { key: 'submitted', label: 'Submitted', sortable: true },
-  { key: 'progress', label: 'Progress', sortable: false },
-  { key: 'actions', label: '', sortable: false },
-];
+function getColumns(showSimulationColumn: boolean): { key: string; label: string; sortable: boolean }[] {
+  return [
+    { key: 'learner', label: 'Learners', sortable: false },
+    ...(showSimulationColumn ? [{ key: 'simulation', label: 'Simulation', sortable: false }] : []),
+    { key: 'score', label: 'Score', sortable: true },
+    { key: 'duration', label: 'Duration', sortable: true },
+    { key: 'submitted', label: 'Submitted', sortable: true },
+    { key: 'progress', label: 'Progress', sortable: false },
+    { key: 'actions', label: '', sortable: false },
+  ];
+}
 
 // ─── Sorting ─────────────────────────────────────────────────────────────────
 
@@ -90,6 +94,7 @@ export function createSessionsTable({
   onSortChange,
   onRowAction,
   live = true,
+  showSimulationColumn = true,
 }: SessionsTableOptions): HTMLElement {
   const table = document.createElement('table');
   table.className = 'sst';
@@ -99,7 +104,7 @@ export function createSessionsTable({
   const headRow = document.createElement('tr');
   headRow.className = 'sst__head-row';
 
-  COLUMNS.forEach((col) => {
+  getColumns(showSimulationColumn).forEach((col) => {
     const th = document.createElement('th');
     th.className = `sst__th sst__th--${col.key}`;
 
@@ -158,7 +163,7 @@ export function createSessionsTable({
   // ── Body ──
   const tbody = document.createElement('tbody');
   sortSessions(rows, sort).forEach((row) => {
-    tbody.appendChild(buildRow(row, { onRowAction, live }));
+    tbody.appendChild(buildRow(row, { onRowAction, live, showSimulationColumn }));
   });
   table.appendChild(tbody);
 
@@ -169,7 +174,7 @@ export function createSessionsTable({
 
 function buildRow(
   row: SessionRowData,
-  { onRowAction, live }: { onRowAction?: (row: SessionRowData) => void; live: boolean },
+  { onRowAction, live, showSimulationColumn }: { onRowAction?: (row: SessionRowData) => void; live: boolean; showSimulationColumn: boolean },
 ): HTMLElement {
   const tr = document.createElement('tr');
   tr.className = `sst__row sst__row--${row.progress}`;
@@ -190,15 +195,17 @@ function buildRow(
   tr.appendChild(learnerTd);
 
   // Simulation: small format icon + title (2-line wrap allowed)
-  const simTd = td('simulation');
-  const simWrap = div('sst__sim');
-  simWrap.appendChild(formatIconEl(row.simulation.format, 'sst__sim-icon'));
-  const simTitle = document.createElement('span');
-  simTitle.className = 'sst__sim-title';
-  simTitle.textContent = row.simulation.title;
-  simWrap.appendChild(simTitle);
-  simTd.appendChild(simWrap);
-  tr.appendChild(simTd);
+  if (showSimulationColumn) {
+    const simTd = td('simulation');
+    const simWrap = div('sst__sim');
+    simWrap.appendChild(formatIconEl(row.simulation.format, 'sst__sim-icon'));
+    const simTitle = document.createElement('span');
+    simTitle.className = 'sst__sim-title';
+    simTitle.textContent = row.simulation.title;
+    simWrap.appendChild(simTitle);
+    simTd.appendChild(simWrap);
+    tr.appendChild(simTd);
+  }
 
   // Score: pill, no % sign; empty dashed pill for ongoing / not started
   const scoreTd = td('score');

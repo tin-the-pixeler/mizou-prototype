@@ -52,6 +52,10 @@ export type SessionsFilterBarOptions = {
   openMenu?: 'learners' | 'simulations' | 'progress' | null;
   /** Open the tablet drawer on mount (for demos/docs). */
   drawerOpen?: boolean;
+  /** Show the format pills row. Default true; set false on single-simulation pages where the format is fixed. */
+  showFormats?: boolean;
+  /** Show the Simulations filter trigger. Default true; set false on single-simulation pages. */
+  showSimulations?: boolean;
   onChange?: (state: SessionsFilterState) => void;
 };
 
@@ -141,6 +145,8 @@ export function createSessionsFilterBar(options: SessionsFilterBarOptions): HTML
     ...options.initialState,
   };
   const tablet = options.layout === 'tablet';
+  const showFormats = options.showFormats !== false;
+  const showSimulations = options.showSimulations !== false;
 
   const root = h('div', `sfb-root${tablet ? ' sfb-root--tablet' : ''}`);
   const bar = h('div', 'sfb');
@@ -149,28 +155,29 @@ export function createSessionsFilterBar(options: SessionsFilterBarOptions): HTML
   const emit = () => options.onChange?.({ ...state, formats: [...state.formats], learners: [...state.learners], simulations: [...state.simulations] });
 
   // ── Format pills ──
-  const formatGroup = h('div', 'sfb__formats');
-  formatGroup.setAttribute('role', 'group');
-  formatGroup.setAttribute('aria-label', 'Filter by format');
   const formatPills = new Map<SessionFormat, HTMLButtonElement>();
-  (Object.keys(FORMAT_LABEL) as SessionFormat[]).forEach((format) => {
-    const pill = document.createElement('button');
-    pill.type = 'button';
-    pill.className = 'sfb__pill';
-    pill.append(formatIconEl(format), textSpan('sfb__pill-label', FORMAT_LABEL[format]));
-    pill.addEventListener('click', () => {
-      const idx = state.formats.indexOf(format);
-      if (idx === -1) state.formats.push(format);
-      else state.formats.splice(idx, 1);
-      sync();
-      emit();
+  if (showFormats) {
+    const formatGroup = h('div', 'sfb__formats');
+    formatGroup.setAttribute('role', 'group');
+    formatGroup.setAttribute('aria-label', 'Filter by format');
+    (Object.keys(FORMAT_LABEL) as SessionFormat[]).forEach((format) => {
+      const pill = document.createElement('button');
+      pill.type = 'button';
+      pill.className = 'sfb__pill';
+      pill.append(formatIconEl(format), textSpan('sfb__pill-label', FORMAT_LABEL[format]));
+      pill.addEventListener('click', () => {
+        const idx = state.formats.indexOf(format);
+        if (idx === -1) state.formats.push(format);
+        else state.formats.splice(idx, 1);
+        sync();
+        emit();
+      });
+      formatPills.set(format, pill);
+      formatGroup.appendChild(pill);
     });
-    formatPills.set(format, pill);
-    formatGroup.appendChild(pill);
-  });
-  bar.appendChild(formatGroup);
-
-  bar.appendChild(h('div', 'sfb__divider'));
+    bar.appendChild(formatGroup);
+    bar.appendChild(h('div', 'sfb__divider'));
+  }
 
   // ── Dropdown triggers (desktop) ──
   const triggerGroup = h('div', 'sfb__triggers');
@@ -309,7 +316,7 @@ export function createSessionsFilterBar(options: SessionsFilterBarOptions): HTML
 
   const TRIGGERS: { key: MenuKey; label: string }[] = [
     { key: 'learners', label: 'Learners' },
-    { key: 'simulations', label: 'Simulations' },
+    ...(showSimulations ? [{ key: 'simulations' as MenuKey, label: 'Simulations' }] : []),
     { key: 'progress', label: 'Progress' },
   ];
   TRIGGERS.forEach(({ key, label }) => {
@@ -390,10 +397,12 @@ export function createSessionsFilterBar(options: SessionsFilterBarOptions): HTML
       const opt = options.learners.find((o) => o.id === id);
       if (opt) chips.push({ label: opt.label, remove: () => state.learners.splice(state.learners.indexOf(id), 1) });
     });
-    state.simulations.forEach((id) => {
-      const opt = options.simulations.find((o) => o.id === id);
-      if (opt) chips.push({ label: opt.label, remove: () => state.simulations.splice(state.simulations.indexOf(id), 1) });
-    });
+    if (showSimulations) {
+      state.simulations.forEach((id) => {
+        const opt = options.simulations.find((o) => o.id === id);
+        if (opt) chips.push({ label: opt.label, remove: () => state.simulations.splice(state.simulations.indexOf(id), 1) });
+      });
+    }
     if (state.progress) chips.push({ label: PROGRESS_LABEL[state.progress], remove: () => { state.progress = null; } });
     if (state.showArchived) chips.push({ label: 'Archived shown', remove: () => { state.showArchived = false; } });
     return chips;
@@ -467,7 +476,7 @@ export function createSessionsFilterBar(options: SessionsFilterBarOptions): HTML
       return group;
     };
     body.appendChild(buildGroup('Learners', 'learners', options.learners));
-    body.appendChild(buildGroup('Simulations', 'simulations', options.simulations));
+    if (showSimulations) body.appendChild(buildGroup('Simulations', 'simulations', options.simulations));
 
     const progressGroup = h('div', 'sfb__drawer-group');
     progressGroup.appendChild(textSpan('sfb__drawer-group-title', 'Progress'));
@@ -559,13 +568,14 @@ export function createSessionsFilterBar(options: SessionsFilterBarOptions): HTML
     // Multi-select triggers show a count: "Learners · 2".
     const counts: Record<MultiKey, number> = {
       learners: state.learners.length,
-      simulations: state.simulations.length,
+      simulations: showSimulations ? state.simulations.length : 0,
     };
     (['learners', 'simulations'] as MultiKey[]).forEach((key) => {
-      const { trigger } = dropdowns.get(key)!;
+      const dropdown = dropdowns.get(key);
+      if (!dropdown) return;
       const count = counts[key];
-      trigger.classList.toggle('sfb__trigger--applied', count > 0);
-      trigger.querySelector('.sfb__trigger-count')!.textContent = count > 0 ? `· ${count}` : '';
+      dropdown.trigger.classList.toggle('sfb__trigger--applied', count > 0);
+      dropdown.trigger.querySelector('.sfb__trigger-count')!.textContent = count > 0 ? `· ${count}` : '';
     });
 
     // Single-select Progress trigger shows the selected value, never a count:
