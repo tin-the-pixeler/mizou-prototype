@@ -1,0 +1,110 @@
+/* ---------- CRITERIA CARD ---------- */
+
+.criteria-card {
+  display: flex;
+  align-items: center;
+  border: 1px solid;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--surface-emphasis);
+  font-family: var(--font-sans);
+}
+
+.criteria-card--positive {
+  border-color: var(--feedback-success);
+}
+
+.criteria-card--negative {
+  border-color: var(--feedback-error);
+}
+
+.criteria-card__content {
+  display: flex;
+  flex: 1 0 0;
+  flex-direction: column;
+  gap: var(--spacing-2xs);
+  min-width: 0;
+  padding: var(--spacing-sm);
+}
+
+/* ========== HEADER ========== */
+
+.criteria-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-2xs);
+  width: 100%;
+}
+
+.criteria-card__title {
+  flex: 1 0 0;
+  font-size: var(--fs-md);
+  font-weight: var(--fw-regular);
+  line-height: 24px;
+  letter-spacing: 0.24px;
+  color: var(--text-primary);
+}
+
+.criteria-card__status-icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+}
+
+.criteria-card__status-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.criteria-card__status-icon--positive {
+  color: var(--feedback-success);
+}
+
+.criteria-card__status-icon--negative {
+  color: var(--feedback-error);
+}
+
+/* ========== EXCERPT ========== */
+
+.criteria-card__excerpt {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.criteria-card__excerpt-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2xs);
+  width: 100%;
+  padding: var(--spacing-xs);
+  background: var(--feedback-success-bg);
+}
+
+.criteria-card__quote-bar {
+  align-self: stretch;
+  flex-shrink: 0;
+  width: 4px;
+  background: var(--feedback-success);
+}
+
+.criteria-card__excerpt-label {
+  flex: 1 0 0;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-regular);
+  line-height: 18px;
+  letter-spacing: 0.33px;
+  color: var(--text-secondary);
+}
+
+.criteria-card__timestamps {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  width: 100%;
+}

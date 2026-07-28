@@ -1,0 +1,104 @@
+/* ---------- TIMESTAMP CHIP ---------- */
+
+.timestamp-chip {
+  display: inline-flex;
+  align-items: center;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-sans);
+}
+
+.timestamp-chip--active {
+  padding: var(--spacing-3xs);
+  gap: var(--spacing-3xs);
+  background: var(--feedback-success-bg);
+}
+
+/* ========== SELECT BUTTON (switches active tab / jumps to transcript) ========== */
+
+.timestamp-chip__select {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--spacing-2xs);
+  border: none;
+  border-radius: var(--radius-sm);
+  background: none;
+  cursor: pointer;
+  font-family: var(--font-sans);
+}
+
+.timestamp-chip--default .timestamp-chip__select {
+  padding: var(--spacing-xs);
+}
+
+.timestamp-chip__select:focus-visible,
+.timestamp-chip__play:focus-visible {
+  outline: 2px solid var(--interactive-primary);
+  outline-offset: -2px;
+}
+
+/* ========== HOVER (default = not yet active) ========== */
+
+.timestamp-chip--default:hover .timestamp-chip__time-text {
+  color: var(--interactive-primary-hover);
+}
+
+/* ========== LABEL (active only) ========== */
+
+.timestamp-chip__label {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-regular);
+  line-height: 18px;
+  letter-spacing: 0.33px;
+  color: var(--interactive-primary);
+  white-space: nowrap;
+}
+
+.timestamp-chip__select:hover .timestamp-chip__label {
+  color: var(--interactive-primary-hover);
+  text-decoration: underline;
+  text-underline-position: from-font;
+  text-decoration-skip-ink: none;
+}
+
+/* ========== PLAY BUTTON (active only — plays the excerpt audio) ========== */
+
+.timestamp-chip__play {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: var(--spacing-3xs) var(--spacing-2xs);
+  border: none;
+  border-radius: var(--radius-sm);
+  background: none;
+  cursor: pointer;
+  font-family: var(--font-sans);
+}
+
+.timestamp-chip__play:hover {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+/* ========== TIME + ICON ========== */
+
+.timestamp-chip__time-text {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-bold);
+  line-height: 18px;
+  letter-spacing: 0.33px;
+  color: var(--interactive-primary);
+  white-space: nowrap;
+  transition: color 0.15s ease;
+}
+
+.timestamp-chip__icon {
+  display: inline-flex;
+  width: 16px;
+  height: 16px;
+  color: var(--interactive-primary);
+  flex-shrink: 0;
+}
+
+.timestamp-chip__icon svg {
+  width: 100%;
+  height: 100%;
+}

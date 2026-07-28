@@ -1,0 +1,61 @@
+/* ---------- REFERENCE CHIP ---------- */
+
+.reference-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-3xs);
+  padding: var(--spacing-3xs) var(--spacing-2xs);
+  border: none;
+  border-radius: var(--radius-sm);
+  background: none;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  transition: color 0.15s ease, background 0.15s ease;
+}
+
+.reference-chip--active {
+  gap: var(--spacing-2xs);
+  padding: var(--spacing-3xs) var(--spacing-xs);
+  background: var(--feedback-success-bg);
+}
+
+.reference-chip:focus-visible {
+  outline: 2px solid var(--interactive-primary);
+  outline-offset: -2px;
+}
+
+/* ========== HOVER (default = not yet active) ========== */
+
+.reference-chip--default:hover .reference-chip__index {
+  color: var(--interactive-primary-hover);
+}
+
+/* ========== LABEL (active only) ========== */
+
+.reference-chip__label {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-regular);
+  line-height: 18px;
+  letter-spacing: 0.33px;
+  color: var(--interactive-primary);
+  white-space: nowrap;
+}
+
+.reference-chip--active:hover .reference-chip__label {
+  color: var(--interactive-primary-hover);
+  text-decoration: underline;
+  text-underline-position: from-font;
+  text-decoration-skip-ink: none;
+}
+
+/* ========== INDEX NUMBER ========== */
+
+.reference-chip__index {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-bold);
+  line-height: 18px;
+  letter-spacing: 0.33px;
+  color: var(--interactive-primary);
+  white-space: nowrap;
+  transition: color 0.15s ease;
+}
