@@ -35,6 +35,7 @@ import '../styles/criteria-card.css';
 import '../styles/reference-chip.css';
 import '../styles/text-criteria-card.css';
 import '../styles/skill-card.css';
+import '../styles/metrics-table.css';
 import type { Preview } from '@storybook/html';
 
 const preview: Preview = {

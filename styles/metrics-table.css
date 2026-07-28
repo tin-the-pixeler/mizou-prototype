@@ -1,0 +1,222 @@
+/* ---------- METRICS TABLE ---------- */
+
+.metrics-table {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-2xl);
+  background: var(--surface-emphasis);
+  font-family: var(--font-sans);
+}
+
+/* ========== HEADER ========== */
+
+.metrics-table__header {
+  display: grid;
+  grid-template-columns: 1.1fr 90px 1.3fr;
+  align-items: center;
+  gap: var(--spacing-md);
+  width: 100%;
+  padding: var(--spacing-2xs) var(--spacing-sm);
+  background: var(--surface-sunken);
+  border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
+}
+
+.metrics-table__row:last-child {
+  border-radius: 0 0 var(--radius-2xl) var(--radius-2xl);
+}
+
+.metrics-table__head-label {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-medium);
+  line-height: 18px;
+  letter-spacing: 0.11px;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+}
+
+/* ========== COLUMNS ========== */
+
+.metrics-table__col-metric {
+  min-width: 0;
+}
+
+.metrics-table__col-value {
+  display: flex;
+  align-items: baseline;
+}
+
+.metrics-table__col-range {
+  min-width: 0;
+}
+
+/* ========== ROW ========== */
+
+.metrics-table__row {
+  display: grid;
+  grid-template-columns: 1.1fr 90px 1.3fr;
+  align-items: center;
+  gap: var(--spacing-md);
+  width: 100%;
+  padding: var(--spacing-sm);
+  border-top: 1px solid var(--border-divider);
+}
+
+/* ========== METRIC NAME + TOOLTIP ========== */
+
+.metrics-table__name-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-3xs);
+}
+
+.metrics-table__status-icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+}
+
+.metrics-table__status-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.metrics-table__status-icon--pass {
+  color: var(--feedback-success);
+}
+
+.metrics-table__status-icon--warning {
+  color: var(--feedback-warning);
+}
+
+.metrics-table__label {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-regular);
+  line-height: 24px;
+  letter-spacing: 0.24px;
+  color: var(--text-primary);
+  cursor: default;
+}
+
+.metrics-table__tooltip {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+  z-index: 100;
+  width: max-content;
+}
+
+.metrics-table__name-wrap:hover .metrics-table__tooltip {
+  opacity: 1;
+}
+
+/* ========== VALUE ========== */
+
+.metrics-table__value {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  line-height: 24px;
+  letter-spacing: 0.24px;
+}
+
+.metrics-table__value--pass {
+  color: var(--feedback-success);
+}
+
+.metrics-table__value--warning {
+  color: var(--feedback-warning);
+}
+
+.metrics-table__unit {
+  margin-left: 2px;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-medium);
+  line-height: 18px;
+  letter-spacing: 0.11px;
+  color: var(--text-secondary);
+}
+
+/* ========== GAUGE ========== */
+
+.metrics-table__gauge {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--spacing-3xs);
+  width: 100%;
+}
+
+.metrics-table__gauge-track {
+  position: relative;
+  height: 6px;
+  width: 100%;
+  margin: 5px 0;
+  background: var(--surface-page);
+  border-radius: var(--radius-full);
+}
+
+.metrics-table__gauge-band {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: var(--feedback-success-bg);
+  border-radius: var(--radius-full);
+}
+
+.metrics-table__gauge-node {
+  position: absolute;
+  top: 50%;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 3px solid var(--surface-emphasis);
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 0 1.5px rgba(0, 0, 0, 0.12);
+}
+
+.metrics-table__gauge-node--pass {
+  background: var(--feedback-success);
+}
+
+.metrics-table__gauge-node--warning {
+  background: var(--feedback-warning);
+}
+
+.metrics-table__gauge-labels {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 9px;
+}
+
+.metrics-table__gauge-scale-label {
+  font-size: 9px;
+  font-weight: var(--fw-medium);
+  line-height: 9px;
+  letter-spacing: 0.09px;
+  color: var(--primitive-slate-8);
+}
+
+.metrics-table__gauge-scale-label--end {
+  text-align: right;
+}
+
+.metrics-table__gauge-good-label {
+  position: absolute;
+  top: 0;
+  transform: translateX(-50%);
+  font-size: 9px;
+  font-weight: var(--fw-bold);
+  line-height: 9px;
+  letter-spacing: 0.09px;
+  color: var(--primitive-emerald-dark);
+  white-space: nowrap;
+}
