@@ -1,16 +1,5 @@
 /* ---------- TEXT CRITERIA CARD ---------- */
 
-.text-criteria-card__quote {
-  flex: 1 0 0;
-  min-width: 0;
-  margin: 0;
-  font-size: var(--fs-sm);
-  font-weight: var(--fw-regular);
-  line-height: 18px;
-  letter-spacing: 0.33px;
-  color: var(--text-secondary);
-}
-
 .text-criteria-card__references {
   display: flex;
   flex-wrap: wrap;

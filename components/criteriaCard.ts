@@ -1,27 +1,35 @@
 // components/criteriaCard.ts
-// A single evaluation criterion row (audio simulations) — shown inside a Skill Card's body.
+// A single evaluation criterion row (audio/video simulations) — shown inside
+// a Skill Card's body. Each passed criterion can cite up to a few transcript
+// excerpts; timestamp chips act as tabs switching which excerpt is quoted,
+// and the active chip's play control plays that excerpt's audio.
 
 import { iconEl } from '../icons';
 import { createTimestampChip } from './timestampChip';
 
 export type CriteriaCardVariant = 'positive' | 'negative';
 
+export type CriteriaExcerpt = {
+  /** Timestamp label, e.g. "01:03" */
+  time: string;
+  /** Quoted transcript text for this timestamp */
+  text: string;
+};
+
 export type CriteriaCardOptions = {
   /** Criteria title, e.g. "Evaluation Criteria" */
   title?: string;
   variant?: CriteriaCardVariant;
-  /** Label above the transcript excerpt timestamps (positive variant only) */
-  excerptLabel?: string;
-  /** Timestamp chips shown in the excerpt, acting as tabs through the excerpt occurrences (positive variant only) */
-  timestamps?: string[];
-  /** Index into timestamps that starts active. Defaults to the last timestamp. */
+  /** Transcript excerpts that qualify this criterion (positive variant only). Max 3. */
+  excerpts?: CriteriaExcerpt[];
+  /** Index into excerpts that starts active. Defaults to the last excerpt. */
   activeIndex?: number;
   /** Label shown next to the active timestamp, e.g. "View in transcript" */
   activeLabel?: string;
-  /** Fired when a timestamp chip is selected, whether or not it changes the active tab */
-  onActiveChange?: (time: string, index: number) => void;
+  /** Fired when a timestamp is selected, whether or not it changes the active excerpt */
+  onActiveChange?: (excerpt: CriteriaExcerpt, index: number) => void;
   /** Fired when the active timestamp's play control is clicked */
-  onPlayClick?: (time: string) => void;
+  onPlayClick?: (excerpt: CriteriaExcerpt, index: number) => void;
 };
 
 export const criteriaCardVariants: CriteriaCardVariant[] = ['positive', 'negative'];
@@ -50,9 +58,10 @@ export function createCriteriaCard(options: CriteriaCardOptions = {}): HTMLEleme
   const {
     title = 'Evaluation Criteria',
     variant = 'positive',
-    excerptLabel = 'Transcript excerpt',
-    timestamps = ['01:03', '00:23', '01:19', '01:32'],
-    activeIndex = timestamps.length - 1,
+    excerpts = [
+      { time: '01:03', text: 'Can you tell me a bit more about how this shows up day to day for your team?' },
+    ],
+    activeIndex = excerpts.length - 1,
     activeLabel = 'View in transcript',
     onActiveChange,
     onPlayClick,
@@ -67,7 +76,7 @@ export function createCriteriaCard(options: CriteriaCardOptions = {}): HTMLEleme
 
   content.appendChild(createCriteriaCardHeader(title, variant));
 
-  if (variant === 'positive') {
+  if (variant === 'positive' && excerpts.length > 0) {
     const excerpt = document.createElement('div');
     excerpt.className = 'criteria-card__excerpt';
 
@@ -78,10 +87,9 @@ export function createCriteriaCard(options: CriteriaCardOptions = {}): HTMLEleme
     quoteBar.className = 'criteria-card__quote-bar';
     excerptHeader.appendChild(quoteBar);
 
-    const excerptLabelEl = document.createElement('span');
-    excerptLabelEl.className = 'criteria-card__excerpt-label';
-    excerptLabelEl.textContent = excerptLabel;
-    excerptHeader.appendChild(excerptLabelEl);
+    const quoteText = document.createElement('p');
+    quoteText.className = 'criteria-card__quote';
+    excerptHeader.appendChild(quoteText);
 
     excerpt.appendChild(excerptHeader);
 
@@ -89,30 +97,31 @@ export function createCriteriaCard(options: CriteriaCardOptions = {}): HTMLEleme
     timestampRow.className = 'criteria-card__timestamps';
     excerpt.appendChild(timestampRow);
 
-    let activeIdx = Math.min(Math.max(activeIndex, 0), Math.max(timestamps.length - 1, 0));
+    let activeIdx = Math.min(Math.max(activeIndex, 0), excerpts.length - 1);
 
-    const renderTimestamps = () => {
+    const render = () => {
+      quoteText.textContent = excerpts[activeIdx].text;
       timestampRow.innerHTML = '';
-      timestamps.forEach((time, index) => {
+      excerpts.forEach((item, index) => {
         timestampRow.appendChild(
           createTimestampChip({
-            time,
+            time: item.time,
             variant: index === activeIdx ? 'active' : 'default',
             label: activeLabel,
             onSelect: () => {
               if (activeIdx !== index) {
                 activeIdx = index;
-                renderTimestamps();
+                render();
               }
-              onActiveChange?.(time, index);
+              onActiveChange?.(item, index);
             },
-            onPlay: onPlayClick,
+            onPlay: () => onPlayClick?.(item, index),
           }),
         );
       });
     };
 
-    renderTimestamps();
+    render();
     content.appendChild(excerpt);
   }
 

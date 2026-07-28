@@ -93,8 +93,10 @@
   background: var(--feedback-success);
 }
 
-.criteria-card__excerpt-label {
+.criteria-card__quote {
   flex: 1 0 0;
+  min-width: 0;
+  margin: 0;
   font-size: var(--fs-sm);
   font-weight: var(--fw-regular);
   line-height: 18px;

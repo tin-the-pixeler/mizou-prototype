@@ -24,7 +24,12 @@ const render = (args: StoryProps) => {
     createSkillCard({
       ...args,
       children: [
-        createCriteriaCard({ timestamps: ['01:03', '00:23', '01:19', '01:32'] }),
+        createCriteriaCard({
+          excerpts: [
+            { time: '01:03', text: 'Can you tell me a bit more about how this shows up day to day for your team?' },
+            { time: '00:23', text: "That's helpful context. One thing our platform does well is give full visibility across teams in real time." },
+          ],
+        }),
         createCriteriaCard({ variant: 'negative' }),
       ],
     }),
@@ -97,11 +102,16 @@ export const List: Story = {
         children: [
           createCriteriaCard({
             title: 'Maintained a science-based approach when discussing the product',
-            timestamps: ['01:03', '00:23'],
+            excerpts: [
+              { time: '01:03', text: "I hear you, Dr. Miller, and I want to make sure we're addressing your concerns properly before moving forward." },
+              { time: '00:23', text: 'Based on the phase III trial data, efficacy was demonstrated across the full patient population we discussed.' },
+            ],
           }),
           createCriteriaCard({
             title: 'Avoided criticizing current protocols or existing treatment approaches',
-            timestamps: ['01:03'],
+            excerpts: [
+              { time: '01:03', text: 'Your current protocol has clearly been working well for your patients, this is more about giving you an additional option to consider.' },
+            ],
           }),
         ],
       }),

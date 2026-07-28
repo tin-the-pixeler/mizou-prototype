@@ -12,7 +12,6 @@ const meta: Meta<StoryProps> = {
   argTypes: {
     title: { control: 'text' },
     variant: { control: 'select', options: criteriaCardVariants },
-    excerptLabel: { control: 'text' },
     activeIndex: { control: 'number' },
     activeLabel: { control: 'text' },
   },
@@ -20,6 +19,12 @@ const meta: Meta<StoryProps> = {
 export default meta;
 
 type Story = StoryObj<StoryProps>;
+
+const EXCERPTS = [
+  { time: '01:03', text: 'Can you tell me a bit more about how this shows up day to day for your team?' },
+  { time: '00:23', text: "That's helpful context. One thing our platform does well is give full visibility across teams in real time." },
+  { time: '01:19', text: 'Our platform gives full visibility across teams in real time.' },
+];
 
 const render = (args: StoryProps) => {
   const wrapper = document.createElement('div');
@@ -32,8 +37,7 @@ export const Positive: Story = {
   args: {
     title: 'Evaluation Criteria',
     variant: 'positive',
-    excerptLabel: 'Transcript excerpt',
-    timestamps: ['01:03', '00:23', '01:19', '01:32'],
+    excerpts: EXCERPTS,
     activeLabel: 'View in transcript',
   },
   render,
@@ -53,7 +57,7 @@ export const List: Story = {
     const col = document.createElement('div');
     col.style.cssText = 'display:flex; flex-direction:column; gap:12px; padding:24px; background:var(--surface-page); width:704px;';
 
-    col.appendChild(createCriteriaCard());
+    col.appendChild(createCriteriaCard({ excerpts: EXCERPTS }));
     col.appendChild(createCriteriaCard({ variant: 'negative' }));
     col.appendChild(createCriteriaCard({ variant: 'negative' }));
     col.appendChild(createCriteriaCard({ variant: 'negative' }));

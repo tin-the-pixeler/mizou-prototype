@@ -55,7 +55,7 @@ export function createTextCriteriaCard(options: TextCriteriaCardOptions = {}): H
     excerptHeader.appendChild(quoteBar);
 
     const quoteText = document.createElement('p');
-    quoteText.className = 'text-criteria-card__quote';
+    quoteText.className = 'criteria-card__quote';
     excerptHeader.appendChild(quoteText);
 
     excerpt.appendChild(excerptHeader);
