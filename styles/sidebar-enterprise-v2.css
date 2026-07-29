@@ -381,6 +381,12 @@
   background: transparent;
 }
 
+/* Collapsed rail: no row highlight or sub-nav, but the active team's avatar
+   still gets a focus ring so the user can see which team they're on. */
+.sv2-sidebar.sv2-collapsed .sv2-team--expanded .sv2-team-avatar {
+  box-shadow: 0 0 0 2px var(--surface-raised), 0 0 0 4px var(--interactive-primary);
+}
+
 .sv2-sidebar.sv2-collapsed .sv2-feedback-wrap {
   justify-content: center;
 }

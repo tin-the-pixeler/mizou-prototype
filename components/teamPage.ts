@@ -81,6 +81,9 @@ export function createTeamPage({
   let currentTeam: SidebarV2Team = sidebarTeams.find((t) => t.name === teamName)
     ?? { name: teamName, initials: teamInitials, color: teamColor };
   let currentTab: TeamTabKey = initialTab;
+  // Preserved across sidebar re-renders (e.g. switching teams) so collapsing
+  // the rail doesn't silently pop back open on the next navigation.
+  let sidebarCollapsed = false;
 
   const page = document.createElement('div');
   page.className = 'team-page';
@@ -137,6 +140,8 @@ export function createTeamPage({
         teams: sidebarTeams,
         hideCollections: true,
         hideCreateButton: true,
+        collapsed: sidebarCollapsed,
+        onCollapsedChange: (collapsed) => { sidebarCollapsed = collapsed; },
         expandedTeam: currentTeam.name,
         activeSubNav: TABS.find((t) => t.key === currentTab)?.label,
         onTeamSubNavClick: (team, item) => {

@@ -34,6 +34,8 @@ export type SidebarEnterpriseV2Options = {
   hideCollections?: boolean;
   /** Hide the "Create" button. Default false. */
   hideCreateButton?: boolean;
+  /** Fired when the user toggles the sidebar collapsed/expanded via its own header buttons */
+  onCollapsedChange?: (collapsed: boolean) => void;
 };
 
 const defaultTeams: SidebarV2Team[] = [
@@ -173,6 +175,7 @@ export function createSidebarEnterpriseV2({
   onTeamSelect,
   hideCollections = false,
   hideCreateButton = false,
+  onCollapsedChange,
 }: SidebarEnterpriseV2Options = {}): HTMLElement {
   let currentExpandedTeam = expandedTeam;
   const nav = document.createElement('nav');
@@ -196,6 +199,7 @@ export function createSidebarEnterpriseV2({
         updateHeader(nowCollapsed);
         updateCreateButton(nowCollapsed);
         updateFeedbackButton(nowCollapsed);
+        onCollapsedChange?.(nowCollapsed);
       });
       header.appendChild(expandBtn);
     } else {
@@ -225,6 +229,7 @@ export function createSidebarEnterpriseV2({
         updateHeader(nowCollapsed);
         updateCreateButton(nowCollapsed);
         updateFeedbackButton(nowCollapsed);
+        onCollapsedChange?.(nowCollapsed);
       });
 
       header.append(workspaceBtn, collapseBtn);

@@ -35,7 +35,7 @@
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  background: var(--surface-emphasis);
+  background: var(--surface-raised, #fcfcfd);
   border: 1px solid var(--border-default);
   border-radius: var(--radius-container);
   overflow: hidden;
@@ -59,6 +59,9 @@
   padding: var(--spacing-2xs) var(--spacing-md) var(--spacing-md);
   display: flex;
   flex-direction: column;
+  /* Same fill as the tabs bar / filter bar above — subtly darker than the
+     white cards/tables sitting on it, so they stand out. */
+  background: var(--surface-raised, #fcfcfd);
 }
 
 /* The filter bar / card grid / table below share the exact same box
