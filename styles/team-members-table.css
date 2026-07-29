@@ -1,0 +1,227 @@
+/* ========== TEAM MEMBERS TABLE ========== */
+/* Figma: table-members-desktop (node 15321:369726) */
+
+.mt {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-sans);
+}
+
+.mt__head-row {
+  background: var(--primitive-slate-3);
+}
+
+.mt__th {
+  text-align: left;
+  padding: 10px var(--spacing-sm);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-medium);
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.mt__th--select {
+  width: 48px;
+}
+
+.mt__th-label {
+  font-size: var(--fs-xs);
+  font-weight: inherit;
+}
+
+.mt__sort {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-3xs);
+  border: none;
+  background: none;
+  padding: 0;
+  font-family: var(--font-sans);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-medium);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.mt__sort:hover {
+  color: var(--text-primary);
+}
+
+.mt__sort--active {
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.mt__sort-icon {
+  display: inline-flex;
+  width: 12px;
+  height: 12px;
+  transition: transform 0.15s ease;
+}
+
+.mt__sort-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.mt__sort-icon--asc {
+  transform: rotate(180deg);
+}
+
+.mt__sort-icon--neutral {
+  color: var(--primitive-slate-8);
+}
+
+.mt__checkbox {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--interactive-primary);
+  cursor: pointer;
+}
+
+/* ── Rows ── */
+.mt__row {
+  background: var(--surface-emphasis);
+  border-bottom: 1px solid var(--border-subtle);
+  transition: background 0.15s ease;
+}
+
+.mt__row:hover {
+  background: var(--primitive-slate-2);
+}
+
+.mt__td {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: var(--fs-sm);
+  color: var(--text-primary);
+  vertical-align: middle;
+}
+
+.mt__member {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2xs);
+  min-width: 200px;
+}
+
+.mt__avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full);
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.mt__member-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.mt__member-name {
+  font-weight: var(--fw-bold);
+  white-space: nowrap;
+}
+
+.mt__member-email {
+  font-size: var(--fs-xs);
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mt__td--role,
+.mt__td--last-active {
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.mt__td--actions {
+  width: 40px;
+  text-align: right;
+}
+
+.mt__action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: var(--radius-full);
+  background: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.mt__action-btn:hover {
+  background: var(--interactive-secondary);
+}
+
+.mt__action-icon {
+  display: inline-flex;
+  width: 16px;
+  height: 16px;
+}
+
+.mt__action-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.mt tbody tr:last-child {
+  border-bottom: none;
+}
+
+.mt tbody tr:last-child td:first-child {
+  border-bottom-left-radius: var(--radius-container);
+}
+
+.mt tbody tr:last-child td:last-child {
+  border-bottom-right-radius: var(--radius-container);
+}
+
+/* ── Toolbar above the table: search + Add member ── */
+.mt-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-2xs);
+  width: 100%;
+}
+
+.mt-search {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2xs);
+  width: 200px;
+  padding: var(--spacing-3xs) var(--spacing-2xs);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-input);
+  background: var(--surface-raised);
+}
+
+.mt-search__input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  background: transparent;
+  font-family: var(--font-sans);
+  font-size: var(--fs-sm);
+  color: var(--text-primary);
+  outline: none;
+}
+
+.mt-search__input::placeholder {
+  color: var(--text-secondary);
+}
+
+.mt-search__icon {
+  width: 16px;
+  height: 16px;
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}

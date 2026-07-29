@@ -1,0 +1,148 @@
+/* ========== TEAM PAGE ========== */
+/* Figma: Teams - Assigned Simulations / Sessions / Members / Team Settings
+   (nodes 15183:256868, 15183:256865, 15183:256866, 15183:256867) */
+
+.team-page {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  height: 100vh;
+  background: var(--surface-page, var(--primitive-slate-2));
+  font-family: var(--font-sans);
+}
+
+.team-page__sidebar-slot {
+  flex-shrink: 0;
+  display: flex;
+}
+
+.team-page__main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.team-page__panel-wrapper {
+  flex: 1;
+  min-height: 0;
+  box-sizing: border-box;
+  padding: var(--spacing-2xs) var(--spacing-sm) var(--spacing-sm);
+}
+
+.team-page__panel {
+  height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface-emphasis);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-container);
+  overflow: hidden;
+}
+
+.team-page__tabs-wrapper {
+  flex-shrink: 0;
+  padding: var(--spacing-sm) var(--spacing-md) var(--spacing-2xs);
+  /* Reserve the same gutter as .team-page__container below, even though this
+     row never actually scrolls, so both stay centered on the same x-axis
+     instead of drifting apart by the width of a scrollbar. */
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+}
+
+.team-page__container {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+  padding: var(--spacing-2xs) var(--spacing-md) var(--spacing-md);
+  display: flex;
+  flex-direction: column;
+}
+
+/* The filter bar / card grid / table below share the exact same box
+   (.team-page__tabs-wrapper / .team-page__container, same horizontal padding
+   on both) so they line up without needing a max-width cap. The tabs bar
+   itself stays content-sized (see .tnav) rather than stretching to match —
+   stretching it would force equal-width tabs and space short labels out. */
+
+/* ── Tab-specific layout ── */
+.team-page__tab {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.team-page__filters {
+  width: 100%;
+}
+
+/* The filter bar's own horizontal padding would otherwise inset its pills and
+   search input from the tabs bar / card grid edges above and below it — zero
+   it here so everything lines up flush at the same left/right edge. */
+.team-page__filters .sfb {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* Sessions tab is the exception: its filter bar sits directly above a bordered
+   table card, so it keeps horizontal padding — matched to the table cells'
+   own padding (--spacing-sm) so the pills/search line up with the row content
+   (e.g. the learner avatar), not the table's outer edge. */
+.team-page__tab--sessions .team-page__filters .sfb {
+  padding-left: var(--spacing-sm);
+  padding-right: var(--spacing-sm);
+}
+
+/* .sfb already has its own symmetric 12px top/bottom padding. The generic
+   .team-page__tab gap would stack an extra 16px under it (but not above,
+   since the filter bar is the first child), making the bottom look wider —
+   drop the gap here so the filter bar's own padding is the only spacing. */
+.team-page__tab--sessions {
+  gap: 0;
+}
+
+.team-page__card-grid {
+  display: grid;
+  /* minmax(0, 1fr), not a bare 1fr — otherwise a child's intrinsic min-width
+     (see .sim-card override below) would force the tracks wider than their
+     fair share and overflow the grid past the tabs bar / filter bar edges. */
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--spacing-md);
+}
+
+@media (max-width: 1100px) {
+  .team-page__card-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 820px) {
+  .team-page__card-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 520px) {
+  .team-page__card-grid {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+}
+
+/* .sim-card is authored as a fixed 300x407 card (for flex-wrap layouts
+   elsewhere); make it fluid so it fills its responsive grid cell here. */
+.team-page__card-grid .sim-card {
+  width: 100%;
+  height: auto;
+}
+
+.team-page__card-grid .sim-card__thumbnail {
+  height: auto;
+  aspect-ratio: 16 / 9;
+}
+
+.team-page__members-card {
+  overflow: hidden;
+}

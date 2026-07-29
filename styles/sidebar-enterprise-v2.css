@@ -1,0 +1,386 @@
+/* ---------- SIDEBAR ENTERPRISE V2 ---------- */
+/* Figma: sidebar-primary-v2-enterprise (node 14155:233892) */
+
+.sv2-sidebar {
+  box-sizing: border-box;
+  width: 244px;
+  height: 100vh;
+  padding: var(--spacing-sm);
+  background: var(--surface-raised);
+  border-right: 1px solid var(--border-default);
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-sans);
+  transition: width 0.2s ease, padding 0.2s ease;
+}
+
+.sv2-sidebar.sv2-collapsed {
+  width: 72px;
+}
+
+/* ----- Header ----- */
+.sv2-header {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-2xs);
+  width: 100%;
+  margin-bottom: var(--spacing-lg);
+}
+
+.sv2-sidebar.sv2-collapsed .sv2-header {
+  justify-content: center;
+}
+
+.sv2-workspace-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-3xs);
+  padding: var(--spacing-3xs);
+  border: none;
+  background: transparent;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  min-width: 0;
+  font-family: var(--font-sans);
+  transition: background 0.15s ease;
+}
+
+.sv2-workspace-btn:hover {
+  background: var(--interactive-secondary);
+}
+
+.sv2-workspace-btn__logo {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.sv2-workspace-btn__name {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  line-height: 24px;
+  letter-spacing: 0.24px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 120px;
+}
+
+.sv2-workspace-btn__chevron {
+  width: 16px;
+  height: 16px;
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+
+.sv2-icon-toggle {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.sv2-icon-toggle:hover {
+  background: var(--interactive-secondary);
+  color: var(--text-primary);
+}
+
+/* ----- Content ----- */
+.sv2-content-top {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  width: 100%;
+  margin-bottom: var(--spacing-sm);
+}
+
+.sv2-create-wrap {
+  display: flex;
+  justify-content: center;
+}
+
+/* ----- Nav items (Learning Hub / Collections / Teams) ----- */
+.sv2-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3xs);
+  width: 100%;
+  padding: 4px 8px;
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  text-decoration: none;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.sv2-item:hover {
+  background: var(--interactive-secondary-active);
+  color: var(--interactive-primary);
+}
+
+.sv2-item__icon {
+  flex-shrink: 0;
+}
+
+.sv2-item__label {
+  flex: 1 0 0;
+  min-width: 0;
+  font-size: var(--fs-md);
+  font-weight: var(--fw-regular);
+  line-height: 24px;
+  letter-spacing: 0.24px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sv2-divider {
+  width: 100%;
+  border: none;
+  border-top: 1px solid var(--border-subtle);
+  margin: 0;
+}
+
+/* ----- Teams section (grows to fill remaining height, scrolls internally) ----- */
+.sv2-teams {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2xs);
+  width: 100%;
+
+  /* Thin, borderless scrollbar (Firefox) */
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+
+/* Thin, borderless scrollbar (WebKit/Blink) */
+.sv2-teams::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sv2-teams::-webkit-scrollbar-track {
+  background: transparent;
+  border: none;
+}
+
+.sv2-teams::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border: none;
+  border-radius: var(--radius-full);
+}
+
+.sv2-teams::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
+}
+
+/* Sticky "TEAMS" label + collapse-all-teams chevron */
+.sv2-teams__header {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin: 0;
+  padding: 4px 8px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--surface-raised);
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.15s ease;
+}
+
+.sv2-teams__header:hover {
+  background: var(--interactive-secondary);
+}
+
+.sv2-teams__title {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-regular);
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.sv2-teams__chevron {
+  width: 16px;
+  height: 16px;
+  color: var(--text-secondary);
+  flex-shrink: 0;
+  transition: transform 0.15s ease;
+}
+
+.sv2-teams__chevron--collapsed {
+  transform: rotate(-90deg);
+}
+
+.sv2-teams-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2xs);
+  width: 100%;
+}
+
+.sv2-team-avatar {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-sm);
+  color: var(--text-inverse);
+  font-size: 13px;
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.3px;
+}
+
+/* ----- Team accordion (expanded sub-nav) ----- */
+.sv2-team {
+  width: 100%;
+  border-radius: var(--radius-md);
+  transition: background 0.15s ease;
+}
+
+.sv2-team--expanded {
+  background: var(--interactive-secondary);
+}
+
+.sv2-team-header {
+  width: 100%;
+  border: none;
+  background: transparent;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.sv2-team--expanded .sv2-team-header:hover {
+  background: transparent;
+}
+
+.sv2-team--expanded .sv2-team-header__name {
+  color: var(--interactive-primary);
+  font-weight: var(--fw-bold);
+}
+
+.sv2-team-sublist {
+  display: flex;
+  flex-direction: column;
+  padding: 0 8px 4px 32px;
+}
+
+.sv2-team-subitem {
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-size: var(--fs-md);
+  font-weight: var(--fw-regular);
+  line-height: 24px;
+  letter-spacing: 0.24px;
+  text-decoration: none;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.sv2-team-subitem:hover {
+  background: var(--interactive-secondary-active);
+  color: var(--interactive-primary);
+}
+
+.sv2-team-subitem--active {
+  color: var(--interactive-primary);
+  font-weight: var(--fw-bold);
+}
+
+/* ----- Expandable nav item (My Learning Hub) ----- */
+.sv2-expandable-header {
+  width: 100%;
+  border: none;
+  background: transparent;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.sv2-expandable-chevron {
+  width: 16px;
+  height: 16px;
+  color: var(--text-secondary);
+  flex-shrink: 0;
+  transform: rotate(-90deg);
+  transition: transform 0.15s ease;
+}
+
+.sv2-expandable-chevron--open {
+  transform: rotate(0deg);
+}
+
+.sv2-expandable-sublist {
+  display: flex;
+  flex-direction: column;
+  padding: 0 8px 4px 32px;
+}
+
+.sv2-expandable-subitem {
+  padding: 4px 8px;
+  font-size: var(--fs-md);
+  font-weight: var(--fw-regular);
+  line-height: 24px;
+  letter-spacing: 0.24px;
+}
+
+.sv2-expandable-subitem--disabled {
+  color: var(--text-primary);
+  opacity: var(--alpha-disabled);
+  cursor: not-allowed;
+  user-select: none;
+}
+
+/* ----- Feedback ----- */
+.sv2-feedback-wrap {
+  flex-shrink: 0;
+  margin-top: var(--spacing-sm);
+  display: flex;
+  justify-content: flex-start;
+}
+
+/* ----- Collapsed state ----- */
+.sv2-sidebar.sv2-collapsed .sv2-item {
+  justify-content: center;
+  padding: 8px;
+}
+
+.sv2-sidebar.sv2-collapsed .sv2-item__label,
+.sv2-sidebar.sv2-collapsed .sv2-teams__header {
+  display: none;
+}
+
+.sv2-sidebar.sv2-collapsed .sv2-team-sublist,
+.sv2-sidebar.sv2-collapsed .sv2-expandable-sublist,
+.sv2-sidebar.sv2-collapsed .sv2-expandable-chevron {
+  display: none;
+}
+
+.sv2-sidebar.sv2-collapsed .sv2-team--expanded {
+  background: transparent;
+}
+
+.sv2-sidebar.sv2-collapsed .sv2-feedback-wrap {
+  justify-content: center;
+}

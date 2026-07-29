@@ -1,0 +1,40 @@
+/* ---------- TABS NAV (pill tab bar) ---------- */
+/* Figma: tabs / tabs-item (node 15321:162099 and children) */
+
+.tnav {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 4px;
+  padding: 5px;
+  background: var(--primitive-slate-3);
+  border-radius: var(--radius-md);
+  font-family: var(--font-sans);
+}
+
+.tnav__item {
+  flex: 0 0 auto;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 10px 20px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-sans);
+  font-size: var(--fs-md);
+  font-weight: var(--fw-regular);
+  color: var(--text-primary);
+  line-height: 24px;
+  letter-spacing: 0.24px;
+  white-space: nowrap;
+  text-align: center;
+  transition: background 0.15s ease;
+}
+
+.tnav__item--active {
+  background: var(--surface-emphasis);
+  font-weight: var(--fw-bold);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+}
+
+.tnav__item:not(.tnav__item--active):hover {
+  background: rgba(0, 0, 0, 0.04);
+}

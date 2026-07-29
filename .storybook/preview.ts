@@ -2,6 +2,7 @@ import '../styles/tokens.css';
 import '../styles/app-typography.css';
 import '../styles/chat-markdown.css';
 import '../styles/sidebar.css';
+import '../styles/sidebar-enterprise-v2.css';
 import '../styles/icons.css';
 import '../styles/chat-thread.css';
 import '../styles/chat-typography.css';
@@ -37,6 +38,11 @@ import '../styles/skill-card.css';
 import '../styles/metrics-table.css';
 import '../styles/feedback-transcript.css';
 import '../styles/feedback-drawer.css';
+import '../styles/topbar-primary.css';
+import '../styles/tabs-nav.css';
+import '../styles/team-members-table.css';
+import '../styles/team-settings-form.css';
+import '../styles/team-page.css';
 import type { Preview } from '@storybook/html';
 
 const preview: Preview = {

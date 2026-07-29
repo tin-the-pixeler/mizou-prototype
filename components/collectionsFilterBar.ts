@@ -53,6 +53,8 @@ export type CollectionsFilterBarOptions = {
   initialState?: Partial<CollectionsFilterState>;
   /** Open a dropdown menu on mount (for demos/docs). */
   openMenu?: 'categories' | 'level' | 'status' | null;
+  /** Hide the Status filter trigger. Default false; set true where simulation lifecycle (Draft/Published) isn't relevant, e.g. the Team Page. */
+  hideStatus?: boolean;
   onChange?: (state: CollectionsFilterState) => void;
 };
 
@@ -267,7 +269,7 @@ export function createCollectionsFilterBar(options: CollectionsFilterBarOptions)
   const TRIGGERS: { key: MenuKey; label: string }[] = [
     { key: 'categories', label: 'Categories' },
     { key: 'level', label: 'Level' },
-    { key: 'status', label: 'Status' },
+    ...(options.hideStatus ? [] : [{ key: 'status' as MenuKey, label: 'Status' }]),
   ];
   TRIGGERS.forEach(({ key, label }) => {
     const wrap = h('div', 'sfb__dropdown');
@@ -344,10 +346,12 @@ export function createCollectionsFilterBar(options: CollectionsFilterBarOptions)
     levelTrigger.querySelector('.sfb__trigger-label')!.textContent = state.level ? LEVEL_LABEL[state.level] : 'Level';
     levelTrigger.querySelector('.sfb__trigger-count')!.textContent = '';
 
-    const statusTrigger = dropdowns.get('status')!.trigger;
-    statusTrigger.classList.toggle('sfb__trigger--applied', state.status !== null);
-    statusTrigger.querySelector('.sfb__trigger-label')!.textContent = state.status ? STATUS_LABEL[state.status] : 'Status';
-    statusTrigger.querySelector('.sfb__trigger-count')!.textContent = '';
+    const statusTrigger = dropdowns.get('status')?.trigger;
+    if (statusTrigger) {
+      statusTrigger.classList.toggle('sfb__trigger--applied', state.status !== null);
+      statusTrigger.querySelector('.sfb__trigger-label')!.textContent = state.status ? STATUS_LABEL[state.status] : 'Status';
+      statusTrigger.querySelector('.sfb__trigger-count')!.textContent = '';
+    }
 
     const anyActive =
       state.formats.length > 0 || count > 0 || state.level !== null || state.status !== null;

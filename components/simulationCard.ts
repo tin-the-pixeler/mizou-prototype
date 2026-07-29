@@ -3,6 +3,7 @@
 // Supports 6 display states: published, ended, unpublished, draft, new, with-sessions.
 
 import { iconEl } from '../icons';
+import { formatIconEl } from './sessionsFilterBar';
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -14,7 +15,7 @@ export type SimulationCardStatus =
   | 'new'           // No simulation badge, teal "Plan" chip, 1 full-width button
   | 'with-sessions'; // No chip, sessions text-link
 
-export type SimulationType = 'voice-role-play' | 'chatbot';
+export type SimulationType = 'voice-role-play' | 'chatbot' | 'video-role-play';
 
 export type SimulationCardOptions = {
   title: string;
@@ -46,11 +47,7 @@ export type SimulationCardOptions = {
 const SIMULATION_TYPE_LABEL: Record<SimulationType, string> = {
   'voice-role-play': 'Voice Role Play',
   chatbot: 'AI Chatbot',
-};
-
-const SIMULATION_TYPE_ICON: Record<SimulationType, string> = {
-  'voice-role-play': 'mic-fill',
-  chatbot: 'chat-ai',
+  'video-role-play': 'Video Role Play',
 };
 
 const DIFFICULTY_LABEL: Record<string, string> = {
@@ -141,7 +138,7 @@ function buildThumbnail({
     const badge = document.createElement('div');
     badge.className = 'sim-card__badge';
 
-    const iconWrap = iconEl(SIMULATION_TYPE_ICON[simulationType] as any, 'sim-card__badge-icon');
+    const iconWrap = formatIconEl(simulationType, 'sim-card__badge-icon');
     const label = document.createElement('span');
     label.className = 'sim-card__badge-label';
     label.textContent = SIMULATION_TYPE_LABEL[simulationType];

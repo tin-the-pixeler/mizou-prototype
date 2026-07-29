@@ -1,0 +1,97 @@
+/* ========== TEAM SETTINGS FORM ========== */
+/* Figma: Teams - Team Settings (node 15183:256867) */
+
+.tsf {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  max-width: 600px;
+  width: 100%;
+  font-family: var(--font-sans);
+}
+
+.tsf__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2xs);
+}
+
+.tsf__label {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  line-height: 24px;
+  letter-spacing: 0.24px;
+}
+
+.tsf__input {
+  box-sizing: border-box;
+  width: 100%;
+  padding: var(--spacing-xs);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-input);
+  background: var(--surface-emphasis);
+  font-family: var(--font-sans);
+  font-size: var(--fs-md);
+  color: var(--text-primary);
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.tsf__input:focus-visible {
+  border-color: var(--interactive-primary);
+}
+
+.tsf__actions {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+.tsf__divider {
+  width: 100%;
+  border: none;
+  border-top: 1px solid var(--border-subtle);
+  margin: 0;
+}
+
+.tsf__delete {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2xs);
+  align-items: flex-start;
+}
+
+.tsf__delete-title {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.tsf__delete-body {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+  line-height: 24px;
+  margin: 0 0 var(--spacing-2xs);
+}
+
+.tsf__delete-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-3xs) var(--spacing-sm);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-full);
+  background: var(--surface-emphasis);
+  color: var(--primitive-rose-base);
+  font-family: var(--font-sans);
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.tsf__delete-btn:hover {
+  background: var(--primitive-rose-light);
+  border-color: var(--primitive-rose-base);
+}
