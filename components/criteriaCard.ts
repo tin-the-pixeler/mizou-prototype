@@ -80,8 +80,19 @@ export function createCriteriaCard(options: CriteriaCardOptions = {}): HTMLEleme
     const excerpt = document.createElement('div');
     excerpt.className = 'criteria-card__excerpt';
 
+    // Timestamp chips act as tabs selecting the quoted excerpt, so they sit at
+    // the top of the excerpt, above the quote they control.
+    const timestampRow = document.createElement('div');
+    timestampRow.className = 'criteria-card__timestamps';
+    excerpt.appendChild(timestampRow);
+
     const excerptHeader = document.createElement('div');
     excerptHeader.className = 'criteria-card__excerpt-header';
+    // The whole quote is clickable — it jumps the transcript to the active
+    // excerpt, same as selecting its timestamp chip.
+    excerptHeader.setAttribute('role', 'button');
+    excerptHeader.setAttribute('tabindex', '0');
+    excerptHeader.setAttribute('aria-label', 'View this excerpt in the transcript');
 
     const quoteBar = document.createElement('span');
     quoteBar.className = 'criteria-card__quote-bar';
@@ -93,11 +104,16 @@ export function createCriteriaCard(options: CriteriaCardOptions = {}): HTMLEleme
 
     excerpt.appendChild(excerptHeader);
 
-    const timestampRow = document.createElement('div');
-    timestampRow.className = 'criteria-card__timestamps';
-    excerpt.appendChild(timestampRow);
-
     let activeIdx = Math.min(Math.max(activeIndex, 0), excerpts.length - 1);
+
+    const selectActive = () => onActiveChange?.(excerpts[activeIdx], activeIdx);
+    excerptHeader.addEventListener('click', selectActive);
+    excerptHeader.addEventListener('keydown', event => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        selectActive();
+      }
+    });
 
     const render = () => {
       quoteText.textContent = excerpts[activeIdx].text;

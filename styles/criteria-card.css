@@ -84,6 +84,22 @@
   width: 100%;
   padding: var(--spacing-xs);
   background: var(--feedback-success-bg);
+  cursor: pointer;
+}
+
+.criteria-card__excerpt-header:focus-visible {
+  outline: 2px solid var(--interactive-primary);
+  outline-offset: -2px;
+}
+
+/* Hovering the quote previews the jump-to-transcript action with the same
+   underline the "View in transcript" link uses. */
+.criteria-card__excerpt-header:hover .criteria-card__quote,
+.criteria-card__excerpt-header:focus-visible .criteria-card__quote {
+  color: var(--interactive-primary-hover);
+  text-decoration: underline;
+  text-underline-position: from-font;
+  text-decoration-skip-ink: none;
 }
 
 .criteria-card__quote-bar {

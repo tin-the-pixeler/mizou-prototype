@@ -69,6 +69,16 @@
   color: var(--feedback-success);
 }
 
+/* Score band — colors the score and the card stroke:
+   red 0-50, yellow 51-69, green 70-100. */
+.skill-card--score-low { border-color: var(--feedback-error); }
+.skill-card--score-mid { border-color: var(--feedback-warning); }
+.skill-card--score-high { border-color: var(--feedback-success); }
+
+.skill-card--score-low .skill-card__score { color: var(--feedback-error); }
+.skill-card--score-mid .skill-card__score { color: var(--feedback-warning); }
+.skill-card--score-high .skill-card__score { color: var(--feedback-success); }
+
 /* ========== BODY ========== */
 
 .skill-card__body {

@@ -186,9 +186,11 @@ export function createTranscript(options: TranscriptOptions): TranscriptHandle {
     });
     if (!best) return;
     const target: HTMLElement = best;
+    // Keep exactly one message highlighted so the cited excerpt stays visible
+    // until the user jumps to another one.
+    list.querySelectorAll('.is-highlight').forEach(el => el.classList.remove('is-highlight'));
     target.scrollIntoView({ behavior: 'smooth', block: 'center' });
     target.classList.add('is-highlight');
-    setTimeout(() => target.classList.remove('is-highlight'), 1600);
   };
 
   return { root, scrollTo };

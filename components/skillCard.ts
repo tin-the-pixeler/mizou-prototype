@@ -15,11 +15,18 @@ export type SkillCardOptions = {
   expanded?: boolean;
 };
 
+/** Score band drives the score color and card stroke: red 0-50, yellow 51-69, green 70-100. */
+function scoreBand(score: number): 'low' | 'mid' | 'high' {
+  if (score <= 50) return 'low';
+  if (score <= 69) return 'mid';
+  return 'high';
+}
+
 export function createSkillCard(options: SkillCardOptions): HTMLElement {
   const { title, score, children = [], expanded = true } = options;
 
   const root = document.createElement('div');
-  root.className = `skill-card${expanded ? '' : ' skill-card--collapsed'}`;
+  root.className = `skill-card skill-card--score-${scoreBand(score)}${expanded ? '' : ' skill-card--collapsed'}`;
 
   const toggle = document.createElement('button');
   toggle.type = 'button';

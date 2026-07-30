@@ -62,10 +62,6 @@ const DELIVERY = {
     'Speaker ratio was 74%, well above the 40-60% target. Aim to hand over more of the conversation.',
     'Interruptions ran at 33%, higher than the 20% target. Practice waiting a full beat after the other person stops talking.',
   ],
-  tryThisNextTime: [
-    'Ask an open question after your next pitch point, then stay quiet until they finish answering.',
-    'Before responding, silently count to two after the other person stops talking.',
-  ],
 };
 
 const audioVideoData: FeedbackData = {
@@ -75,13 +71,11 @@ const audioVideoData: FeedbackData = {
   status: 'Completed',
   learner: 'Amy Iverson',
   meta: { id: 'Session Feedback #2301', date: '3 Jan 2025 @ 14:32', duration: '06:13 minutes' },
-  overallScore: 70,
   summary:
     "The conversation demonstrated strong professionalism and empathy, with the advisor effectively acknowledging the customer's pain points around data management. The advisor maintained a consultative, needs-based approach throughout. A missed opportunity: quantifying the cost of the current problem earlier, and defining next steps more clearly before closing.",
   skills: [
     {
       name: 'Building Trust & Rapport',
-      score: 33,
       expanded: false,
       criteria: [
         { variant: 'negative', title: 'Proactively introduced next steps before the customer asked' },
@@ -90,7 +84,6 @@ const audioVideoData: FeedbackData = {
     },
     {
       name: 'Needs Assessment',
-      score: 100,
       expanded: true,
       criteria: [
         {
@@ -108,6 +101,41 @@ const audioVideoData: FeedbackData = {
             { time: '02:13', text: "Great question — every rep gets a shared timeline of the account, so when a deal changes hands the next person can see exactly what's already been discussed." },
           ],
         },
+      ],
+    },
+    {
+      name: 'Product Pitch & Value',
+      expanded: false,
+      criteria: [
+        {
+          variant: 'positive',
+          title: "Connected product capabilities to the customer's stated pain points",
+          excerpts: [
+            { time: '01:03', text: "That's really helpful context. I completely understand your caution here — one thing our platform does well is give full visibility across teams in real time, so nobody re-treads old ground." },
+          ],
+        },
+        {
+          variant: 'positive',
+          title: 'Explained how the solution works in practical day-to-day terms',
+          excerpts: [
+            { time: '02:13', text: "Great question — every rep gets a shared timeline of the account, so when a deal changes hands the next person can see exactly what's already been discussed." },
+          ],
+        },
+        { variant: 'negative', title: 'Quantified the cost or ROI of solving the problem' },
+      ],
+    },
+    {
+      name: 'Objection Handling',
+      expanded: false,
+      criteria: [
+        {
+          variant: 'positive',
+          title: "Acknowledged the customer's hesitation before responding",
+          excerpts: [
+            { time: '01:03', text: "That's really helpful context. I completely understand your caution here — one thing our platform does well is give full visibility across teams in real time, so nobody re-treads old ground." },
+          ],
+        },
+        { variant: 'negative', title: 'Backed the response with concrete proof points or evidence' },
       ],
     },
   ],
@@ -138,13 +166,11 @@ const textData: FeedbackData = {
   status: 'Completed',
   learner: 'Amy Iverson',
   meta: { id: 'Session Feedback #2302', date: '4 Jan 2025 @ 09:10', duration: '12 messages' },
-  overallScore: 70,
   summary:
     "The conversation demonstrated strong professionalism and empathy, with the advisor effectively acknowledging Dr. Miller's expertise and concerns. The advisor maintained a respectful, science-based approach and avoided any criticism of current protocols. A missed opportunity: proactively introducing the trial setup earlier in the conversation.",
   skills: [
     {
       name: 'Building Trust & Rapport',
-      score: 33,
       expanded: false,
       criteria: [
         { variant: 'negative', title: 'Proactively introduced trial setup coordination' },
@@ -153,7 +179,6 @@ const textData: FeedbackData = {
     },
     {
       name: 'Product Knowledge & Positioning',
-      score: 100,
       expanded: true,
       criteria: [
         {

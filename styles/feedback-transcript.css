@@ -226,16 +226,23 @@
   padding: var(--spacing-xs);
   border-radius: var(--radius-lg);
   background: var(--surface-emphasis);
-  box-shadow: 0 0 0 0 transparent;
-  transition: box-shadow 0.4s ease;
+  scroll-margin: var(--spacing-sm);
+  transition: background-color 0.25s ease, color 0.25s ease;
 }
 
 .feedback-transcript__message--learner {
   background: var(--surface-page);
 }
 
+/* Cited excerpt — filled mizou blue with inverse text so it's unmistakable. */
 .feedback-transcript__message.is-highlight {
-  box-shadow: 0 0 0 2px var(--interactive-primary);
+  background: var(--interactive-primary);
+}
+
+.feedback-transcript__message.is-highlight .feedback-transcript__message-name,
+.feedback-transcript__message.is-highlight .feedback-transcript__message-time,
+.feedback-transcript__message.is-highlight .feedback-transcript__message-text {
+  color: var(--text-inverse);
 }
 
 .feedback-transcript__message-head {

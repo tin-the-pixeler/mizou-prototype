@@ -31,7 +31,6 @@ export type Criterion = {
 
 export type SkillGroup = {
   name: string;
-  score: number;
   expanded?: boolean;
   criteria: Criterion[];
 };
@@ -42,8 +41,6 @@ export type DeliveryData = {
   whatWentWell: string[];
   /** Max 4 bullets, one per metric out of range. Max 160 chars each. Omit array if none. */
   areasToImprove: string[];
-  /** Max 2 bullets tied to flagged metrics. Max 120 chars each. Omit array if none. */
-  tryThisNextTime: string[];
 };
 
 export type FeedbackFormat = 'audiovideo' | 'text';
@@ -55,8 +52,6 @@ export type FeedbackData = {
   status: string;
   learner: string;
   meta: { id: string; date: string; duration: string };
-  /** Overall score out of 100 — drives the pie chart and its summary title */
-  overallScore: number;
   /** Max 100 words: what the learner got right, what they missed, one actionable tip */
   summary: string;
   skills: SkillGroup[];
@@ -119,6 +114,23 @@ function createScorePie(score: number, band: ScoreBand): HTMLElement {
   return wrap;
 }
 
+// ---------- score computation ----------
+// Criteria are pass/fail: a positive criterion is met, a negative one is not.
+// A skill's score is the share of its criteria that were met; the overall
+// score is the average of the skill scores (each skill weighted equally).
+
+function skillScore(group: SkillGroup): number {
+  if (group.criteria.length === 0) return 0;
+  const met = group.criteria.filter(c => c.variant === 'positive').length;
+  return Math.round((met / group.criteria.length) * 100);
+}
+
+function overallScore(skills: SkillGroup[]): number {
+  if (skills.length === 0) return 0;
+  const total = skills.reduce((sum, g) => sum + skillScore(g), 0);
+  return Math.round(total / skills.length);
+}
+
 // ---------- skill breakdown ----------
 
 function createSkillBreakdown(
@@ -152,7 +164,7 @@ function createSkillBreakdown(
     wrap.appendChild(
       createSkillCard({
         title: group.name,
-        score: group.score,
+        score: skillScore(group),
         expanded: group.expanded ?? false,
         children,
       }),
@@ -177,10 +189,11 @@ function createScorecardPanel(
   h1.textContent = 'What You Demonstrated';
   panel.appendChild(h1);
 
-  const band = bandFor(data.overallScore);
+  const overall = overallScore(data.skills);
+  const band = bandFor(overall);
   const scoreRow = document.createElement('div');
   scoreRow.className = 'feedback-drawer__score-row';
-  scoreRow.appendChild(createScorePie(data.overallScore, band));
+  scoreRow.appendChild(createScorePie(overall, band));
 
   const scoreBody = document.createElement('div');
   scoreBody.className = 'feedback-drawer__score-body';
@@ -271,17 +284,6 @@ function createDeliveryPanel(delivery: DeliveryData): HTMLElement {
     }
 
     panel.appendChild(cols);
-  }
-
-  if (delivery.tryThisNextTime.length > 0) {
-    const tryWrap = document.createElement('div');
-    tryWrap.className = 'feedback-drawer__try-next';
-    const h2 = document.createElement('h2');
-    h2.className = 'feedback-drawer__subheading';
-    h2.textContent = 'Try this next time:';
-    tryWrap.appendChild(h2);
-    tryWrap.appendChild(createBulletList(delivery.tryThisNextTime, 'ai-sparkle', 'next'));
-    panel.appendChild(tryWrap);
   }
 
   return panel;
