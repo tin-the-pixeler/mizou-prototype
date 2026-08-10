@@ -67,6 +67,7 @@ export function createInputFieldLandingPage({
     const hasContent = textarea.textContent!.trim().length > 0;
     container.classList.toggle('input-field-landing--populated', hasContent);
     container.classList.toggle('input-field-landing--default', !hasContent);
+    sendBtn.disabled = !hasContent;
   });
 
   inputContainer.appendChild(textarea);
@@ -113,6 +114,7 @@ export function createInputFieldLandingPage({
     action: 'primary',
     size: 'sm',
     label: 'Send',
+    disabled: state !== 'populated',
   });
   sendBtn.classList.add('input-field-landing__send-btn');
 

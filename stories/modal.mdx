@@ -1,0 +1,140 @@
+import { Meta, Canvas, Controls } from '@storybook/blocks';
+import * as ModalStories from './modal.stories';
+
+<Meta of={ModalStories} />
+
+# Modal
+
+Mizou's single reusable modal anatomy — close icon, text-block, optional content slot, action-group.
+Build every new modal from this component instead of forking a one-off from a Figma screenshot.
+
+Anatomy source: Figma `Sales-trainer-MVP`, node `15431:254036`, section "Modals".
+
+## Anatomy
+
+Five zones, top to bottom. The container and title are always present — everything else is conditional on the variant.
+
+<div style={{ display: 'flex', gap: 32, alignItems: 'flex-start', margin: '24px 0', flexWrap: 'wrap' }}>
+  <div
+    style={{
+      position: 'relative',
+      width: 320,
+      background: '#fcfcfd',
+      border: '1px solid #e4e4e9',
+      borderRadius: 20,
+      boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)',
+      padding: 24,
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 20,
+      fontFamily: '"Nunito Sans", sans-serif',
+      boxSizing: 'border-box',
+    }}
+  >
+    <div
+      style={{
+        position: 'absolute',
+        top: 10,
+        right: 10,
+        width: 24,
+        height: 24,
+        border: '1.5px dashed #8b8d98',
+        borderRadius: 4,
+      }}
+      title="1. Close icon"
+    />
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 4, paddingRight: 32 }}>
+      <div style={{ fontWeight: 700, fontSize: 18, color: '#1c2024' }}>2. Title</div>
+      <div style={{ fontSize: 13, color: '#60646c' }}>3. Body copy, supports inline bold spans.</div>
+    </div>
+    <div
+      style={{
+        border: '1.5px dashed #b9bbc6',
+        borderRadius: 8,
+        padding: 12,
+        fontSize: 12,
+        color: '#8b8d98',
+        textAlign: 'center',
+      }}
+    >
+      4. Content slot (optional)
+    </div>
+    <div style={{ display: 'flex', gap: 12 }}>
+      <div style={{ flex: 1, height: 32, border: '1px solid #b9bbc6', borderRadius: 999, background: '#fff' }} />
+      <div style={{ flex: 1, height: 32, borderRadius: 999, background: '#4f46e5' }} />
+    </div>
+    <div style={{ fontSize: 11, color: '#8b8d98', textAlign: 'center', marginTop: -12 }}>5. Action group</div>
+  </div>
+  <table style={{ fontSize: 14, lineHeight: 1.7, color: '#1c2024', borderCollapse: 'collapse' }}>
+    <tbody>
+      <tr><td style={{ paddingRight: 12, fontWeight: 700 }}>1. Close icon</td><td>Optional. Top-right, 24×24px inset 10px. Hidden only when <code>dismissible=false</code>.</td></tr>
+      <tr><td style={{ paddingRight: 12, fontWeight: 700 }}>2. Title</td><td>Required. Nunito Sans Bold, 27px.</td></tr>
+      <tr><td style={{ paddingRight: 12, fontWeight: 700 }}>3. Body</td><td>Optional. Nunito Sans Regular, 19px, supports inline bold spans.</td></tr>
+      <tr><td style={{ paddingRight: 12, fontWeight: 700 }}>4. Content slot</td><td>Optional. Anything: textarea, loader, image, columns, divider.</td></tr>
+      <tr><td style={{ paddingRight: 12, fontWeight: 700 }}>5. Action group</td><td>Optional. Two buttons, one text-link, or none (e.g. loading state).</td></tr>
+    </tbody>
+  </table>
+</div>
+
+## The four hard rules
+
+1. **Primary action is always rightmost.** Enforced by the component itself — the API takes `primary`/`secondary` as named props, `secondary` always renders before `primary` in the DOM, so you cannot flip the order through props.
+2. **Never more than two buttons, or one button + one text-link — never both.** `actions` is typed so `textLink` and `primary`/`secondary` are mutually exclusive; combining them throws at construction time. There is no three-action pattern in the source design system — if a modal needs a third action, simplify the modal, don't extend the component.
+3. **Width defaults to 600px.** `600` is a floor (`min-width`), not a fixed size. Only pass a larger `width` when content genuinely needs it (e.g. the 1489px two-column share-link layout) — state the content reason, don't reach for it by default.
+4. **Close icon is hidden only via `dismissible={false}`.** Never hide it by deleting markup or with CSS. Non-dismissible is for modals the user must resolve with an explicit action (e.g. a blocking account migration) — it's an explicit, documented prop, not a missing icon.
+
+## Do / don't
+
+**Do** — two buttons, secondary left / primary right, dismissible, 600px:
+
+<Canvas of={ModalStories.ConfirmationDestructive} />
+
+**Don't** — the static mock below is what the old hand-built modals looked like. It is **not producible** with this component — the type system and rendering logic don't allow three actions, a reversed primary/secondary order, or an always-hidden close icon:
+
+<div style={{ padding: 24, background: '#f2f2f5', borderRadius: 12 }}>
+  <div
+    style={{
+      position: 'relative',
+      width: 420,
+      background: '#fff',
+      border: '1px solid #e4e4e9',
+      borderRadius: 8,
+      padding: 20,
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 16,
+      margin: '0 auto',
+      fontFamily: 'sans-serif',
+    }}
+  >
+    <div style={{ fontWeight: 700, fontSize: 16 }}>Remove team member?</div>
+    <div style={{ fontSize: 13, color: '#60646c' }}>This will remove them from every simulation.</div>
+    <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-start' }}>
+      <button style={{ padding: '6px 14px', background: '#4f46e5', color: '#fff', border: 'none', borderRadius: 4 }}>Remove</button>
+      <button style={{ padding: '6px 14px', background: '#fff', border: '1px solid #ccc', borderRadius: 4 }}>Cancel</button>
+      <button style={{ padding: '6px 14px', background: 'transparent', border: 'none', color: '#4f46e5' }}>Learn more</button>
+    </div>
+  </div>
+  <p style={{ fontSize: 12, color: '#be123c', textAlign: 'center', marginTop: 8 }}>
+    Wrong: three actions, primary on the left instead of rightmost, square corners instead of the pill/20px-radius
+    container, and no close icon on a dismissible-looking modal.
+  </p>
+</div>
+
+## Variants
+
+<Canvas of={ModalStories.BlockingNonDismissible} />
+<Canvas of={ModalStories.ExtraContentBlock} />
+<Canvas of={ModalStories.LoadingState} />
+<Canvas of={ModalStories.CompleteState} />
+<Canvas of={ModalStories.WideTwoColumn} />
+
+## `content` vs a new modal type
+
+Use the `content` slot for anything that fits inside the existing anatomy — a textarea, a loader, an image, two link
+columns. If you're reaching for a third action or a layout the slot can't express, that's a signal to flag it for a
+design review rather than extending the component ad hoc.
+
+## Props
+
+<Controls of={ModalStories.ConfirmationDestructive} />

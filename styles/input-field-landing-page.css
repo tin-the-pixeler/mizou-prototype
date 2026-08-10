@@ -131,25 +131,7 @@
   background: var(--interactive-primary-hover);
 }
 
-/* Default state: show mic, hide send */
-.input-field-landing--default .input-field-landing__send-btn {
-  display: none;
-}
-
-.input-field-landing--default .input-field-landing__mic-btn {
-  display: flex;
-}
-
-/* Populated state: show send, hide mic */
-.input-field-landing--populated .input-field-landing__send-btn {
-  display: flex;
-  opacity: 1;
-  pointer-events: auto;
-}
-
-.input-field-landing--populated .input-field-landing__mic-btn {
-  display: none;
-}
+/* Mic + send are both always visible; send is disabled until populated */
 
 /* Pill button — larger, bold */
 .input-field-landing__pill-btn {

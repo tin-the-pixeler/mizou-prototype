@@ -137,6 +137,27 @@
   background: var(--primitive-rose-600, #e11d48);
 }
 
+/* Disabled state (e.g. send button with no content) */
+.input-field-chat-thread__icon-btn:disabled {
+  opacity: var(--alpha-disabled);
+  cursor: not-allowed;
+}
+
+/* Default + populated states: mic + send both visible (send disabled until populated), stop hidden */
+.input-field-chat-thread--default .input-field-chat-thread__stop-btn,
+.input-field-chat-thread--populated .input-field-chat-thread__stop-btn {
+  display: none;
+}
+
+/* Generating state: stop only, mic + send hidden */
+.input-field-chat-thread--generating .input-field-chat-thread__mic-btn {
+  display: none;
+}
+
+.input-field-chat-thread--generating .input-field-chat-thread__send-btn {
+  display: none;
+}
+
 /* Pill root row (icon + label) */
 .input-field-chat-thread__pill-root {
   display: flex;

@@ -64,6 +64,7 @@ export function createInputFieldChatThread({
     const hasContent = textarea.textContent!.trim().length > 0;
     container.classList.toggle('input-field-chat-thread--populated', hasContent);
     container.classList.toggle('input-field-chat-thread--default', !hasContent);
+    sendBtn.disabled = !hasContent;
   });
 
   inputContainer.appendChild(textarea);
@@ -92,24 +93,24 @@ export function createInputFieldChatThread({
 
   const createBtn = createModeBadge({ mode, onClick: onModeClick });
 
-  // Single dynamic action button — changes per state
-  let actionBtn: HTMLButtonElement;
-  if (state === 'generating') {
-    actionBtn = createIconButton('stop' as IconName, 'input-field-chat-thread__icon-btn input-field-chat-thread__icon-btn--destructive');
-    if (onStop) actionBtn.addEventListener('click', onStop);
-  } else if (state === 'populated') {
-    actionBtn = createIconButton('arrow-up' as IconName, 'input-field-chat-thread__icon-btn input-field-chat-thread__icon-btn--primary');
-    if (onSend) {
-      actionBtn.addEventListener('click', () => {
-        const text = textarea.textContent?.trim() ?? '';
-        if (text) onSend(text);
-      });
-    }
-  } else {
-    actionBtn = createIconButton('mic-fill' as IconName, 'input-field-chat-thread__icon-btn input-field-chat-thread__icon-btn--outlined');
+  const micBtn = createIconButton('mic-fill' as IconName, 'input-field-chat-thread__icon-btn input-field-chat-thread__icon-btn--outlined');
+  micBtn.classList.add('input-field-chat-thread__mic-btn');
+
+  const sendBtn = createIconButton('arrow-up' as IconName, 'input-field-chat-thread__icon-btn input-field-chat-thread__icon-btn--primary');
+  sendBtn.classList.add('input-field-chat-thread__send-btn');
+  sendBtn.disabled = state !== 'populated';
+  if (onSend) {
+    sendBtn.addEventListener('click', () => {
+      const text = textarea.textContent?.trim() ?? '';
+      if (text) onSend(text);
+    });
   }
 
-  rightSide.append(createBtn, actionBtn);
+  const stopBtn = createIconButton('stop' as IconName, 'input-field-chat-thread__icon-btn input-field-chat-thread__icon-btn--destructive');
+  stopBtn.classList.add('input-field-chat-thread__stop-btn');
+  if (onStop) stopBtn.addEventListener('click', onStop);
+
+  rightSide.append(createBtn, micBtn, sendBtn, stopBtn);
 
   actions.append(leftSide, rightSide);
   container.appendChild(actions);

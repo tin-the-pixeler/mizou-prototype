@@ -43,6 +43,7 @@ import '../styles/tabs-nav.css';
 import '../styles/team-members-table.css';
 import '../styles/team-settings-form.css';
 import '../styles/team-page.css';
+import '../styles/modal.css';
 import type { Preview } from '@storybook/html';
 
 const preview: Preview = {

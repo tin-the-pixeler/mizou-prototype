@@ -5,7 +5,7 @@ const config: StorybookConfig = {
     name: '@storybook/html-vite',
     options: {},
   },
-  stories: ['../stories/**/*.stories.@(js|ts)'],
-  addons: [],
+  stories: ['../stories/**/*.stories.@(js|ts)', '../stories/**/*.mdx'],
+  addons: ['@storybook/addon-docs'],
 };
 export default config;

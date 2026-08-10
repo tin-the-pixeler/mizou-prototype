@@ -48,11 +48,18 @@
   --border-strong: var(--primitive-slate-5);          /* Emphasized borders */
   --border-divider: var(--primitive-slate-6);         /* Section dividers */
   --border-contrast: var(--primitive-black);          /* High contrast borders */
+  --border-button: var(--primitive-slate-8);          /* Button stroke, e.g. modal secondary action (Figma: alias/stroke/button) */
 
   /* Text Colors */
   --text-primary: var(--primitive-slate-12);          /* Primary text */
   --text-secondary: var(--primitive-slate-11);        /* Secondary text */
   --text-inverse: var(--primitive-white);             /* Text on dark backgrounds */
+
+  /* Icon Colors */
+  --icon-fill-default: var(--primitive-slate-9);      /* Default icon fill (Figma: alias/icon/fill-icon-default) */
+
+  /* Overlay */
+  --overlay-scrim: rgba(0, 0, 0, 0.4);                 /* Backdrop dim behind modals */
 
   /* Interactive Colors */
   --interactive-primary: var(--primitive-indigo-base);
@@ -97,6 +104,7 @@
   --fs-base: 14px;
   --fs-md: 16px;
   --fs-lg: 19px;
+  --fs-2xl: 27px;
 
   /* Font weights */
   --fw-light: 300;

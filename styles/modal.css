@@ -1,0 +1,212 @@
+/* ---------- MODAL COMPONENT ---------- */
+/* Anatomy: backdrop > container (close icon, text-block, content?, action-group?) */
+
+.sb-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: var(--overlay-scrim);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-md);
+  z-index: 1000;
+}
+
+.sb-modal {
+  position: relative;
+  box-sizing: border-box;
+  min-width: 600px;
+  max-width: calc(100vw - 48px);
+  background: var(--surface-raised);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-2xl);
+  padding: var(--spacing-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.sb-modal:focus {
+  outline: none;
+}
+
+/* ========== CLOSE ICON ========== */
+
+.sb-modal__close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--icon-fill-default);
+  border-radius: var(--radius-sm);
+}
+
+.sb-modal__close:hover {
+  background: var(--surface-sunken);
+}
+
+.sb-modal__close:focus-visible {
+  outline: 2px solid var(--interactive-primary);
+  outline-offset: 2px;
+}
+
+.sb-modal__close .sb-icon {
+  width: 24px;
+  height: 24px;
+}
+
+/* ========== TEXT BLOCK ========== */
+
+.sb-modal__text-block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3xs);
+  padding-right: var(--spacing-lg);
+}
+
+.sb-modal__title {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-2xl);
+  line-height: 36px;
+  letter-spacing: -0.33px;
+  color: var(--text-primary);
+}
+
+.sb-modal__body {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-weight: var(--fw-regular);
+  font-size: var(--fs-lg);
+  line-height: 30px;
+  letter-spacing: 0.79px;
+  color: var(--text-primary);
+}
+
+.sb-modal__body b,
+.sb-modal__body strong {
+  font-weight: var(--fw-bold);
+}
+
+/* ========== CONTENT SLOT ========== */
+
+.sb-modal__content {
+  width: 100%;
+}
+
+/* Layout helper for wide/two-column variants (content slot only, not a new component) */
+.sb-modal__columns {
+  display: flex;
+  gap: var(--spacing-lg);
+  width: 100%;
+}
+
+.sb-modal__columns > * {
+  flex: 1;
+  min-width: 0;
+}
+
+/* ========== ACTION GROUP ========== */
+
+.sb-modal__actions {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+.sb-modal__actions--link {
+  justify-content: center;
+}
+
+.sb-modal__button {
+  flex: 1;
+  height: 40px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-full);
+  font-family: var(--font-sans);
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-md);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
+}
+
+.sb-modal__button--lg {
+  height: 48px;
+}
+
+.sb-modal__button:focus-visible {
+  outline: 2px solid var(--interactive-primary);
+  outline-offset: 2px;
+}
+
+.sb-modal__button:disabled {
+  opacity: var(--alpha-disabled);
+  cursor: not-allowed;
+}
+
+.sb-modal__button--primary {
+  background: var(--interactive-primary);
+  color: var(--text-inverse);
+}
+
+.sb-modal__button--primary:hover:not(:disabled) {
+  background: var(--interactive-primary-hover);
+}
+
+.sb-modal__button--primary:active:not(:disabled) {
+  background: var(--interactive-primary-active);
+}
+
+.sb-modal__button--secondary {
+  background: var(--surface-emphasis);
+  color: var(--text-primary);
+  border-color: var(--border-button);
+}
+
+.sb-modal__button--secondary:hover:not(:disabled) {
+  background: var(--interactive-secondary-hover);
+}
+
+.sb-modal__button--secondary:active:not(:disabled) {
+  background: var(--interactive-secondary-active);
+}
+
+/* ========== TEXT LINK (single dismiss action, no button chrome) ========== */
+
+.sb-modal__text-link {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-md);
+  color: var(--interactive-primary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.sb-modal__text-link:hover:not(:disabled) {
+  color: var(--interactive-primary-hover);
+}
+
+.sb-modal__text-link:disabled {
+  opacity: var(--alpha-disabled);
+  cursor: not-allowed;
+}
+
+.sb-modal__text-link:focus-visible {
+  outline: 2px solid var(--interactive-primary);
+  outline-offset: 2px;
+}
