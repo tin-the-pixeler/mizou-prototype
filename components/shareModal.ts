@@ -1,644 +1,716 @@
 // components/shareModal.ts
-// Share simulation modal — auto-assign pattern (Pattern B).
-// Two tabs: "Share simulation" and "Simulation published", both sharing
-// the same member-selection state and team-assigned state.
+// Share simulation modal — tabbed pattern: Member Link / Teams / Individual.
+// Source: Figma "Sales-trainer-MVP" — Modal-ShareAssignLink
+// (https://www.figma.com/design/fCyTvXFmw7f5TKFU0KCtRo/Sales-trainer-MVP?node-id=15643-261920)
 
 import '../styles/share-modal.css';
 import { iconEl } from '../icons';
 
-export type ShareMember = {
-  id: string;
-  name: string;
-  initials: string;
-  avatarColor?: 'indigo' | 'rose' | 'emerald' | 'amber' | 'slate';
-};
-
-export type ShareModalTab = 'share' | 'published';
+export type ShareTeam = { id: string; label: string; members: number };
+export type SharePerson = { id: string; name: string; email: string };
+export type ShareModalTab = 'member' | 'team' | 'individual';
 
 export type ShareModalOptions = {
-  simulationUrl?: string;
-  publishedUrl?: string;
-  teamName?: string;
-  members?: ShareMember[];
-  initialSelected?: string[];
+  memberLinkUrl?: string;
+  allTeams?: ShareTeam[];
+  assignedTeams?: ShareTeam[];
+  directory?: SharePerson[];
+  assignedIndividuals?: SharePerson[];
   initialTab?: ShareModalTab;
+  dismissible?: boolean;
   onClose?: () => void;
 };
 
-const DEFAULT_MEMBERS: ShareMember[] = [
-  { id: 'm1', name: 'tintestermail@atomicmail.io', initials: 'T',  avatarColor: 'slate' },
-  { id: 'm2', name: 'Sarah Connelly',              initials: 'SC', avatarColor: 'indigo' },
-  { id: 'm3', name: 'Jamal Okonkwo',               initials: 'JO', avatarColor: 'rose' },
-  { id: 'm4', name: 'Priya Raman',                 initials: 'PR', avatarColor: 'emerald' },
-  { id: 'm5', name: 'Diego Alvarez',               initials: 'DA', avatarColor: 'amber' },
-  { id: 'm6', name: 'Mei Tanaka',                  initials: 'MT', avatarColor: 'indigo' },
-  { id: 'm7', name: 'Wesley Brooks',               initials: 'WB', avatarColor: 'rose' },
-  { id: 'm8', name: 'Elena Voss',                  initials: 'EV', avatarColor: 'emerald' },
+const DEFAULT_ALL_TEAMS: ShareTeam[] = [
+  { id: 'alpha', label: 'Alpha Team', members: 2 },
+  { id: 'beta', label: 'Beta', members: 6 },
+  { id: 'gamma', label: 'Gamma Team', members: 4 },
+  { id: 'sales', label: 'Sales team', members: 12 },
+  { id: 'support', label: 'Customer support', members: 8 },
 ];
 
-// ---- SVG helpers (inline, not in the icon set) ----
+const DEFAULT_ASSIGNED_TEAMS: ShareTeam[] = [{ id: 'alpha', label: 'Alpha Team', members: 2 }];
+
+const DEFAULT_DIRECTORY: SharePerson[] = [
+  { id: 'john.doe@acme.com', name: 'John Doe', email: 'john.doe@acme.com' },
+  { id: 'mila.tan@acme.com', name: 'Mila Tan', email: 'mila.tan@acme.com' },
+  { id: 'sarah.connelly@acme.com', name: 'Sarah Connelly', email: 'sarah.connelly@acme.com' },
+  { id: 'jamal.okonkwo@acme.com', name: 'Jamal Okonkwo', email: 'jamal.okonkwo@acme.com' },
+];
+
+const DEFAULT_ASSIGNED_INDIVIDUALS: SharePerson[] = [
+  { id: 'john.doe@acme.com', name: 'John Doe', email: 'john.doe@acme.com' },
+  { id: 'mila.tan@acme.com', name: 'Mila Tan', email: 'mila.tan@acme.com' },
+];
+
+const AVATAR_PALETTE = ['#6963FC', '#f43f5e', '#34d399', '#fbbf24', '#4f46e5'];
+function colorFor(seed: string): string {
+  let h = 0;
+  for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) >>> 0;
+  return AVATAR_PALETTE[h % AVATAR_PALETTE.length];
+}
+
+function initialsOf(name: string): string {
+  return name
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((p) => p[0])
+    .slice(0, 2)
+    .join('')
+    .toUpperCase();
+}
+
+function isEmail(s: string): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s.trim());
+}
 
 function svgClose(): SVGElement {
   const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-  s.setAttribute('viewBox', '0 0 16 16');
-  s.setAttribute('fill', 'none');
-  s.setAttribute('stroke', 'currentColor');
-  s.setAttribute('stroke-width', '1.5');
-  s.setAttribute('stroke-linecap', 'round');
-  s.innerHTML = '<path d="M3 3l10 10M13 3L3 13"/>';
-  return s;
-}
-
-function svgLink(): SVGElement {
-  const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-  s.setAttribute('viewBox', '0 0 16 16');
-  s.setAttribute('fill', 'none');
-  s.setAttribute('stroke', 'currentColor');
-  s.setAttribute('stroke-width', '1.5');
-  s.setAttribute('stroke-linecap', 'round');
-  s.innerHTML =
-    '<path d="M7 9.5a3 3 0 004.24 0l2.12-2.12a3 3 0 00-4.24-4.24l-.7.7"/>' +
-    '<path d="M9 6.5a3 3 0 00-4.24 0L2.64 8.62a3 3 0 004.24 4.24l.7-.7"/>';
-  return s;
-}
-
-function svgCheck(strokeWidth = '2.5'): SVGElement {
-  const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-  s.setAttribute('viewBox', '0 0 16 16');
-  s.setAttribute('fill', 'none');
-  s.setAttribute('stroke', 'currentColor');
-  s.setAttribute('stroke-width', strokeWidth);
-  s.setAttribute('stroke-linecap', 'round');
-  s.setAttribute('stroke-linejoin', 'round');
-  s.innerHTML = '<path d="M3 8.5L6.5 12 13 4.5"/>';
-  return s;
-}
-
-function svgCode(): SVGElement {
-  const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-  s.setAttribute('viewBox', '0 0 16 16');
-  s.setAttribute('fill', 'none');
-  s.setAttribute('stroke', 'currentColor');
-  s.setAttribute('stroke-width', '1.5');
-  s.setAttribute('stroke-linecap', 'round');
-  s.setAttribute('stroke-linejoin', 'round');
-  s.innerHTML =
-    '<path d="M5 4l-3 4 3 4"/>' +
-    '<path d="M11 4l3 4-3 4"/>' +
-    '<path d="M9 3l-2 10"/>';
-  return s;
-}
-
-function svgInfo(): SVGElement {
-  const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-  s.setAttribute('viewBox', '0 0 16 16');
-  s.setAttribute('fill', 'none');
-  s.setAttribute('stroke', 'currentColor');
-  s.setAttribute('stroke-width', '1.5');
-  s.setAttribute('stroke-linecap', 'round');
-  s.innerHTML = '<circle cx="8" cy="8" r="6.5"/><path d="M8 5v3.5M8 11v.01"/>';
-  return s;
-}
-
-function svgX(size: '10' | '12' = '12'): SVGElement {
-  const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-  s.setAttribute('viewBox', `0 0 ${size} ${size}`);
+  s.setAttribute('viewBox', '0 0 24 24');
   s.setAttribute('fill', 'none');
   s.setAttribute('stroke', 'currentColor');
   s.setAttribute('stroke-width', '2');
   s.setAttribute('stroke-linecap', 'round');
-  const n = Number(size);
-  // Endpoints 2px inset from each edge so stroke-linecap:round isn't clipped
-  s.innerHTML = `<path d="M2 2l${n - 4} ${n - 4}M${n - 2} 2l-${n - 4} ${n - 4}"/>`;
+  s.setAttribute('stroke-linejoin', 'round');
+  s.innerHTML = '<path d="M18 6L6 18"/><path d="M6 6l12 12"/>';
   return s;
+}
+
+function svgMinusCircle(): SVGElement {
+  const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  s.setAttribute('viewBox', '0 0 20 20');
+  s.setAttribute('fill', 'none');
+  s.setAttribute('stroke', 'currentColor');
+  s.setAttribute('stroke-width', '1.5');
+  s.setAttribute('stroke-linecap', 'round');
+  s.innerHTML = '<circle cx="10" cy="10" r="8.5"/><path d="M6.5 10h7"/>';
+  return s;
+}
+
+function svgSearch(): SVGElement {
+  const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  s.setAttribute('viewBox', '0 0 20 20');
+  s.setAttribute('fill', 'none');
+  s.setAttribute('stroke', 'currentColor');
+  s.setAttribute('stroke-width', '1.6');
+  s.setAttribute('stroke-linecap', 'round');
+  s.setAttribute('stroke-linejoin', 'round');
+  s.innerHTML = '<circle cx="8.5" cy="8.5" r="5.5"/><path d="M17 17l-3.8-3.8"/>';
+  return s;
+}
+
+function svgTeamIcon(): SVGElement {
+  const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  s.setAttribute('viewBox', '0 0 24 24');
+  s.setAttribute('fill', 'none');
+  s.setAttribute('stroke', 'currentColor');
+  s.setAttribute('stroke-width', '1.8');
+  s.setAttribute('stroke-linecap', 'round');
+  s.setAttribute('stroke-linejoin', 'round');
+  s.innerHTML =
+    '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>' +
+    '<path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>';
+  return s;
+}
+
+// ---- Row helpers ----
+
+function buildAssignedRow(opts: {
+  leading: HTMLElement;
+  primary: string;
+  secondary: string;
+  onRemove: () => void;
+  removeLabel: string;
+}): HTMLElement {
+  const row = document.createElement('div');
+  row.className = 'share-modal__row';
+
+  const info = document.createElement('div');
+  info.className = 'share-modal__row-info';
+  const primary = document.createElement('span');
+  primary.className = 'share-modal__row-primary';
+  primary.textContent = opts.primary;
+  const secondary = document.createElement('span');
+  secondary.className = 'share-modal__row-secondary';
+  secondary.textContent = opts.secondary;
+  info.append(primary, secondary);
+
+  const remove = document.createElement('button');
+  remove.type = 'button';
+  remove.className = 'share-modal__row-remove';
+  remove.setAttribute('aria-label', opts.removeLabel);
+  remove.appendChild(svgMinusCircle());
+  remove.addEventListener('click', opts.onRemove);
+
+  row.append(opts.leading, info, remove);
+  return row;
+}
+
+function teamIconEl(label: string, size: 'sm' | 'lg' = 'sm'): HTMLElement {
+  const icon = document.createElement('span');
+  icon.className = 'share-modal__team-icon' + (size === 'lg' ? ' share-modal__team-icon--lg' : '');
+  icon.style.background = colorFor(label) + '22';
+  icon.style.color = colorFor(label);
+  icon.appendChild(svgTeamIcon());
+  return icon;
+}
+
+function avatarEl(name: string): HTMLElement {
+  const avatar = document.createElement('span');
+  avatar.className = 'share-modal__avatar';
+  avatar.style.background = colorFor(name);
+  avatar.textContent = initialsOf(name);
+  return avatar;
 }
 
 // ---- Main factory ----
 
 export function createShareModal(options: ShareModalOptions = {}): HTMLElement {
   const {
-    simulationUrl = 'https://staging.app.mizou.com/call-check?ID=sim-2LgKN',
-    publishedUrl = 'https://app.mizou.com/check-assignment?tok…',
-    teamName = 'Default Team',
-    members = DEFAULT_MEMBERS,
-    initialSelected = ['m1', 'm3'],
-    initialTab = 'share',
+    memberLinkUrl = 'https://app.mizou.com/check-assignment?token=8f3c1a9d4e2b7f50a6d1c3b4e7f9a02b',
+    allTeams = DEFAULT_ALL_TEAMS,
+    assignedTeams = DEFAULT_ASSIGNED_TEAMS,
+    directory = DEFAULT_DIRECTORY,
+    assignedIndividuals = DEFAULT_ASSIGNED_INDIVIDUALS,
+    initialTab = 'member',
+    dismissible = true,
     onClose,
   } = options;
 
   // ---- Shared state ----
-  const selected = new Set<string>(initialSelected);
-  let teamAssigned = false;
   let activeTab: ShareModalTab = initialTab;
+  const teams: ShareTeam[] = [...assignedTeams];
+  const individuals: SharePerson[] = [...assignedIndividuals];
+  const customPeople: SharePerson[] = [];
 
-  type DropdownInstance = {
-    field: HTMLButtonElement;
-    dropdown: HTMLElement;
-    fieldContent: HTMLElement;
-    memberListEl: HTMLElement;
-    teamBtn: HTMLButtonElement;
-    teamLabelEl: HTMLElement;
-    placeholder: string;
-    isOpen: boolean;
-    /** The field+chev group — hidden when teamAssigned */
-    fieldGroup: HTMLElement;
-    /** The team-assigned banner — shown when teamAssigned */
-    banner: HTMLElement;
-  };
+  // ---- Shell ----
+  const backdrop = document.createElement('div');
+  backdrop.className = 'share-modal-backdrop';
 
-  const dropdownInstances: DropdownInstance[] = [];
+  const card = document.createElement('div');
+  card.className = 'share-modal';
+  card.setAttribute('role', 'dialog');
+  card.setAttribute('aria-modal', 'true');
+  card.setAttribute('aria-label', 'Share simulation');
+  card.setAttribute('tabindex', '-1');
 
-  // ---- Root ----
-  const root = document.createElement('div');
+  function close() {
+    document.removeEventListener('keydown', onKeydown);
+    backdrop.remove();
+    onClose?.();
+  }
+  function onKeydown(e: KeyboardEvent) {
+    if (e.key === 'Escape' && dismissible) close();
+  }
+  if (dismissible) {
+    backdrop.addEventListener('mousedown', (e) => {
+      if (e.target === backdrop) close();
+    });
+  }
+  document.addEventListener('keydown', onKeydown);
 
-  // ---- Tabs ----
-  const tabsEl = document.createElement('div');
-  tabsEl.className = 'share-modal__tabs';
-  tabsEl.setAttribute('role', 'tablist');
-
-  const tabShare = document.createElement('button');
-  tabShare.type = 'button';
-  tabShare.className = 'share-modal__tab' + (activeTab === 'share' ? ' is-active' : '');
-  tabShare.textContent = 'Share simulation';
-
-  const tabPublished = document.createElement('button');
-  tabPublished.type = 'button';
-  tabPublished.className = 'share-modal__tab' + (activeTab === 'published' ? ' is-active' : '');
-  tabPublished.textContent = 'Simulation published';
-
-  tabsEl.append(tabShare, tabPublished);
-
-  // ---- Stage (holds both modal cards + toast stack) ----
-  const stage = document.createElement('div');
-  stage.style.cssText = 'position:relative; overflow:visible;';
-
-  // ---- Toast stack ----
+  // ---- Toast notifications ----
   const toastStack = document.createElement('div');
   toastStack.className = 'share-modal__toast-stack';
-  stage.appendChild(toastStack);
-
   function showToast(message: string) {
-    const t = document.createElement('div');
-    t.className = 'share-modal__toast';
-    const icon = document.createElement('span');
-    icon.className = 'share-modal__toast-icon';
-    icon.appendChild(svgCheck());
-    t.appendChild(icon);
+    const toast = document.createElement('div');
+    toast.className = 'share-modal__toast';
+    toast.appendChild(iconEl('check-circle', 'sb-icon'));
     const span = document.createElement('span');
     span.textContent = message;
-    t.appendChild(span);
-    toastStack.appendChild(t);
-    setTimeout(() => t.remove(), 2400);
+    toast.appendChild(span);
+    toastStack.appendChild(toast);
+    setTimeout(() => toast.remove(), 2400);
   }
 
-  // ---- Re-render helpers ----
+  // ---- Header ----
+  const header = document.createElement('div');
+  header.className = 'share-modal__header';
 
-  function renderAll() {
-    dropdownInstances.forEach(inst => {
-      renderField(inst);
-      renderMemberList(inst);
-      renderTeamBanner(inst);
-    });
-  }
+  const title = document.createElement('h2');
+  title.className = 'share-modal__title';
+  title.textContent = 'Share Simulation';
+  header.appendChild(title);
 
-  function renderField(inst: DropdownInstance) {
-    const ids = [...selected];
-    inst.fieldContent.innerHTML = '';
-    if (ids.length === 0) {
-      const ph = document.createElement('span');
-      ph.className = 'share-modal__placeholder';
-      ph.textContent = inst.placeholder;
-      inst.fieldContent.appendChild(ph);
-    } else {
-      ids.forEach(id => {
-        const m = members.find(x => x.id === id);
-        if (!m) return;
-        const chip = document.createElement('span');
-        chip.className = 'share-modal__chip';
+  const closeBtn = document.createElement('button');
+  closeBtn.type = 'button';
+  closeBtn.className = 'share-modal__close';
+  closeBtn.setAttribute('aria-label', 'Close');
+  closeBtn.appendChild(svgClose());
+  closeBtn.addEventListener('click', close);
+  header.appendChild(closeBtn);
 
-        const nameEl = document.createElement('span');
-        nameEl.className = 'share-modal__chip-name';
-        nameEl.textContent = m.name;
+  // ---- Persistent intro (shared across all tabs) ----
+  const intro = document.createElement('p');
+  intro.className = 'share-modal__intro';
+  intro.innerHTML =
+    'Select your sharing option. Choose a <b>Member link</b> where any organisation member can join. ' +
+    'You can also assign to specific teams, or individuals.';
 
-        const removeBtn = document.createElement('button');
-        removeBtn.type = 'button';
-        removeBtn.className = 'share-modal__chip-remove';
-        removeBtn.setAttribute('aria-label', `Remove ${m.name}`);
-        removeBtn.dataset.removeId = m.id;
-        removeBtn.appendChild(svgX('10'));
+  // ---- Tab bar ----
+  const tabsWrap = document.createElement('div');
+  tabsWrap.className = 'share-modal__tabs-wrap';
 
-        chip.append(nameEl, removeBtn);
-        inst.fieldContent.appendChild(chip);
+  const tabBar = document.createElement('div');
+  tabBar.className = 'share-modal__tabs';
+  tabBar.setAttribute('role', 'tablist');
+  tabsWrap.appendChild(tabBar);
+
+  const body = document.createElement('div');
+  body.className = 'share-modal__body';
+
+  function renderTabBar() {
+    tabBar.innerHTML = '';
+    const defs: { id: ShareModalTab; label: string; count?: number }[] = [
+      { id: 'member', label: 'Member Link' },
+      { id: 'team', label: 'Teams', count: teams.length },
+      { id: 'individual', label: 'Individual', count: individuals.length },
+    ];
+    defs.forEach((d) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'share-modal__tab' + (activeTab === d.id ? ' is-active' : '');
+      btn.setAttribute('role', 'tab');
+      btn.setAttribute('aria-selected', String(activeTab === d.id));
+      const label = document.createElement('span');
+      label.textContent = d.label;
+      btn.appendChild(label);
+      if (typeof d.count === 'number' && d.count > 0) {
+        const badge = document.createElement('span');
+        badge.className = 'share-modal__tab-count';
+        badge.textContent = String(d.count);
+        btn.appendChild(badge);
+      }
+      btn.addEventListener('click', () => {
+        activeTab = d.id;
+        renderTabBar();
+        renderBody();
       });
-    }
-  }
-
-  function renderMemberList(inst: DropdownInstance) {
-    // Team button label
-    inst.teamLabelEl.innerHTML = `Assign to all members of team: <b>${teamName}</b>`;
-    inst.teamBtn.classList.remove('is-remove');
-
-    // Rebuild member rows
-    inst.memberListEl.innerHTML = '';
-    members.forEach(m => {
-      const sel = selected.has(m.id);
-
-      const row = document.createElement('button');
-      row.type = 'button';
-      row.className = 'share-modal__dd-row' + (sel ? ' is-selected' : '');
-      row.dataset.memberId = m.id;
-
-      const avatar = document.createElement('span');
-      const colorMod = m.avatarColor && m.avatarColor !== 'indigo'
-        ? ` share-modal__avatar--${m.avatarColor}`
-        : '';
-      avatar.className = `share-modal__avatar${colorMod}`;
-      avatar.textContent = m.initials;
-
-      const nameEl = document.createElement('span');
-      nameEl.className = 'share-modal__member-name';
-      nameEl.textContent = m.name;
-
-      row.append(avatar, nameEl);
-
-      if (sel) {
-        const removeBtn = document.createElement('button');
-        removeBtn.type = 'button';
-        removeBtn.className = 'share-modal__member-remove';
-        removeBtn.setAttribute('aria-label', `Remove ${m.name}`);
-        removeBtn.dataset.removeId = m.id;
-        removeBtn.appendChild(svgX('12'));
-        row.appendChild(removeBtn);
-      }
-
-      inst.memberListEl.appendChild(row);
+      tabBar.appendChild(btn);
     });
   }
 
-  /** Show/hide the field vs. the team-assigned banner.
-   *  Uses style.display directly because CSS `display:flex` on the banner
-   *  overrides the UA-stylesheet rule that backs the `hidden` attribute. */
-  function renderTeamBanner(inst: DropdownInstance) {
-    inst.fieldGroup.style.display = teamAssigned ? 'none' : '';
-    inst.banner.style.display     = teamAssigned ? 'flex' : 'none';
-    // Close the dropdown when the banner takes over
-    if (teamAssigned && inst.isOpen) {
-      inst.isOpen = false;
-      inst.field.classList.remove('is-open');
-      inst.dropdown.classList.remove('is-open');
-    }
-  }
-
-  // ---- Build a dropdown assign widget ----
-
-  function buildAssignWidget(placeholder: string): HTMLElement {
+  // ---- Member link panel ----
+  function buildMemberPanel(): HTMLElement {
     const wrap = document.createElement('div');
-    wrap.className = 'share-modal__field-wrap';
 
-    // ---- Field group (field + chev + dropdown) ----
-    const fieldGroup = document.createElement('div');
-    fieldGroup.className = 'share-modal__field-group';
-
-    // Trigger button
-    const field = document.createElement('button');
-    field.type = 'button';
-    field.className = 'share-modal__field';
-
-    const fieldContent = document.createElement('span');
-    field.appendChild(fieldContent);
-
-    // Chevron
-    const chev = document.createElement('span');
-    chev.className = 'share-modal__chev';
-    chev.appendChild(iconEl('chevron-down-sm', 'sb-icon'));
-
-    // Dropdown
-    const dropdown = document.createElement('div');
-    dropdown.className = 'share-modal__dropdown';
-
-    // Scrollable area
-    const scroll = document.createElement('div');
-    scroll.className = 'share-modal__dd-scroll';
-
-    // Team section
-    const teamSection = document.createElement('div');
-    teamSection.className = 'share-modal__dd-team';
-
-    const teamSectionLabel = document.createElement('div');
-    teamSectionLabel.className = 'share-modal__section-label';
-    teamSectionLabel.textContent = 'Team';
-
-    const teamBtn = document.createElement('button');
-    teamBtn.type = 'button';
-    teamBtn.className = 'share-modal__team-btn';
-
-    const teamLabelEl = document.createElement('span');
-    teamBtn.appendChild(teamLabelEl);
-    teamSection.append(teamSectionLabel, teamBtn);
-
-    // Members section
-    const membersLabel = document.createElement('div');
-    membersLabel.className = 'share-modal__section-label';
-    membersLabel.textContent = 'Members';
-
-    const memberListEl = document.createElement('div');
-
-    scroll.append(teamSection, membersLabel, memberListEl);
-
-    // Footer
-    const footer = document.createElement('div');
-    footer.className = 'share-modal__dd-footer';
-    footer.appendChild(svgInfo());
-    const footerText = document.createElement('span');
-    footerText.className = 'share-modal__dd-footer-text';
-    footerText.textContent = 'Click names to assign or remove instantly';
-    const doneBtn = document.createElement('button');
-    doneBtn.type = 'button';
-    doneBtn.className = 'share-modal__dd-done';
-    doneBtn.textContent = 'Done';
-    footer.append(footerText, doneBtn);
-
-    dropdown.append(scroll, footer);
-    fieldGroup.append(field, chev, dropdown);
-
-    // ---- Team-assigned banner ----
-    const banner = document.createElement('div');
-    banner.className = 'share-modal__team-banner';
-    banner.style.display = 'none'; // controlled by renderTeamBanner
-
-    const bannerBody = document.createElement('div');
-    bannerBody.className = 'share-modal__team-banner-body';
-
-    const bannerTitle = document.createElement('p');
-    bannerTitle.className = 'share-modal__team-banner-title';
-    bannerTitle.textContent = `Assigned to ${teamName}`;
-
-    const bannerSub = document.createElement('p');
-    bannerSub.className = 'share-modal__team-banner-sub';
-    bannerSub.textContent =
-      'Everyone on this team has access. To assign specific members instead, unassign first.';
-
-    bannerBody.append(bannerTitle, bannerSub);
-
-    const unassignBtn = document.createElement('button');
-    unassignBtn.type = 'button';
-    unassignBtn.className = 'share-modal__unassign-btn';
-    unassignBtn.textContent = 'Unassign team';
-
-    banner.append(bannerBody, unassignBtn);
-
-    wrap.append(fieldGroup, banner);
-
-    // ---- Register instance ----
-    const inst: DropdownInstance = {
-      field, dropdown, fieldContent, memberListEl,
-      teamBtn, teamLabelEl, placeholder, isOpen: false,
-      fieldGroup, banner,
-    };
-    dropdownInstances.push(inst);
-
-    // ---- Event wiring ----
-
-    function openDD() {
-      inst.isOpen = true;
-      field.classList.add('is-open');
-      dropdown.classList.add('is-open');
-    }
-    function closeDD() {
-      inst.isOpen = false;
-      field.classList.remove('is-open');
-      dropdown.classList.remove('is-open');
-    }
-
-    field.addEventListener('click', e => {
-      e.stopPropagation();
-      inst.isOpen ? closeDD() : openDD();
+    const urlField = document.createElement('div');
+    urlField.className = 'share-modal__url-field';
+    const urlText = document.createElement('span');
+    urlText.className = 'share-modal__url-text';
+    urlText.textContent = memberLinkUrl;
+    const copyBtn = document.createElement('button');
+    copyBtn.type = 'button';
+    copyBtn.className = 'share-modal__btn share-modal__btn--primary share-modal__btn--sm share-modal__url-copy';
+    copyBtn.appendChild(iconEl('file-text-outline', 'sb-icon'));
+    const copyLabel = document.createElement('span');
+    copyLabel.textContent = 'Copy link';
+    copyBtn.appendChild(copyLabel);
+    copyBtn.addEventListener('click', () => {
+      navigator.clipboard?.writeText(memberLinkUrl).catch(() => {});
+      copyBtn.innerHTML = '';
+      copyBtn.appendChild(iconEl('check-circle', 'sb-icon'));
+      const s = document.createElement('span');
+      s.textContent = 'Copied!';
+      copyBtn.appendChild(s);
+      setTimeout(() => {
+        copyBtn.innerHTML = '';
+        copyBtn.appendChild(iconEl('file-text-outline', 'sb-icon'));
+        copyBtn.appendChild(copyLabel);
+      }, 2000);
     });
+    urlField.append(urlText, copyBtn);
+    wrap.appendChild(urlField);
 
-    memberListEl.addEventListener('click', e => {
-      const target = e.target as HTMLElement;
-
-      const removeBtn = target.closest<HTMLElement>('[data-remove-id]');
-      if (removeBtn && removeBtn.classList.contains('share-modal__member-remove')) {
-        e.stopPropagation();
-        selected.delete(removeBtn.dataset.removeId!);
-        renderAll();
-        showToast('Member removed!');
-        return;
-      }
-
-      const row = target.closest<HTMLElement>('.share-modal__dd-row');
-      if (!row) return;
-      const id = row.dataset.memberId!;
-      if (selected.has(id)) {
-        selected.delete(id);
-        showToast('Member removed!');
-      } else {
-        selected.add(id);
-        showToast('Member assigned!');
-      }
-      renderAll();
+    const embedLink = document.createElement('button');
+    embedLink.type = 'button';
+    embedLink.className = 'share-modal__embed-link';
+    embedLink.appendChild(iconEl('code', 'sb-icon'));
+    const embedLabel = document.createElement('span');
+    embedLabel.textContent = 'Embed code';
+    embedLink.appendChild(embedLabel);
+    embedLink.addEventListener('click', () => {
+      const embedSnippet = `<iframe src="${memberLinkUrl}" width="100%" height="600" frameborder="0" allow="microphone"></iframe>`;
+      navigator.clipboard?.writeText(embedSnippet).catch(() => {});
+      showToast('Embed code copied');
     });
-
-    // Team button → assign whole team, show banner
-    teamBtn.addEventListener('click', () => {
-      selected.clear();
-      teamAssigned = true;
-      closeDD();
-      renderAll();
-      showToast(`${teamName} assigned!`);
-    });
-
-    // Chip remove inside field
-    fieldContent.addEventListener('click', e => {
-      const btn = (e.target as HTMLElement).closest<HTMLElement>('[data-remove-id]');
-      if (!btn) return;
-      e.stopPropagation();
-      selected.delete(btn.dataset.removeId!);
-      renderAll();
-      showToast('Member removed!');
-    });
-
-    doneBtn.addEventListener('click', e => {
-      e.stopPropagation();
-      closeDD();
-    });
-
-    // Unassign team → restore field, clear state
-    unassignBtn.addEventListener('click', () => {
-      teamAssigned = false;
-      selected.clear();
-      renderAll();
-      showToast('Team unassigned!');
-    });
-
-    document.addEventListener('mousedown', e => {
-      if (inst.isOpen && !wrap.contains(e.target as Node)) closeDD();
-    });
+    wrap.appendChild(embedLink);
 
     return wrap;
   }
 
-  // ---- Share modal card ----
+  // ---- Team panel ----
+  function buildTeamPanel(): HTMLElement {
+    const wrap = document.createElement('div');
 
-  function buildShareCard(): HTMLElement {
-    const card = document.createElement('div');
-    card.className = 'share-modal__card';
+    const heading = document.createElement('div');
+    heading.className = 'share-modal__heading';
+    heading.textContent = 'All team members get access';
+    wrap.appendChild(heading);
 
-    const closeBtn = document.createElement('button');
-    closeBtn.type = 'button';
-    closeBtn.className = 'share-modal__close';
-    closeBtn.setAttribute('aria-label', 'Close');
-    closeBtn.appendChild(svgClose());
-    closeBtn.addEventListener('click', () => onClose?.());
+    // ---- Multi-select field (button trigger + dropdown with search + checkboxes) ----
+    const msWrap = document.createElement('div');
+    msWrap.className = 'share-modal__ms';
 
-    const title = document.createElement('h2');
-    title.className = 'share-modal__title';
-    title.textContent = 'Share';
+    const field = document.createElement('button');
+    field.type = 'button';
+    field.className = 'share-modal__field share-modal__ms-field';
+    const fieldText = document.createElement('span');
+    fieldText.className = 'share-modal__ms-placeholder';
+    fieldText.textContent = 'Select a team';
+    field.appendChild(fieldText);
+    field.appendChild(iconEl('chevron-down-sm', 'sb-icon share-modal__ms-chev'));
 
-    const desc = document.createElement('p');
-    desc.className = 'share-modal__desc';
-    desc.innerHTML =
-      'Select your sharing option. Choose a <b>Public</b> link where anyone can join or assign a team or specific team members.';
+    const dropdown = document.createElement('div');
+    dropdown.className = 'share-modal__ms-dropdown';
+    dropdown.hidden = true;
 
-    const linkTitle = document.createElement('h3');
-    linkTitle.className = 'share-modal__section-title';
-    linkTitle.textContent = 'Public link — anyone with the link can join';
+    const searchWrap = document.createElement('div');
+    searchWrap.className = 'share-modal__ms-search';
+    searchWrap.appendChild(svgSearch());
+    const searchInput = document.createElement('input');
+    searchInput.type = 'text';
+    searchInput.placeholder = 'Search teams';
+    searchWrap.appendChild(searchInput);
 
-    const urlRow = document.createElement('div');
-    urlRow.className = 'share-modal__url-row';
-    const urlText = document.createElement('div');
-    urlText.className = 'share-modal__url';
-    urlText.textContent = simulationUrl;
-    const copyBtn = document.createElement('button');
-    copyBtn.type = 'button';
-    copyBtn.className = 'share-modal__copy-btn';
-    copyBtn.appendChild(svgLink());
-    copyBtn.appendChild(Object.assign(document.createElement('span'), { textContent: 'Copy link' }));
-    copyBtn.addEventListener('click', e => { e.stopPropagation(); showToast('Link copied!'); });
-    urlRow.append(urlText, copyBtn);
+    const optionsList = document.createElement('div');
+    optionsList.className = 'share-modal__ms-list';
+
+    const footer = document.createElement('div');
+    footer.className = 'share-modal__ms-footer';
+    const applyBtn = document.createElement('button');
+    applyBtn.type = 'button';
+    applyBtn.className = 'share-modal__ms-apply';
+    applyBtn.textContent = 'Apply';
+    footer.appendChild(applyBtn);
+
+    dropdown.append(searchWrap, optionsList, footer);
+    msWrap.append(field, dropdown);
+    wrap.appendChild(msWrap);
+
+    const sectionLabel = document.createElement('div');
+    sectionLabel.className = 'share-modal__section-label';
+    sectionLabel.textContent = 'ASSIGNED TEAMS';
+    wrap.appendChild(sectionLabel);
+
+    const list = document.createElement('div');
+    list.className = 'share-modal__list';
+    wrap.appendChild(list);
+
+    let pending = new Set<string>();
+    let isOpen = false;
+
+    function openDropdown() {
+      isOpen = true;
+      pending = new Set(teams.map((t) => t.id));
+      searchInput.value = '';
+      field.classList.add('is-open');
+      dropdown.hidden = false;
+      renderOptions();
+      searchInput.focus();
+    }
+    function closeDropdown() {
+      isOpen = false;
+      field.classList.remove('is-open');
+      dropdown.hidden = true;
+    }
+
+    field.addEventListener('click', (e) => {
+      e.stopPropagation();
+      isOpen ? closeDropdown() : openDropdown();
+    });
+    document.addEventListener('mousedown', (e) => {
+      if (isOpen && !msWrap.contains(e.target as Node)) closeDropdown();
+    });
+
+    function renderOptions() {
+      const q = searchInput.value.trim().toLowerCase();
+      optionsList.innerHTML = '';
+      const filtered = allTeams.filter((t) => t.label.toLowerCase().includes(q));
+      if (filtered.length === 0) {
+        const empty = document.createElement('div');
+        empty.className = 'share-modal__ms-empty';
+        empty.textContent = 'No teams found';
+        optionsList.appendChild(empty);
+        return;
+      }
+      filtered.forEach((t) => {
+        const optLabel = document.createElement('label');
+        optLabel.className = 'share-modal__ms-option';
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.className = 'share-modal__ms-checkbox';
+        checkbox.checked = pending.has(t.id);
+        checkbox.addEventListener('change', () => {
+          if (checkbox.checked) pending.add(t.id);
+          else pending.delete(t.id);
+        });
+        const text = document.createElement('span');
+        text.textContent = t.label;
+        optLabel.append(checkbox, text);
+        optionsList.appendChild(optLabel);
+      });
+    }
+    searchInput.addEventListener('input', renderOptions);
+
+    applyBtn.addEventListener('click', () => {
+      teams.length = 0;
+      allTeams.filter((t) => pending.has(t.id)).forEach((t) => teams.push(t));
+      closeDropdown();
+      renderTabBar();
+      renderAssignedTeams();
+    });
+
+    function renderAssignedTeams() {
+      list.innerHTML = '';
+      if (teams.length === 0) {
+        const empty = document.createElement('div');
+        empty.className = 'share-modal__empty';
+        empty.textContent = 'No teams assigned yet.';
+        list.appendChild(empty);
+        return;
+      }
+      teams.forEach((t) => {
+        const row = buildAssignedRow({
+          leading: teamIconEl(t.label, 'lg'),
+          primary: t.label,
+          secondary: `${t.members} ${t.members === 1 ? 'member' : 'members'}`,
+          removeLabel: `Remove ${t.label}`,
+          onRemove: () => {
+            const idx = teams.findIndex((x) => x.id === t.id);
+            if (idx >= 0) teams.splice(idx, 1);
+            renderTabBar();
+            renderAssignedTeams();
+          },
+        });
+        list.appendChild(row);
+      });
+    }
+
+    renderAssignedTeams();
+
+    return wrap;
+  }
+
+  // ---- Individual panel ----
+  function buildIndividualPanel(): HTMLElement {
+    const wrap = document.createElement('div');
+
+    const heading = document.createElement('div');
+    heading.className = 'share-modal__heading';
+    heading.textContent = 'Assign to specific people by name or email.';
+    wrap.appendChild(heading);
+
+    const msWrap = document.createElement('div');
+    msWrap.className = 'share-modal__ms';
+
+    const fieldWrap = document.createElement('div');
+    fieldWrap.className = 'share-modal__field share-modal__ms-field share-modal__ms-field--input';
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.className = 'share-modal__ms-input';
+    input.placeholder = 'Name or email address';
+    fieldWrap.appendChild(input);
+    const chevWrap = document.createElement('span');
+    chevWrap.appendChild(iconEl('chevron-down-sm', 'sb-icon share-modal__ms-chev'));
+    fieldWrap.appendChild(chevWrap);
+
+    const dropdown = document.createElement('div');
+    dropdown.className = 'share-modal__ms-dropdown';
+    dropdown.hidden = true;
+
+    const optionsList = document.createElement('div');
+    optionsList.className = 'share-modal__ms-list';
+
+    const footer = document.createElement('div');
+    footer.className = 'share-modal__ms-footer';
+    const applyBtn = document.createElement('button');
+    applyBtn.type = 'button';
+    applyBtn.className = 'share-modal__ms-apply';
+    applyBtn.textContent = 'Apply';
+    footer.appendChild(applyBtn);
+
+    dropdown.append(optionsList, footer);
+    msWrap.append(fieldWrap, dropdown);
+    wrap.appendChild(msWrap);
 
     const divider = document.createElement('div');
     divider.className = 'share-modal__divider';
+    wrap.appendChild(divider);
 
-    const inviteTitle = document.createElement('h3');
-    inviteTitle.className = 'share-modal__section-title';
-    inviteTitle.textContent = 'Assign a team or a member';
+    const sectionLabel = document.createElement('div');
+    sectionLabel.className = 'share-modal__section-label';
+    sectionLabel.textContent = 'ASSIGNED MEMBERS';
+    wrap.appendChild(sectionLabel);
 
-    const assignWidget = buildAssignWidget("Select or enter member's name");
+    const list = document.createElement('div');
+    list.className = 'share-modal__list';
+    wrap.appendChild(list);
 
-    const embedBtn = document.createElement('button');
-    embedBtn.type = 'button';
-    embedBtn.className = 'share-modal__embed';
-    embedBtn.appendChild(svgCode());
-    embedBtn.appendChild(Object.assign(document.createElement('span'), { textContent: 'Embed code' }));
-    embedBtn.addEventListener('click', e => { e.stopPropagation(); showToast('Embed code copied!'); });
+    let pending = new Set<string>();
+    let isOpen = false;
 
-    card.append(closeBtn, title, desc, linkTitle, urlRow, divider, inviteTitle, assignWidget, embedBtn);
-    return card;
+    function allPeople(): SharePerson[] {
+      return [...directory, ...customPeople];
+    }
+
+    function draftFromQuery(v: string): SharePerson {
+      if (isEmail(v)) {
+        const local = v.split('@')[0];
+        const name =
+          local
+            .split(/[._-]/)
+            .filter(Boolean)
+            .map((p) => p[0].toUpperCase() + p.slice(1))
+            .join(' ') || v;
+        return { id: v.toLowerCase(), name, email: v };
+      }
+      const email = v.toLowerCase().replace(/\s+/g, '.') + '@invite.mizou.com';
+      return { id: email, name: v, email };
+    }
+
+    function openDropdown() {
+      isOpen = true;
+      pending = new Set(individuals.map((p) => p.id));
+      fieldWrap.classList.add('is-open');
+      dropdown.hidden = false;
+      renderOptions();
+    }
+    function closeDropdown() {
+      isOpen = false;
+      fieldWrap.classList.remove('is-open');
+      dropdown.hidden = true;
+    }
+
+    input.addEventListener('focus', () => {
+      if (!isOpen) openDropdown();
+    });
+    chevWrap.addEventListener('click', (e) => {
+      e.stopPropagation();
+      isOpen ? closeDropdown() : openDropdown();
+      if (isOpen) input.focus();
+    });
+    document.addEventListener('mousedown', (e) => {
+      if (isOpen && !msWrap.contains(e.target as Node)) closeDropdown();
+    });
+
+    function renderOptions() {
+      const q = input.value.trim().toLowerCase();
+      optionsList.innerHTML = '';
+
+      const filtered = allPeople().filter(
+        (p) => p.name.toLowerCase().includes(q) || p.email.toLowerCase().includes(q),
+      );
+
+      const exactMatch = q && allPeople().some((p) => p.email.toLowerCase() === q || p.name.toLowerCase() === q);
+      if (q && !exactMatch) {
+        const addRow = document.createElement('button');
+        addRow.type = 'button';
+        addRow.className = 'share-modal__ms-add-custom';
+        addRow.textContent = `Add "${input.value.trim()}"`;
+        addRow.addEventListener('click', () => {
+          const draft = draftFromQuery(input.value.trim());
+          if (!allPeople().find((p) => p.id === draft.id)) customPeople.push(draft);
+          pending.add(draft.id);
+          input.value = '';
+          renderOptions();
+        });
+        optionsList.appendChild(addRow);
+      }
+
+      if (filtered.length === 0 && !q) {
+        const empty = document.createElement('div');
+        empty.className = 'share-modal__ms-empty';
+        empty.textContent = 'No people found';
+        optionsList.appendChild(empty);
+        return;
+      }
+
+      filtered.forEach((p) => {
+        const optLabel = document.createElement('label');
+        optLabel.className = 'share-modal__ms-option';
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.className = 'share-modal__ms-checkbox';
+        checkbox.checked = pending.has(p.id);
+        checkbox.addEventListener('change', () => {
+          if (checkbox.checked) pending.add(p.id);
+          else pending.delete(p.id);
+        });
+        const text = document.createElement('span');
+        text.textContent = p.name;
+        optLabel.append(checkbox, text);
+        optionsList.appendChild(optLabel);
+      });
+    }
+    input.addEventListener('input', renderOptions);
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        const v = input.value.trim();
+        if (!v) return;
+        const draft = draftFromQuery(v);
+        if (!allPeople().find((p) => p.id === draft.id)) customPeople.push(draft);
+        pending.add(draft.id);
+        input.value = '';
+        renderOptions();
+      }
+    });
+
+    applyBtn.addEventListener('click', () => {
+      individuals.length = 0;
+      allPeople().filter((p) => pending.has(p.id)).forEach((p) => individuals.push(p));
+      closeDropdown();
+      input.value = '';
+      renderTabBar();
+      renderAssignedIndividuals();
+    });
+
+    function renderAssignedIndividuals() {
+      list.innerHTML = '';
+      if (individuals.length === 0) {
+        const empty = document.createElement('div');
+        empty.className = 'share-modal__empty';
+        empty.textContent = 'No individuals assigned yet.';
+        list.appendChild(empty);
+        return;
+      }
+      individuals.forEach((p) => {
+        const row = buildAssignedRow({
+          leading: avatarEl(p.name),
+          primary: p.name,
+          secondary: p.email,
+          removeLabel: `Remove ${p.name}`,
+          onRemove: () => {
+            const idx = individuals.findIndex((x) => x.id === p.id);
+            if (idx >= 0) individuals.splice(idx, 1);
+            renderTabBar();
+            renderAssignedIndividuals();
+          },
+        });
+        list.appendChild(row);
+      });
+    }
+
+    renderAssignedIndividuals();
+
+    return wrap;
   }
 
-  // ---- Published modal card ----
-
-  function buildPublishedCard(): HTMLElement {
-    const card = document.createElement('div');
-    card.className = 'share-modal__card share-modal__card--published';
-
-    const closeBtn = document.createElement('button');
-    closeBtn.type = 'button';
-    closeBtn.className = 'share-modal__close';
-    closeBtn.setAttribute('aria-label', 'Close');
-    closeBtn.appendChild(svgClose());
-    closeBtn.addEventListener('click', () => onClose?.());
-
-    const success = document.createElement('div');
-    success.className = 'share-modal__success';
-    const halo = document.createElement('div');
-    halo.className = 'share-modal__success-halo';
-    const circle = document.createElement('div');
-    circle.className = 'share-modal__success-circle';
-    circle.appendChild(svgCheck());
-    halo.appendChild(circle);
-    const pubTitle = document.createElement('h2');
-    pubTitle.className = 'share-modal__pub-title';
-    pubTitle.textContent = 'Simulation Published!';
-    const pubSub = document.createElement('p');
-    pubSub.className = 'share-modal__pub-sub';
-    pubSub.textContent = 'Ready to share with learners';
-    success.append(halo, pubTitle, pubSub);
-
-    const urlRow = document.createElement('div');
-    urlRow.className = 'share-modal__url-row';
-    urlRow.style.marginTop = '18px';
-    const urlText = document.createElement('div');
-    urlText.className = 'share-modal__url';
-    urlText.textContent = publishedUrl;
-    const copyBtn = document.createElement('button');
-    copyBtn.type = 'button';
-    copyBtn.className = 'share-modal__copy-btn';
-    copyBtn.appendChild(svgLink());
-    copyBtn.appendChild(Object.assign(document.createElement('span'), { textContent: 'Copy' }));
-    copyBtn.addEventListener('click', e => { e.stopPropagation(); showToast('Link copied!'); });
-    urlRow.append(urlText, copyBtn);
-
-    const inviteTitle = document.createElement('h3');
-    inviteTitle.className = 'share-modal__section-title';
-    inviteTitle.style.marginTop = '22px';
-    inviteTitle.textContent = 'Invite team members';
-
-    const assignWidget = buildAssignWidget('Select or enter a member to assign content');
-
-    const embedWrap = document.createElement('div');
-    embedWrap.style.cssText = 'text-align:center; margin-top:18px;';
-    const embedBtn = document.createElement('button');
-    embedBtn.type = 'button';
-    embedBtn.className = 'share-modal__embed';
-    embedBtn.appendChild(svgCode());
-    embedBtn.appendChild(Object.assign(document.createElement('span'), { textContent: 'Embed code' }));
-    embedBtn.addEventListener('click', e => { e.stopPropagation(); showToast('Embed code copied!'); });
-    embedWrap.appendChild(embedBtn);
-
-    const divider = document.createElement('div');
-    divider.className = 'share-modal__divider';
-    const backWrap = document.createElement('div');
-    backWrap.style.textAlign = 'center';
-    const backBtn = document.createElement('button');
-    backBtn.type = 'button';
-    backBtn.className = 'share-modal__back-btn';
-    backBtn.textContent = 'Back to My Collections Page';
-    backWrap.appendChild(backBtn);
-
-    card.append(closeBtn, success, urlRow, inviteTitle, assignWidget, embedWrap, divider, backWrap);
-    return card;
+  function renderBody() {
+    body.innerHTML = '';
+    if (activeTab === 'member') body.appendChild(buildMemberPanel());
+    if (activeTab === 'team') body.appendChild(buildTeamPanel());
+    if (activeTab === 'individual') body.appendChild(buildIndividualPanel());
   }
 
-  // ---- Build both cards ----
-  const shareCard = buildShareCard();
-  const publishedCard = buildPublishedCard();
-  publishedCard.hidden = activeTab !== 'published';
-  shareCard.hidden = activeTab !== 'share';
+  renderTabBar();
+  renderBody();
 
-  stage.append(shareCard, publishedCard);
+  card.append(header, intro, tabsWrap, body, toastStack);
+  backdrop.appendChild(card);
 
-  // ---- Tab switching ----
-  tabShare.addEventListener('click', () => {
-    activeTab = 'share';
-    tabShare.classList.add('is-active');
-    tabPublished.classList.remove('is-active');
-    shareCard.hidden = false;
-    publishedCard.hidden = true;
-  });
-  tabPublished.addEventListener('click', () => {
-    activeTab = 'published';
-    tabPublished.classList.add('is-active');
-    tabShare.classList.remove('is-active');
-    publishedCard.hidden = false;
-    shareCard.hidden = true;
-  });
+  queueMicrotask(() => card.focus());
 
-  // ---- Initial render ----
-  renderAll();
-
-  root.append(tabsEl, stage);
-  return root;
+  return backdrop;
 }

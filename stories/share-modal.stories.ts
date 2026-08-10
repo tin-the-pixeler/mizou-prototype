@@ -3,9 +3,7 @@ import { createShareModal, type ShareModalOptions, type ShareModalTab } from '..
 
 type ShareModalArgs = {
   initialTab: ShareModalTab;
-  simulationUrl: string;
-  publishedUrl: string;
-  teamName: string;
+  memberLinkUrl: string;
 };
 
 const meta: Meta<ShareModalArgs> = {
@@ -13,11 +11,9 @@ const meta: Meta<ShareModalArgs> = {
   argTypes: {
     initialTab: {
       control: 'select',
-      options: ['share', 'published'],
+      options: ['member', 'team', 'individual'],
     },
-    simulationUrl: { control: 'text' },
-    publishedUrl:  { control: 'text' },
-    teamName:      { control: 'text' },
+    memberLinkUrl: { control: 'text' },
   },
 };
 export default meta;
@@ -31,55 +27,49 @@ function wrapInStage(el: HTMLElement): HTMLElement {
   return stage;
 }
 
-export const ShareTab: Story = {
-  name: 'Share simulation tab',
+export const MemberLinkTab: Story = {
+  name: 'Member link tab',
   args: {
-    initialTab: 'share',
-    simulationUrl: 'https://staging.app.mizou.com/call-check?ID=sim-2LgKN',
-    publishedUrl: 'https://app.mizou.com/check-assignment?tok…',
-    teamName: 'Default Team',
+    initialTab: 'member',
+    memberLinkUrl: 'https://app.mizou.com/check-assignment?token=8f3c1a9d4e2b7f50a6d1c3b4e7f9a02b',
   },
-  render: (args: ShareModalArgs) =>
-    wrapInStage(createShareModal(args as ShareModalOptions)),
+  render: (args: ShareModalArgs) => wrapInStage(createShareModal(args as ShareModalOptions)),
 };
 
-export const PublishedTab: Story = {
-  name: 'Simulation published tab',
+export const TeamsTabEmpty: Story = {
+  name: 'Teams tab — empty',
   args: {
-    initialTab: 'published',
-    simulationUrl: 'https://staging.app.mizou.com/call-check?ID=sim-2LgKN',
-    publishedUrl: 'https://app.mizou.com/check-assignment?tok…',
-    teamName: 'Default Team',
+    initialTab: 'team',
+    memberLinkUrl: 'https://app.mizou.com/check-assignment?token=8f3c1a9d4e2b7f50a6d1c3b4e7f9a02b',
   },
   render: (args: ShareModalArgs) =>
-    wrapInStage(createShareModal(args as ShareModalOptions)),
+    wrapInStage(createShareModal({ ...args, assignedTeams: [] } as ShareModalOptions)),
 };
 
-export const NoInitialSelection: Story = {
-  name: 'No initial selection',
+export const TeamsTabPopulated: Story = {
+  name: 'Teams tab — populated',
   args: {
-    initialTab: 'share',
-    simulationUrl: 'https://staging.app.mizou.com/call-check?ID=sim-2LgKN',
-    publishedUrl: 'https://app.mizou.com/check-assignment?tok…',
-    teamName: 'Default Team',
+    initialTab: 'team',
+    memberLinkUrl: 'https://app.mizou.com/check-assignment?token=8f3c1a9d4e2b7f50a6d1c3b4e7f9a02b',
   },
-  render: (args: ShareModalArgs) =>
-    wrapInStage(createShareModal({ ...args, initialSelected: [] } as ShareModalOptions)),
+  render: (args: ShareModalArgs) => wrapInStage(createShareModal(args as ShareModalOptions)),
 };
 
-export const AllMembersSelected: Story = {
-  name: 'All members selected',
+export const IndividualTabEmpty: Story = {
+  name: 'Individual tab — empty',
   args: {
-    initialTab: 'share',
-    simulationUrl: 'https://staging.app.mizou.com/call-check?ID=sim-2LgKN',
-    publishedUrl: 'https://app.mizou.com/check-assignment?tok…',
-    teamName: 'Default Team',
+    initialTab: 'individual',
+    memberLinkUrl: 'https://app.mizou.com/check-assignment?token=8f3c1a9d4e2b7f50a6d1c3b4e7f9a02b',
   },
   render: (args: ShareModalArgs) =>
-    wrapInStage(
-      createShareModal({
-        ...args,
-        initialSelected: ['m1', 'm2', 'm3', 'm4', 'm5', 'm6', 'm7', 'm8'],
-      } as ShareModalOptions),
-    ),
+    wrapInStage(createShareModal({ ...args, assignedIndividuals: [] } as ShareModalOptions)),
+};
+
+export const IndividualTabPopulated: Story = {
+  name: 'Individual tab — populated',
+  args: {
+    initialTab: 'individual',
+    memberLinkUrl: 'https://app.mizou.com/check-assignment?token=8f3c1a9d4e2b7f50a6d1c3b4e7f9a02b',
+  },
+  render: (args: ShareModalArgs) => wrapInStage(createShareModal(args as ShareModalOptions)),
 };
