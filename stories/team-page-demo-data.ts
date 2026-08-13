@@ -22,6 +22,7 @@ export const ASSIGNED_SIMULATIONS: AssignedSimulationItem[] = [
     difficulty: 'medium',
     sessionsCount: 8,
     categoryId: 'management',
+    id: 'sim-motivating-overwhelmed-employee',
   },
   {
     title: 'Managing Guest Tensions Over Shared Amenities at the Hotel',
@@ -32,6 +33,7 @@ export const ASSIGNED_SIMULATIONS: AssignedSimulationItem[] = [
     difficulty: 'easy',
     sessionsCount: 5,
     categoryId: 'customer-service',
+    id: 's1',
   },
   {
     title: 'Guiding a Client Through a Commercial Space Visit',
@@ -42,6 +44,7 @@ export const ASSIGNED_SIMULATIONS: AssignedSimulationItem[] = [
     difficulty: 'medium',
     sessionsCount: 3,
     categoryId: 'commercial',
+    id: 's2',
   },
   {
     title: 'Interviewing a Nervous but Qualified Candidate',
@@ -52,6 +55,7 @@ export const ASSIGNED_SIMULATIONS: AssignedSimulationItem[] = [
     difficulty: 'hard',
     sessionsCount: 6,
     categoryId: 'recruitment',
+    id: 'sim-interviewing-nervous-candidate',
   },
   {
     title: 'Aiding And Explaining Airline Fare Rules To A Distraught Passenger',
@@ -62,6 +66,7 @@ export const ASSIGNED_SIMULATIONS: AssignedSimulationItem[] = [
     difficulty: 'medium',
     sessionsCount: 4,
     categoryId: 'customer-service',
+    id: 's3',
   },
   {
     title: 'Negotiating Renewal Terms With a Price-Sensitive Client',
@@ -72,6 +77,7 @@ export const ASSIGNED_SIMULATIONS: AssignedSimulationItem[] = [
     difficulty: 'hard',
     sessionsCount: 2,
     categoryId: 'commercial',
+    id: 'sim-negotiating-renewal-terms',
   },
   {
     title: 'Delivering a Performance Improvement Plan With Empathy',
@@ -82,6 +88,7 @@ export const ASSIGNED_SIMULATIONS: AssignedSimulationItem[] = [
     difficulty: 'hard',
     sessionsCount: 7,
     categoryId: 'management',
+    id: 'sim-delivering-performance-improvement-plan',
   },
   {
     title: 'Onboarding a New Hire Into a Remote-First Team',
@@ -92,6 +99,7 @@ export const ASSIGNED_SIMULATIONS: AssignedSimulationItem[] = [
     difficulty: 'easy',
     sessionsCount: 9,
     categoryId: 'recruitment',
+    id: 'sim-onboarding-new-hire',
   },
   {
     title: 'De-escalating an Angry Customer After a Delayed Delivery',
@@ -102,6 +110,7 @@ export const ASSIGNED_SIMULATIONS: AssignedSimulationItem[] = [
     difficulty: 'medium',
     sessionsCount: 5,
     categoryId: 'customer-service',
+    id: 'sim-deescalating-angry-customer',
   },
   {
     title: 'Pitching a Product Upgrade to a Skeptical Buyer',
@@ -112,6 +121,7 @@ export const ASSIGNED_SIMULATIONS: AssignedSimulationItem[] = [
     difficulty: 'easy',
     sessionsCount: 1,
     categoryId: 'commercial',
+    id: 'sim-pitching-product-upgrade',
   },
   {
     title: 'Resolving a Conflict Between Two Direct Reports',
@@ -122,6 +132,7 @@ export const ASSIGNED_SIMULATIONS: AssignedSimulationItem[] = [
     difficulty: 'medium',
     sessionsCount: 3,
     categoryId: 'management',
+    id: 'sim-resolving-conflict-direct-reports',
   },
   {
     title: 'Screening a Candidate for Culture and Values Fit',
@@ -132,6 +143,7 @@ export const ASSIGNED_SIMULATIONS: AssignedSimulationItem[] = [
     difficulty: 'medium',
     sessionsCount: 4,
     categoryId: 'recruitment',
+    id: 'sim-screening-culture-values-fit',
   },
   {
     title: 'Handling a Refund Request Outside Policy',
@@ -142,6 +154,7 @@ export const ASSIGNED_SIMULATIONS: AssignedSimulationItem[] = [
     difficulty: 'easy',
     sessionsCount: 6,
     categoryId: 'customer-service',
+    id: 'sim-handling-refund-request',
   },
 ];
 

@@ -33,7 +33,7 @@ const TABS: { key: TeamTabKey; label: string }[] = [
   { key: 'settings', label: 'Team Settings' },
 ];
 
-export type AssignedSimulationItem = SimulationCardOptions & { categoryId: string };
+export type AssignedSimulationItem = SimulationCardOptions & { categoryId: string; id: string };
 
 export type TeamPageOptions = {
   teamName: string;
@@ -81,6 +81,10 @@ export function createTeamPage({
   let currentTeam: SidebarV2Team = sidebarTeams.find((t) => t.name === teamName)
     ?? { name: teamName, initials: teamInitials, color: teamColor };
   let currentTab: TeamTabKey = initialTab;
+  // Set right before switching to the Sessions tab via a simulation card's
+  // "View sessions" link; consumed once by renderContent() then cleared so a
+  // normal tab click doesn't keep a stale filter.
+  let pendingSessionsSimulationFilter: string[] | null = null;
   // Preserved across sidebar re-renders (e.g. switching teams) so collapsing
   // the rail doesn't silently pop back open on the next navigation.
   let sidebarCollapsed = false;
@@ -168,9 +172,18 @@ export function createTeamPage({
     contentContainer.innerHTML = '';
     if (currentTab === 'assigned') {
       const items = assignedSimulationsByTeam?.[currentTeam.name] ?? assignedSimulations;
-      contentContainer.appendChild(buildAssignedSimulationsTab(items, categoryOptions));
+      contentContainer.appendChild(
+        buildAssignedSimulationsTab(items, categoryOptions, (simulationId) => {
+          pendingSessionsSimulationFilter = [simulationId];
+          setActiveTab('sessions');
+        }),
+      );
     } else if (currentTab === 'sessions') {
-      contentContainer.appendChild(buildSessionsTab(sessionsLearners, sessionsSimulations, sessionsRows));
+      const initialSimulationFilter = pendingSessionsSimulationFilter ?? undefined;
+      pendingSessionsSimulationFilter = null;
+      contentContainer.appendChild(
+        buildSessionsTab(sessionsLearners, sessionsSimulations, sessionsRows, initialSimulationFilter),
+      );
     } else if (currentTab === 'members') {
       contentContainer.appendChild(buildMembersTab(members));
     } else {
@@ -217,6 +230,7 @@ export function createTeamPage({
 function buildAssignedSimulationsTab(
   items: AssignedSimulationItem[],
   categoryOptions: CollectionsFilterOption[],
+  onViewSessions: (simulationId: string) => void,
 ): HTMLElement {
   const wrap = document.createElement('div');
   wrap.className = 'team-page__tab team-page__tab--assigned';
@@ -244,7 +258,11 @@ function buildAssignedSimulationsTab(
         searchText: item.title,
       }),
     );
-    grid.replaceChildren(...visible.map((item) => createSimulationCard(item)));
+    grid.replaceChildren(
+      ...visible.map((item) =>
+        createSimulationCard({ ...item, onSessionsClick: () => onViewSessions(item.id) }),
+      ),
+    );
   };
 
   filterWrap.appendChild(
@@ -265,6 +283,7 @@ function buildSessionsTab(
   learners: FilterOption[],
   simulations: FilterOption[],
   rows: SessionRowData[],
+  initialSimulationFilter?: string[],
 ): HTMLElement {
   const wrap = document.createElement('div');
   wrap.className = 'team-page__tab team-page__tab--sessions sessions-card';
@@ -278,7 +297,7 @@ function buildSessionsTab(
   wrap.appendChild(tableHost);
 
   let filterState: SessionsFilterState = {
-    formats: [], learners: [], simulations: [], progress: null, showArchived: false, search: '',
+    formats: [], learners: [], simulations: initialSimulationFilter ?? [], progress: null, showArchived: false, search: '',
   };
   let sort: SortState = DEFAULT_SORT;
 
@@ -310,6 +329,7 @@ function buildSessionsTab(
     createSessionsFilterBar({
       learners,
       simulations,
+      initialState: initialSimulationFilter ? { simulations: initialSimulationFilter } : undefined,
       onChange: (state) => { filterState = state; renderTable(); },
     }),
   );
