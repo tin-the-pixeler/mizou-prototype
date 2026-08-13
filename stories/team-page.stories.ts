@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/html';
 import { createTeamPage } from '../components/teamPage';
-import { SIMULATION_OPTIONS } from './sessions-demo-data';
-import { ASSIGNED_SIMULATIONS, ASSIGNED_SIMULATIONS_BY_TEAM, TEAM_MEMBERS, TEAM_SESSION_LEARNERS, TEAM_SESSION_ROWS } from './team-page-demo-data';
+import { ASSIGNED_SIMULATIONS, ASSIGNED_SIMULATIONS_BY_TEAM, TEAM_MEMBERS, TEAM_SESSION_LEARNERS, TEAM_SESSION_SIMULATIONS, TEAM_SESSION_ROWS } from './team-page-demo-data';
 
 const meta: Meta = { title: 'Pages/Team Page - Team Manager view' };
 export default meta;
@@ -32,7 +31,7 @@ function render(initialTab: 'assigned' | 'sessions' | 'members' | 'settings') {
     assignedSimulations: ASSIGNED_SIMULATIONS,
     assignedSimulationsByTeam: ASSIGNED_SIMULATIONS_BY_TEAM,
     sessionsLearners: TEAM_SESSION_LEARNERS,
-    sessionsSimulations: SIMULATION_OPTIONS,
+    sessionsSimulations: TEAM_SESSION_SIMULATIONS,
     sessionsRows: TEAM_SESSION_ROWS,
     members: TEAM_MEMBERS,
   });

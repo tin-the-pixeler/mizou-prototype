@@ -195,72 +195,40 @@ export const TEAM_MEMBERS: TeamMemberRow[] = [
 /** Sessions tab "Learners" filter — this team's own members. */
 export const TEAM_SESSION_LEARNERS: FilterOption[] = TEAM_MEMBERS.map((m) => ({ id: m.id, label: m.name }));
 
-const teamSim = (id: string, title: string, format: SessionRowData['simulation']['format']) => ({ id, title, format });
+/** Sessions tab "Simulations" filter — must list this team's own assigned simulations (not the generic sessions-demo-data pool), so every card's id resolves to a real filter option. */
+export const TEAM_SESSION_SIMULATIONS: FilterOption[] = ASSIGNED_SIMULATIONS.map((s) => ({ id: s.id, label: s.title }));
 
-export const TEAM_SESSION_ROWS: SessionRowData[] = [
-  {
-    id: 'ts-1',
-    learner: { id: 'm1', name: 'Amy Liu', avatarUrl: TEAM_MEMBERS[0].avatarUrl },
-    simulation: teamSim('s1', 'Managing Guest Tensions Over Shared Amenities at the Hotel', 'voice-role-play'),
-    progress: 'completed',
-    score: 92,
-    durationSec: 301,
-    submitted: { ts: 1762956480000, label: 'Nov. 12 @ 14:08' },
-  },
-  {
-    id: 'ts-2',
-    learner: { id: 'm2', name: 'John Garde', avatarUrl: TEAM_MEMBERS[1].avatarUrl },
-    simulation: teamSim('s2', 'Guiding a Client Through a Commercial Space Visit', 'chatbot'),
-    progress: 'ongoing',
-    durationSec: 168,
-  },
-  {
-    id: 'ts-3',
-    learner: { id: 'm3', name: 'Carl Andrews', avatarUrl: TEAM_MEMBERS[2].avatarUrl },
-    simulation: teamSim('s4', 'Customer Support For Service Skills Training', 'chatbot'),
-    progress: 'completed',
-    score: 78,
-    durationSec: 245,
-    submitted: { ts: 1762947120000, label: 'Nov. 12 @ 11:32' },
-  },
-  {
-    id: 'ts-4',
-    learner: { id: 'm4', name: 'Ethan Carter', avatarUrl: TEAM_MEMBERS[3].avatarUrl },
-    simulation: teamSim('s1', 'Managing Guest Tensions Over Shared Amenities at the Hotel', 'voice-role-play'),
-    progress: 'not-started',
-  },
-  {
-    id: 'ts-5',
-    learner: { id: 'm5', name: 'Sophia Mitchell', avatarUrl: TEAM_MEMBERS[4].avatarUrl },
-    simulation: teamSim('s5', 'Final interview for culture fit', 'video-role-play'),
-    progress: 'completed',
-    score: 61,
-    durationSec: 289,
-    submitted: { ts: 1762877700000, label: 'Nov. 11 @ 16:15' },
-  },
-  {
-    id: 'ts-6',
-    learner: { id: 'm6', name: 'Liam Reynolds', avatarUrl: TEAM_MEMBERS[5].avatarUrl },
-    simulation: teamSim('s3', 'Aiding And Explaining Airline Fare Rules To A Distraught Passenger', 'voice-role-play'),
-    progress: 'completed',
-    score: 45,
-    durationSec: 210,
-    submitted: { ts: 1762767900000, label: 'Nov. 10 @ 09:45' },
-  },
-  {
-    id: 'ts-7',
-    learner: { id: 'm7', name: 'Olivia Bennett', avatarUrl: TEAM_MEMBERS[6].avatarUrl },
-    simulation: teamSim('s2', 'Guiding a Client Through a Commercial Space Visit', 'chatbot'),
-    progress: 'ongoing',
-    durationSec: 94,
-  },
-  {
-    id: 'ts-8',
-    learner: { id: 'm8', name: 'Noah Fischer', avatarUrl: TEAM_MEMBERS[7].avatarUrl },
-    simulation: teamSim('s4', 'Customer Support For Service Skills Training', 'chatbot'),
-    progress: 'completed',
-    score: 87,
-    durationSec: 198,
-    submitted: { ts: 1762614060000, label: 'Nov. 8 @ 15:01' },
-  },
-];
+// Generated (not hand-listed) so each simulation's row count always matches
+// the `sessionsCount` shown on its Assigned Simulations card — clicking
+// "View sessions" must land on exactly that many filtered rows.
+const PROGRESS_CYCLE: SessionRowData['progress'][] = ['completed', 'completed', 'ongoing', 'not-started'];
+
+function buildTeamSessionRows(): SessionRowData[] {
+  const rows: SessionRowData[] = [];
+  let i = 0;
+  for (const sim of ASSIGNED_SIMULATIONS) {
+    const format: SessionRowData['simulation']['format'] =
+      sim.simulationType === 'chatbot' || sim.simulationType === 'video-role-play' ? sim.simulationType : 'voice-role-play';
+    for (let n = 0; n < (sim.sessionsCount ?? 0); n++, i++) {
+      const learner = TEAM_MEMBERS[i % TEAM_MEMBERS.length];
+      const progress = PROGRESS_CYCLE[i % PROGRESS_CYCLE.length];
+      const row: SessionRowData = {
+        id: `ts-${i + 1}`,
+        learner: { id: learner.id, name: learner.name, avatarUrl: learner.avatarUrl },
+        simulation: { id: sim.id, title: sim.title, format },
+        progress,
+      };
+      if (progress === 'completed') {
+        row.score = 55 + ((i * 7) % 45);
+        row.durationSec = 120 + ((i * 23) % 240);
+        row.submitted = { ts: 1762300000000 + i * 43200000, label: `Nov. ${1 + (i % 20)} @ ${9 + (i % 10)}:00` };
+      } else if (progress === 'ongoing') {
+        row.durationSec = 60 + ((i * 17) % 200);
+      }
+      rows.push(row);
+    }
+  }
+  return rows;
+}
+
+export const TEAM_SESSION_ROWS: SessionRowData[] = buildTeamSessionRows();
