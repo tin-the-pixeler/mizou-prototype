@@ -1,4 +1,5 @@
 import '../styles/tokens.css';
+import '../ui/tailwind.css';
 import '../styles/app-typography.css';
 import '../styles/chat-markdown.css';
 import '../styles/sidebar.css';
@@ -44,9 +45,50 @@ import '../styles/team-members-table.css';
 import '../styles/team-settings-form.css';
 import '../styles/team-page.css';
 import '../styles/modal.css';
-import type { Preview } from '@storybook/html';
+import type { Preview } from '@storybook/react';
+import React, { useEffect, useRef } from 'react';
+
+/**
+ * DOM interop for the legacy HTML/TS stories.
+ *
+ * The 52 pre-existing stories are authored against `@storybook/html` and their
+ * `render` returns a raw HTMLElement. Under the React renderer that value would
+ * throw, so this host component adopts the node into a React-owned container.
+ * Result: every existing story renders unchanged, with zero edits to the story
+ * or component files.
+ */
+function DomHost({ node }: { node: Node }) {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const host = ref.current;
+    if (!host) return;
+    host.appendChild(node);
+    return () => {
+      if (node.parentNode === host) host.removeChild(node);
+    };
+  }, [node]);
+
+  return React.createElement('div', { ref, 'data-dom-host': '' });
+}
 
 const preview: Preview = {
+  decorators: [
+    (Story, context) => {
+      // `Story` is already React-wrapped by the renderer, so inspect the raw
+      // story function instead: legacy stories return an HTMLElement, which we
+      // host; React stories fall through to the normal decorator chain.
+      // `originalStoryFn` is typed as `LegacyStoryFn | ArgsStoryFn` (different
+      // arities), which TS can't call directly — narrow to the legacy shape,
+      // the one every pre-existing HTML story actually uses.
+      const callLegacy = context.originalStoryFn as unknown as ((ctx: typeof context) => unknown) | undefined;
+      const raw = callLegacy?.(context);
+      if (raw instanceof Node) {
+        return React.createElement(DomHost, { node: raw });
+      }
+      return React.createElement(Story);
+    },
+  ],
   parameters: {},
 };
 

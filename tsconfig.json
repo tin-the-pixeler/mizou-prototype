@@ -4,8 +4,31 @@
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "strict": true,
-    "types": ["vite/client"],
-    "skipLibCheck": true
+    "types": [
+      "vite/client"
+    ],
+    "skipLibCheck": true,
+    "jsx": "react-jsx",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "noEmit": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "./*"
+      ]
+    }
   },
-  "include": [".storybook/**/*.ts", "stories/**/*.ts", "icons/**/*.ts", "components/**/*.ts"]
+  "include": [
+    ".storybook/**/*.ts",
+    ".storybook/**/*.tsx",
+    "stories/**/*.ts",
+    "stories/**/*.tsx",
+    "icons/**/*.ts",
+    "components/**/*.ts",
+    "ui/**/*.ts",
+    "ui/**/*.tsx",
+    "tailwind.config.ts"
+  ]
 }

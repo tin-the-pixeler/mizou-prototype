@@ -1,0 +1,7 @@
+/*
+ * Tailwind entrypoint for the new `ui/` design-system layer.
+ * Preflight is disabled in tailwind.config.ts, so this file emits ONLY
+ * utilities and components — nothing that could restyle existing stories.
+ */
+@tailwind components;
+@tailwind utilities;
