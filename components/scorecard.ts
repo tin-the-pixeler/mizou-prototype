@@ -511,7 +511,7 @@ export function createScorecardContent(
   let editing = false;
 
   // Root element
-  const root = document.createElement('div') as ScorecardElement;
+  const root = document.createElement('div') as HTMLElement as ScorecardElement;
   root.className = 'scorecard';
 
   // Static intro

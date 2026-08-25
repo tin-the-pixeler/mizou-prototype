@@ -91,7 +91,7 @@ export function createInputFieldChatThread({
   const rightSide = document.createElement('div');
   rightSide.className = 'input-field-chat-thread__right';
 
-  const createBtn = createModeBadge({ mode, onClick: onModeClick });
+  const createBtn = createModeBadge({ mode, onChange: onModeClick });
 
   const micBtn = createIconButton('mic-fill' as IconName, 'input-field-chat-thread__icon-btn input-field-chat-thread__icon-btn--outlined');
   micBtn.classList.add('input-field-chat-thread__mic-btn');

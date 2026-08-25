@@ -38,7 +38,7 @@ const baseArgTypes = {
   secondaryLabel: { control: 'text', name: 'Secondary label' },
   textLinkLabel: { control: 'text', name: 'Text-link label' },
   width: { control: 'number' },
-};
+} as const;
 
 const meta: Meta<ModalStoryArgs> = {
   title: 'Components/Modal',

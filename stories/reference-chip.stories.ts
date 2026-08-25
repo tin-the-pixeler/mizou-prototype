@@ -7,7 +7,7 @@ const meta: Meta<StoryProps> = {
   title: 'Components/Reference Chip',
   argTypes: {
     index: { control: 'number' },
-    active: { control: 'boolean' },
+    variant: { control: 'select', options: ['default', 'active'] },
   },
 };
 export default meta;
@@ -23,12 +23,12 @@ const render = (args: StoryProps) => {
 };
 
 export const Default: Story = {
-  args: { index: 1, active: false },
+  args: { index: 1, variant: 'default' },
   render,
 };
 
 export const Active: Story = {
-  args: { index: 2, active: true },
+  args: { index: 2, variant: 'active' },
   render,
 };
 
@@ -36,9 +36,9 @@ export const Row: Story = {
   render: () => {
     const row = document.createElement('div');
     row.style.cssText = 'display:flex; padding:24px; background:var(--surface-page);';
-    row.appendChild(createReferenceChip({ index: 1, active: false }));
-    row.appendChild(createReferenceChip({ index: 2, active: true }));
-    row.appendChild(createReferenceChip({ index: 3, active: false }));
+    row.appendChild(createReferenceChip({ index: 1, variant: 'default' }));
+    row.appendChild(createReferenceChip({ index: 2, variant: 'active' }));
+    row.appendChild(createReferenceChip({ index: 3, variant: 'default' }));
     return row;
   },
 };
