@@ -5,3 +5,6 @@ dist
 debug-storybook.log
 .claude/
 .rtk/
+
+# Local Netlify folder
+.netlify
