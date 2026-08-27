@@ -1,4 +1,5 @@
 import type { Config } from 'tailwindcss';
+import defaultTheme from 'tailwindcss/defaultTheme';
 
 /**
  * Mizou design-system Tailwind theme.
@@ -95,6 +96,15 @@ const config: Config = {
     // Tailwind's defaults rather than adding to them. Extending would leave
     // `p-4`, `h-16`, `bg-red-500` etc. usable — a second escape hatch around
     // the token scale that no-arbitrary-value cannot catch.
+    //
+    // Exception: `spacing` (below) — vendored shadcn components (ui/sidebar.tsx
+    // and peers) assume Tailwind's real numeric scale (`p-2`, `gap-1`, `size-8`,
+    // `mx-3.5`...) and silently lose all padding/gap/sizing without it. Those
+    // files are exempt from lint (see eslint.config.js), so re-extending the
+    // default scale doesn't loosen the guardrail there — but it IS a real trade
+    // for hand-authored ui/ files: `p-4` now resolves instead of erroring via
+    // no-custom-classname. Prefer the named scale (`p-sm`) in code we write;
+    // this exists so shadcn's own components render as designed.
     colors: {
       // Keywords Tailwind needs to stay functional.
       inherit: 'inherit',
@@ -214,6 +224,12 @@ const config: Config = {
 
     extend: {
       // Additive only — these have no conflicting default worth locking down.
+
+      // Backfills Tailwind's numeric scale (0, 0.5, 1, 1.5, ..., px, ...)
+      // alongside the named `spacing` scale above. See the exception note at
+      // the top of `theme` — this is for shadcn's vendored components.
+      spacing: { ...defaultTheme.spacing },
+
       fontFamily: {
         sans: [
           'Nunito Sans', 'ui-sans-serif', 'system-ui', '-apple-system',
@@ -222,6 +238,26 @@ const config: Config = {
       },
       backgroundImage: { 'ocean-diagonal': 'var(--ocean-gradient-diagonal)' },
       opacity: { disabled: '0.5' },
+
+      // shadcn's Sidebar component (ui/sidebar.tsx) reads its colors through
+      // this "sidebar" group (bg-sidebar, text-sidebar-foreground, etc.) —
+      // mapped straight to the same Mizou semantic tokens the legacy sidebar
+      // used, not shadcn's own generic palette. No --sidebar-* CSS vars
+      // involved: these are Mizou's existing vars, reused directly.
+      colors: {
+        sidebar: {
+          DEFAULT: 'var(--surface-raised)',
+          foreground: 'var(--text-primary)',
+          primary: 'var(--interactive-primary)',
+          'primary-foreground': 'var(--text-inverse)',
+          // Hover AND active/selected menu-button background+text — matches
+          // the legacy nav item hover treatment (.sv2-item:hover).
+          accent: 'var(--interactive-secondary-active)',
+          'accent-foreground': 'var(--interactive-primary)',
+          border: 'var(--border-default)',
+          ring: 'var(--interactive-primary)',
+        },
+      },
     },
   },
 

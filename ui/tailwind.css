@@ -5,3 +5,69 @@
  */
 @tailwind components;
 @tailwind utilities;
+
+/*
+ * Scoped reset for shadcn components (starting with Sidebar), which assume
+ * Tailwind's Preflight is on. Preflight itself stays off — it would restyle
+ * links, lists and buttons across all 52 existing HTML/CSS stories sharing
+ * this Storybook. Instead this reproduces just the bits shadcn needs, scoped
+ * to `.group\/sidebar-wrapper` — the wrapper SidebarProvider always renders —
+ * so it can't reach anything outside a shadcn Sidebar subtree.
+ *
+ * Lives in `@layer components`, NOT plain CSS: `:where()` keeps these at zero
+ * specificity, but zero-specificity plain CSS placed after `@tailwind
+ * utilities` in this file still wins cascade ties by SOURCE ORDER — which was
+ * silently overriding real utility classes like `p-2`/`text-sm` on every
+ * <button> (shadcn's Sidebar renders some rows as <button>, others as <a>,
+ * so only the buttons broke — the misaligned padding/font-size this fixes).
+ * `@layer components` places this before `@tailwind utilities` in the actual
+ * cascade, so utility classes correctly win instead.
+ */
+@layer components {
+  /*
+   * Tailwind's border utilities (`border-l`, `border-sidebar-border`, ...)
+   * only ever set border-WIDTH and -COLOR; they rely on Preflight having
+   * already set `border-style: solid` globally (the browser default is
+   * `none`, which renders as zero width regardless of the width set). Same
+   * story for box-sizing. Without this, every border utility in the Sidebar
+   * — the sub-item vertical line, the sidebar's own right edge — is invisible.
+   */
+  .group\/sidebar-wrapper :where(*, ::before, ::after) {
+    box-sizing: border-box;
+    border-width: 0;
+    border-style: solid;
+    border-color: currentColor;
+  }
+  .group\/sidebar-wrapper :where(ul, ol) {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .group\/sidebar-wrapper :where(a) {
+    color: inherit;
+    text-decoration: inherit;
+  }
+  .group\/sidebar-wrapper :where(button) {
+    margin: 0;
+    padding: 0;
+    border: none;
+    background: none;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+  }
+
+  /*
+   * Sidebar's own right edge (`group-data-[side=left]:border-r`, in
+   * ui/sidebar.tsx) never sets an explicit border color — it relies on the
+   * `currentColor` default above, inheriting `text-sidebar-foreground`.
+   * shadcn's own default foreground is a soft mid-gray, so that reads fine
+   * there; Mizou's `--text-primary` is deliberately much higher-contrast, so
+   * the same fallback renders a near-black edge here. Give just this one div
+   * (the direct parent of the [data-sidebar="sidebar"] panel) the real border
+   * token instead of loosening the general currentColor default.
+   */
+  .group\/sidebar-wrapper div:has(> [data-sidebar='sidebar']) {
+    border-color: var(--border-default);
+  }
+}

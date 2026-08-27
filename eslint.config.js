@@ -21,6 +21,19 @@ export default tseslint.config(
       'stories/*.stories.ts',
       'stories/*.ts',
       'figma-plugin-rename/**',
+      // shadcn-vendored primitives (`npx shadcn add <name>`), not hand-authored.
+      // They lean on arbitrary-value utilities (`w-[--sidebar-width]`, calc(),
+      // `h-svh`) to drive shadcn's own CSS-var-based theming — exactly what
+      // no-arbitrary-value exists to catch in code we actually write. Treated
+      // like components/ and styles/: regenerable vendor code, not linted.
+      'ui/sidebar.tsx',
+      'ui/button.tsx',
+      'ui/input.tsx',
+      'ui/separator.tsx',
+      'ui/sheet.tsx',
+      'ui/skeleton.tsx',
+      'ui/tooltip.tsx',
+      'ui/hooks/**',
     ],
   },
   {

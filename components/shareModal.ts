@@ -9,6 +9,7 @@ import { iconEl } from '../icons';
 export type ShareTeam = { id: string; label: string; members: number };
 export type SharePerson = { id: string; name: string; email: string };
 export type ShareModalTab = 'member' | 'team' | 'individual';
+export type LinkAccess = 'organisation' | 'restricted';
 
 export type ShareModalOptions = {
   memberLinkUrl?: string;
@@ -42,6 +43,17 @@ const DEFAULT_ASSIGNED_INDIVIDUALS: SharePerson[] = [
   { id: 'john.doe@acme.com', name: 'John Doe', email: 'john.doe@acme.com' },
   { id: 'mila.tan@acme.com', name: 'Mila Tan', email: 'mila.tan@acme.com' },
 ];
+
+const ACCESS_COPY: Record<LinkAccess, { title: string; desc: string }> = {
+  organisation: {
+    title: 'Organisation Access',
+    desc: 'Any member of the organisation with the link can access the simulation',
+  },
+  restricted: {
+    title: 'Restricted Access',
+    desc: 'Only assigned individuals or teams can access the simulation',
+  },
+};
 
 const AVATAR_PALETTE = ['#6963FC', '#f43f5e', '#34d399', '#fbbf24', '#4f46e5'];
 function colorFor(seed: string): string {
@@ -96,6 +108,24 @@ function svgSearch(): SVGElement {
   s.setAttribute('stroke-linecap', 'round');
   s.setAttribute('stroke-linejoin', 'round');
   s.innerHTML = '<circle cx="8.5" cy="8.5" r="5.5"/><path d="M17 17l-3.8-3.8"/>';
+  return s;
+}
+
+function svgLockFill(): SVGElement {
+  const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  s.setAttribute('viewBox', '0 0 20 20');
+  s.setAttribute('fill', 'currentColor');
+  s.innerHTML =
+    '<path fill-rule="evenodd" clip-rule="evenodd" d="M10 2a4 4 0 0 0-4 4v2H5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1h-1V6a4 4 0 0 0-4-4Zm2 6V6a2 2 0 1 0-4 0v2h4Z"/>';
+  return s;
+}
+
+function svgCheckCircleFill(): SVGElement {
+  const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  s.setAttribute('viewBox', '0 0 20 20');
+  s.setAttribute('fill', 'currentColor');
+  s.innerHTML =
+    '<path fill-rule="evenodd" clip-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.7-9.3a1 1 0 0 0-1.4-1.4L9 10.59l-1.3-1.3a1 1 0 0 0-1.4 1.42l2 2a1 1 0 0 0 1.4 0l4-4Z"/>';
   return s;
 }
 
@@ -179,6 +209,7 @@ export function createShareModal(options: ShareModalOptions = {}): HTMLElement {
 
   // ---- Shared state ----
   let activeTab: ShareModalTab = initialTab;
+  let linkAccess: LinkAccess = 'organisation';
   const teams: ShareTeam[] = [...assignedTeams];
   const individuals: SharePerson[] = [...assignedIndividuals];
   const customPeople: SharePerson[] = [];
@@ -262,7 +293,7 @@ export function createShareModal(options: ShareModalOptions = {}): HTMLElement {
   function renderTabBar() {
     tabBar.innerHTML = '';
     const defs: { id: ShareModalTab; label: string; count?: number }[] = [
-      { id: 'member', label: 'Member Link' },
+      { id: 'member', label: 'Share Link' },
       { id: 'team', label: 'Teams', count: teams.length },
       { id: 'individual', label: 'Individual', count: individuals.length },
     ];
@@ -290,18 +321,43 @@ export function createShareModal(options: ShareModalOptions = {}): HTMLElement {
     });
   }
 
-  // ---- Member link panel ----
-  function buildMemberPanel(): HTMLElement {
+  // ---- Share link panel (link-access-control) ----
+  function buildLinkPanel(): HTMLElement {
     const wrap = document.createElement('div');
 
-    const urlField = document.createElement('div');
-    urlField.className = 'share-modal__url-field';
-    const urlText = document.createElement('span');
-    urlText.className = 'share-modal__url-text';
-    urlText.textContent = memberLinkUrl;
+    let isOpen = false;
+
+    const accessWrap = document.createElement('div');
+    accessWrap.className = 'share-modal__access-wrap';
+
+    const control = document.createElement('div');
+    control.className = 'share-modal__access';
+
+    const info = document.createElement('div');
+    info.className = 'share-modal__access-info';
+
+    const trigger = document.createElement('button');
+    trigger.type = 'button';
+    trigger.className = 'share-modal__access-trigger';
+    trigger.setAttribute('aria-label', 'Change link access');
+    trigger.setAttribute('aria-expanded', 'false');
+    const iconWrap = document.createElement('span');
+    iconWrap.className = 'share-modal__access-icon';
+    const titleEl = document.createElement('span');
+    titleEl.className = 'share-modal__access-title';
+    const chevronWrap = document.createElement('span');
+    chevronWrap.className = 'share-modal__access-chev';
+    chevronWrap.appendChild(iconEl('chevron-down-sm', 'sb-icon'));
+    trigger.append(iconWrap, titleEl, chevronWrap);
+
+    const descEl = document.createElement('p');
+    descEl.className = 'share-modal__access-desc';
+
+    info.append(trigger, descEl);
+
     const copyBtn = document.createElement('button');
     copyBtn.type = 'button';
-    copyBtn.className = 'share-modal__btn share-modal__btn--primary share-modal__btn--sm share-modal__url-copy';
+    copyBtn.className = 'share-modal__btn share-modal__btn--secondary share-modal__btn--sm';
     copyBtn.appendChild(iconEl('file-text-outline', 'sb-icon'));
     const copyLabel = document.createElement('span');
     copyLabel.textContent = 'Copy link';
@@ -319,8 +375,98 @@ export function createShareModal(options: ShareModalOptions = {}): HTMLElement {
         copyBtn.appendChild(copyLabel);
       }, 2000);
     });
-    urlField.append(urlText, copyBtn);
-    wrap.appendChild(urlField);
+
+    control.append(info, copyBtn);
+
+    const dropdown = document.createElement('div');
+    dropdown.className = 'share-modal__access-dropdown';
+    dropdown.setAttribute('role', 'listbox');
+    dropdown.hidden = true;
+
+    function renderControl() {
+      const copy = ACCESS_COPY[linkAccess];
+      iconWrap.innerHTML = '';
+      iconWrap.appendChild(linkAccess === 'organisation' ? svgTeamIcon() : svgLockFill());
+      titleEl.textContent = copy.title;
+      descEl.textContent = copy.desc;
+    }
+
+    function buildOption(kind: LinkAccess): HTMLElement {
+      const isSelected = linkAccess === kind;
+      const opt = document.createElement('button');
+      opt.type = 'button';
+      opt.className = 'share-modal__access-option' + (isSelected ? ' is-selected' : '');
+      opt.setAttribute('role', 'option');
+      opt.setAttribute('aria-selected', String(isSelected));
+
+      const optIcon = document.createElement('span');
+      optIcon.className = `share-modal__access-option-icon share-modal__access-option-icon--${kind}`;
+      optIcon.appendChild(kind === 'organisation' ? svgTeamIcon() : svgLockFill());
+
+      const optInfo = document.createElement('span');
+      optInfo.className = 'share-modal__access-option-info';
+      const optTitle = document.createElement('span');
+      optTitle.className = 'share-modal__access-option-title';
+      optTitle.textContent = ACCESS_COPY[kind].title;
+      const optDesc = document.createElement('span');
+      optDesc.className = 'share-modal__access-option-desc';
+      optDesc.textContent = ACCESS_COPY[kind].desc;
+      optInfo.append(optTitle, optDesc);
+
+      opt.append(optIcon, optInfo);
+      if (isSelected) {
+        const check = document.createElement('span');
+        check.className = 'share-modal__access-option-check';
+        check.appendChild(svgCheckCircleFill());
+        opt.appendChild(check);
+      }
+
+      opt.addEventListener('click', () => {
+        linkAccess = kind;
+        renderControl();
+        renderOptions();
+        closeDropdown();
+      });
+
+      return opt;
+    }
+
+    function renderOptions() {
+      dropdown.innerHTML = '';
+      dropdown.appendChild(buildOption('organisation'));
+      dropdown.appendChild(buildOption('restricted'));
+    }
+
+    function openDropdown() {
+      isOpen = true;
+      trigger.classList.add('is-open');
+      trigger.setAttribute('aria-expanded', 'true');
+      dropdown.hidden = false;
+      renderOptions();
+    }
+    function closeDropdown() {
+      isOpen = false;
+      trigger.classList.remove('is-open');
+      trigger.setAttribute('aria-expanded', 'false');
+      dropdown.hidden = true;
+    }
+
+    trigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      isOpen ? closeDropdown() : openDropdown();
+    });
+    document.addEventListener('mousedown', (e) => {
+      if (isOpen && !accessWrap.contains(e.target as Node)) closeDropdown();
+    });
+
+    renderControl();
+
+    accessWrap.append(control, dropdown);
+    wrap.appendChild(accessWrap);
+
+    const divider = document.createElement('div');
+    divider.className = 'share-modal__divider';
+    wrap.appendChild(divider);
 
     const embedLink = document.createElement('button');
     embedLink.type = 'button';
@@ -699,7 +845,7 @@ export function createShareModal(options: ShareModalOptions = {}): HTMLElement {
 
   function renderBody() {
     body.innerHTML = '';
-    if (activeTab === 'member') body.appendChild(buildMemberPanel());
+    if (activeTab === 'member') body.appendChild(buildLinkPanel());
     if (activeTab === 'team') body.appendChild(buildTeamPanel());
     if (activeTab === 'individual') body.appendChild(buildIndividualPanel());
   }
