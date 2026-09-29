@@ -25,6 +25,7 @@ import '../styles/mode-badge.css';
 import '../styles/tooltip.css';
 import '../styles/prompt-card.css';
 import '../styles/simulation-builder-page.css';
+import '../styles/simulation-builder-workspace.css';
 import '../styles/button-icon.css';
 import '../styles/button-xs.css';
 import '../styles/create-button.css';
