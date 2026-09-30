@@ -27,10 +27,12 @@ type Annotation = {
 };
 
 type FlowStep = {
+  id: string;
   /** Path shown under the title: where the user is and what they do */
   description: string;
-  /** Storybook story id rendered in the frame */
-  storyId: string;
+  /** Active when this returns true for the frame's document. The LAST matching
+   *  step wins; a step without `when` is the starting state. */
+  when?: (doc: Document) => boolean;
   annotations: Annotation[];
 };
 
@@ -39,19 +41,39 @@ const FLOW_TITLE = 'Share and Assign a Simulation';
 /** The card the flow walks through (a plain published simulation). */
 const CARD = '.sim-card[data-id="pub-late-delivery"]';
 
-const STEP: FlowStep = {
-  description: 'Collections Page [Publications Tab] - click on Assign button',
-  storyId: 'pages-collections-admin-view--publications',
-  annotations: [
-    {
-      id: 'A',
-      title: 'Assign button',
-      body: 'Opens the Share modal, where the admin copies the member link or assigns the simulation to teams or individuals. Hidden once a simulation has ended.',
-      target: `${CARD} .sim-card__action-btn--primary`,
-      routeAround: '.sim-card',
-    },
-  ],
-};
+/** Storybook story rendered in the frame — the whole flow runs inside it. */
+const FRAME_STORY = 'pages-collections-admin-view--publications';
+
+/** Steps follow what's on screen: interact inside the frame and the
+ *  description + annotations switch to match. */
+const STEPS: FlowStep[] = [
+  {
+    id: 'collections',
+    description: 'Collections Page [Publications Tab] - click on Assign button',
+    annotations: [
+      {
+        id: 'A',
+        title: 'Assign button',
+        body: 'Opens the Share modal, where the admin copies the member link or assigns the simulation to teams or individuals. Hidden once a simulation has ended.',
+        target: `${CARD} .sim-card__action-btn--primary`,
+        routeAround: '.sim-card',
+      },
+    ],
+  },
+  {
+    id: 'share-modal',
+    description: 'Share Modal - Share a simulation 3 ways: copy the link, assign it to a team, or assign it to individual members.',
+    when: (doc) => !!doc.querySelector('.share-modal'),
+    annotations: [
+      {
+        id: 'A',
+        title: 'Share modal',
+        body: 'One tab per way to share. Share Link: copy a link that any organisation member can open (or only assigned people, when set to Restricted). Teams and Individual: assign the simulation directly; the badge shows how many are already assigned.',
+        target: '.share-modal',
+      },
+    ],
+  },
+];
 
 // The page renders at a desktop size, then scales down to fit the frame.
 const SCREEN_W = 1440;
@@ -78,13 +100,13 @@ const CSS = `
 .saf__note-body { margin: 0; font-size: var(--fs-xs, 12px); line-height: 17px; color: var(--text-primary); }
 .saf__overlay { position: absolute; inset: 0; pointer-events: none; overflow: visible; }
 .saf__target { fill: none; stroke: var(--primitive-slate-12, #1c2024); stroke-width: 1.5; stroke-dasharray: 4 3; }
-.saf__halo { fill: none; stroke: #fff; stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; opacity: .9; }
+.saf__halo { fill: none; stroke: #fff; stroke-width: 3.5; stroke-linecap: round; stroke-linejoin: round; opacity: .75; }
 .saf__line { fill: none; stroke: var(--primitive-slate-12, #1c2024); stroke-width: 1.25; stroke-dasharray: 1.5 2.5; stroke-linecap: round; }
 .saf__overlay--active .saf__line { stroke-width: 2; }
 .saf__dot { fill: var(--primitive-slate-12, #1c2024); }
 `;
 
-function ShareAssignFlow({ step = STEP }: { step?: FlowStep }) {
+function ShareAssignFlow({ steps = STEPS, frameStory = FRAME_STORY }: { steps?: FlowStep[]; frameStory?: string }) {
   const stageRef = useRef<HTMLDivElement>(null);
   const frameWrapRef = useRef<HTMLDivElement>(null);
   const frameRef = useRef<HTMLIFrameElement>(null);
@@ -94,6 +116,8 @@ function ShareAssignFlow({ step = STEP }: { step?: FlowStep }) {
   const [scale, setScale] = useState(0.7);
   const [links, setLinks] = useState<Record<string, Link>>({});
   const [active, setActive] = useState<string | null>(null);
+  const [stepId, setStepId] = useState(steps[0].id);
+  const step = steps.find((s) => s.id === stepId) ?? steps[0];
 
   // Fit the frame to the space left of the annotations panel.
   useLayoutEffect(() => {
@@ -114,7 +138,15 @@ function ShareAssignFlow({ step = STEP }: { step?: FlowStep }) {
     const stage = stageRef.current;
     const frame = frameRef.current;
     const doc = frame?.contentDocument;
-    if (!stage || !frame || !doc) return;
+    if (!stage || !frame || !doc || !doc.body) return;
+
+    // Which step is the frame showing? (last match wins)
+    let current = steps[0];
+    for (const s of steps) if (!s.when || s.when(doc)) current = s;
+    if (current.id !== stepId) {
+      setStepId(current.id);
+      return; // re-measure once the new step's notes have rendered
+    }
 
     const stageRect = stage.getBoundingClientRect();
     const frameRect = frame.getBoundingClientRect();
@@ -154,7 +186,9 @@ function ShareAssignFlow({ step = STEP }: { step?: FlowStep }) {
       const aroundRight = around
         ? frameRect.left - stageRect.left + around.getBoundingClientRect().right * scale
         : startX;
-      const elbowX = Math.min(frameRight - 8, Math.max(startX + 12, aroundRight + 8 * scale));
+      const elbowX = around
+        ? Math.min(frameRight - 8, Math.max(startX + 12, aroundRight + 8 * scale))
+        : startX + Math.max(12, (frameRight - startX) * 0.5); // midway to the frame edge, as in the mockup
       next[a.id] = {
         box: { x: box.x - pad, y: box.y - pad, w: box.w + pad * 2, h: box.h + pad * 2 },
         path: `M ${startX} ${startY} H ${elbowX} V ${endY} H ${endX}`,
@@ -162,7 +196,7 @@ function ShareAssignFlow({ step = STEP }: { step?: FlowStep }) {
     }
 
     setLinks((prev) => (JSON.stringify(prev) === JSON.stringify(next) ? prev : next));
-  }, [scale, step.annotations]);
+  }, [scale, step.annotations, steps, stepId]);
 
   // Keep connectors attached while the page inside the frame scrolls, resizes
   // or re-renders (e.g. filters, deleting a card).
@@ -183,15 +217,15 @@ function ShareAssignFlow({ step = STEP }: { step?: FlowStep }) {
     <div className="saf">
       <style>{CSS}</style>
       <h1 className="saf__title">{FLOW_TITLE}</h1>
-      <p className="saf__desc">{step.description}</p>
+      <p className="saf__desc" aria-live="polite">{step.description}</p>
 
       <div className="saf__stage" ref={stageRef}>
         <div className="saf__frame-wrap" ref={frameWrapRef} style={{ width: frameW, height: frameH }}>
           <iframe
             ref={frameRef}
             className="saf__frame"
-            title={`${FLOW_TITLE} — ${step.description}`}
-            src={`iframe.html?id=${step.storyId}&viewMode=story`}
+            title={FLOW_TITLE}
+            src={`iframe.html?id=${frameStory}&viewMode=story`}
             style={{ transform: `scale(${scale})` }}
           />
         </div>
@@ -203,7 +237,7 @@ function ShareAssignFlow({ step = STEP }: { step?: FlowStep }) {
           {showNotes &&
             step.annotations.map((a) => (
               <div
-                key={a.id}
+                key={`${step.id}-${a.id}`}
                 ref={(el) => { noteRefs.current[a.id] = el; }}
                 className={`saf__note${active === a.id ? ' saf__note--active' : ''}`}
                 onMouseEnter={() => setActive(a.id)}
@@ -224,7 +258,7 @@ function ShareAssignFlow({ step = STEP }: { step?: FlowStep }) {
               const link = links[a.id];
               if (!link) return null;
               return (
-                <g key={a.id} className={active === a.id ? 'saf__overlay--active' : undefined}>
+                <g key={`${step.id}-${a.id}`} className={active === a.id ? 'saf__overlay--active' : undefined}>
                   <rect className="saf__target" x={link.box.x} y={link.box.y} width={link.box.w} height={link.box.h} rx={6} />
                   <path className="saf__halo" d={link.path} />
                   <path className="saf__line" d={link.path} />
@@ -246,7 +280,7 @@ const meta: Meta = {
 export default meta;
 type Story = StoryObj;
 
-export const Step1AssignFromCollections: Story = {
-  name: '1. Assign from Collections',
+export const Flow: Story = {
+  name: 'Flow',
   render: () => <ShareAssignFlow />,
 };
