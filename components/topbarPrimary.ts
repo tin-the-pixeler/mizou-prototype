@@ -22,6 +22,8 @@ export type TopbarPrimaryOptions = {
   planLabel?: string;
   userInitial?: string;
   userColor?: string;
+  /** Hide the title's dropdown chevron (plain page title, e.g. "Collections"). Default false. */
+  hideTitleChevron?: boolean;
 };
 
 export function createTopbarPrimary({
@@ -31,6 +33,7 @@ export function createTopbarPrimary({
   planLabel = 'Enterprise',
   userInitial = 'A',
   userColor = '#6963FC',
+  hideTitleChevron = false,
 }: TopbarPrimaryOptions): HTMLElement {
   const bar = document.createElement('div');
   bar.className = 'tbp-topbar';
@@ -49,7 +52,7 @@ export function createTopbarPrimary({
   titleBtn.appendChild(titleText);
 
   const chevron = iconEl('chevron-down-sm' as IconName, 'sb-icon tbp-title-chevron');
-  titleBtn.appendChild(chevron);
+  if (!hideTitleChevron) titleBtn.appendChild(chevron);
   titleWrap.appendChild(titleBtn);
 
   let menuEl: HTMLElement | null = null;

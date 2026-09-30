@@ -52,6 +52,15 @@ export const Default: Story = {
   args: {},
 };
 
+export const AvailabilityStatus: Story = {
+  name: 'Bar — Status as Active / Ended (Collections → Publications)',
+  render,
+  args: {
+    statusMode: 'availability',
+    openMenu: 'status',
+  },
+};
+
 export const FormatPillsActive: Story = {
   name: 'Bar — Format pills active',
   render,
@@ -127,21 +136,21 @@ export const Documentation: Story = {
     doc.style.cssText = 'max-width:760px;padding:32px;font-family:var(--font-sans);color:var(--text-primary);line-height:1.55;font-size:var(--fs-base);';
     doc.innerHTML = `
       <h1 style="font-size:24px;margin:0 0 4px;">Collections Filter Bar</h1>
-      <p style="color:var(--text-secondary);margin:0 0 24px;">A true-filters-only bar for the My Collections page — same anatomy and interaction model as the <strong>Sessions Filter Bar</strong>, with groups swapped for Collections: Categories / Level / Status.</p>
+      <p style="color:var(--text-secondary);margin:0 0 24px;">A true-filters-only bar for the My Collections page — same anatomy and interaction model as the <strong>Sessions Filter Bar</strong>, with groups swapped for Collections: Category / Level / Status.</p>
       <p style="color:var(--text-secondary);margin:0 0 24px;"><strong>Naming:</strong> "Status" here is the simulation lifecycle (Draft / Published). Never reuse "Status" for the learner journey — that's "Progress" on the Sessions page.</p>
 
       <h2 style="font-size:18px;margin:24px 0 8px;">Anatomy (left → right)</h2>
       <ol style="margin:0;padding-left:20px;">
         <li><strong>Format pills</strong> — Chatbot / Voice Role Play / Video Role Play. Identical behavior and UI to the Sessions Filter Bar: multi-toggle, outline = no filter, active = Mizou blue tint. Multiple can be active (OR within the group).</li>
         <li><strong>Vertical divider</strong> — 1px <code>--border-divider</code>, ~24px tall.</li>
-        <li><strong>Dropdown triggers</strong> — Categories / Level / Status. Same pill silhouette as format pills, trailing <code>chevron-down-sm</code>.</li>
+        <li><strong>Dropdown triggers</strong> — Category / Level / Status. Same pill silhouette as format pills, trailing <code>chevron-down-sm</code>.</li>
         <li><strong>Clear filters</strong> — text link at the end of the trigger group, visible only when ≥1 filter is active.</li>
         <li><strong>Search input</strong> — right-aligned rounded-rectangle input, placeholder "Search simulations", trailing search icon.</li>
       </ol>
 
       <h2 style="font-size:18px;margin:24px 0 8px;">Trigger labels when applied</h2>
       <ul style="margin:0;padding-left:20px;">
-        <li><strong>Multi-select</strong> (Categories): indigo count, e.g. <em>Categories · 2</em>.</li>
+        <li><strong>Multi-select</strong> (Category): indigo count, e.g. <em>Category · 2</em>.</li>
         <li><strong>Single-select</strong> (Level, Status): shows the selected <em>value</em>, never a count — <em>Easy</em>, <em>Draft</em>. Nothing active = the group name in default styling.</li>
       </ul>
 

@@ -32,7 +32,10 @@ function standInIconEl(name: keyof typeof STAND_IN_ICONS, className = 'sfb__icon
 
 export type CollectionFormat = SessionFormat;
 export type CollectionLevel = 'easy' | 'intermediate' | 'advanced';
-export type CollectionStatus = 'draft' | 'published';
+/** 'draft' | 'published' = lifecycle (My Drafts). 'active' | 'ended' = availability
+ *  (Collections → Publications, Learning Hub) — production's Active/Ended filter. */
+export type CollectionStatus = 'draft' | 'published' | 'active' | 'ended';
+export type CollectionsStatusMode = 'lifecycle' | 'availability';
 
 export type FilterOption = { id: string; label: string };
 
@@ -55,6 +58,11 @@ export type CollectionsFilterBarOptions = {
   openMenu?: 'categories' | 'level' | 'status' | null;
   /** Hide the Status filter trigger. Default false; set true where simulation lifecycle (Draft/Published) isn't relevant, e.g. the Team Page. */
   hideStatus?: boolean;
+  /** Which Status options to offer. 'lifecycle' = Draft/Published (default),
+   *  'availability' = Active/Ended (Collections → Publications). */
+  statusMode?: CollectionsStatusMode;
+  /** Search input placeholder. Default "Search simulations". */
+  searchPlaceholder?: string;
   onChange?: (state: CollectionsFilterState) => void;
 };
 
@@ -69,10 +77,15 @@ export const LEVEL_LABEL: Record<CollectionLevel, string> = {
 export const STATUS_LABEL: Record<CollectionStatus, string> = {
   draft: 'Draft',
   published: 'Published',
+  active: 'Active',
+  ended: 'Ended',
 };
 
 const LEVEL_OPTIONS: (CollectionLevel | null)[] = [null, 'easy', 'intermediate', 'advanced'];
-const STATUS_OPTIONS: (CollectionStatus | null)[] = [null, 'draft', 'published'];
+const STATUS_OPTIONS: Record<CollectionsStatusMode, (CollectionStatus | null)[]> = {
+  lifecycle: [null, 'draft', 'published'],
+  availability: [null, 'active', 'ended'],
+};
 
 export const DEFAULT_CATEGORY_OPTIONS: FilterOption[] = [
   { id: 'recruitment', label: 'Recruitment' },
@@ -246,7 +259,7 @@ export function createCollectionsFilterBar(options: CollectionsFilterBarOptions)
   const buildStatusMenu = (): HTMLElement => {
     const menu = h('div', 'sfb__menu');
     const list = h('div', 'sfb__menu-list');
-    STATUS_OPTIONS.forEach((value) => {
+    STATUS_OPTIONS[options.statusMode ?? 'lifecycle'].forEach((value) => {
       const row = document.createElement('label');
       row.className = 'sfb__option';
       const radio = document.createElement('input');
@@ -267,7 +280,7 @@ export function createCollectionsFilterBar(options: CollectionsFilterBarOptions)
   };
 
   const TRIGGERS: { key: MenuKey; label: string }[] = [
-    { key: 'categories', label: 'Categories' },
+    { key: 'categories', label: 'Category' },
     { key: 'level', label: 'Level' },
     ...(options.hideStatus ? [] : [{ key: 'status' as MenuKey, label: 'Status' }]),
   ];
@@ -316,7 +329,7 @@ export function createCollectionsFilterBar(options: CollectionsFilterBarOptions)
   const searchInput = document.createElement('input');
   searchInput.type = 'text';
   searchInput.className = 'sfb__search-input';
-  searchInput.placeholder = 'Search simulations';
+  searchInput.placeholder = options.searchPlaceholder ?? 'Search simulations';
   searchInput.value = state.search;
   searchInput.addEventListener('input', () => {
     state.search = searchInput.value;

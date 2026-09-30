@@ -1,6 +1,7 @@
 /* ========== SIMULATION CARD ========== */
 /* 300px wide card: thumbnail + badge/chip overlay + optional banner + details. */
-/* Variants: published | ended | unpublished | draft | new | with-sessions     */
+/* Variants: published | ended | unpublished | draft | new | with-sessions |   */
+/*           template                                                          */
 
 /* ── Card shell ─────────────────────────────────────────────────────────────── */
 
@@ -51,7 +52,13 @@
   align-items: center;
   justify-content: space-between;
   padding: var(--spacing-2xs);
-  z-index: 1;
+  /* Above the hover layer so the "…" menu stays clickable while hovering */
+  z-index: 2;
+  pointer-events: none;
+}
+
+.sim-card__top-liner > * {
+  pointer-events: auto;
 }
 
 .sim-card__badge-group {
@@ -110,9 +117,8 @@
   flex-shrink: 0;
 }
 
-/* Ended / Unpublished → slate-9 gray */
-.sim-card__chip--ended,
-.sim-card__chip--unpublished {
+/* Ended → slate-9 gray (unpublished changes use the banner, not a chip) */
+.sim-card__chip--ended {
   background: var(--primitive-slate-9);
   color: var(--text-inverse);
 }
@@ -278,9 +284,30 @@
   white-space: nowrap;
 }
 
-.sim-card__liner-difficulty--easy   { color: var(--feedback-success); }
-.sim-card__liner-difficulty--medium { color: var(--primitive-amber-dark); }
-.sim-card__liner-difficulty--hard   { color: var(--feedback-error); }
+.sim-card__liner-difficulty--easy         { color: var(--feedback-success); }
+.sim-card__liner-difficulty--intermediate { color: var(--primitive-amber-dark); }
+.sim-card__liner-difficulty--advanced     { color: var(--feedback-error); }
+
+/* Language chip (flag + country code) */
+.sim-card__language {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 1px var(--spacing-2xs) 1px 6px;
+  border: 1px solid var(--border-divider);
+  border-radius: var(--radius-full);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-medium);
+  line-height: 18px;
+  color: var(--text-primary);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.sim-card__language-flag {
+  font-size: 13px;
+  line-height: 1;
+}
 
 /* Title */
 .sim-card__title {
@@ -376,4 +403,75 @@
   text-decoration: underline;
   text-underline-offset: 2px;
   font-weight: var(--fw-bold);
+}
+
+/* ── "…" menu dropdown (portalled to <body>, position: fixed) ──────────────── */
+
+.sim-card__menu {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.sim-card__menu--open .sim-card__menu-btn {
+  background: rgba(28, 32, 36, 0.95);
+}
+
+.sim-card__menu-list {
+  position: fixed;
+  z-index: 1000;
+  min-width: 200px;
+  display: flex;
+  flex-direction: column;
+  padding: var(--spacing-3xs);
+  background: var(--surface-emphasis, #fff);
+  border: 1px solid var(--border-divider);
+  border-radius: var(--radius-lg, 12px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12), 0 2px 6px rgba(0, 0, 0, 0.06);
+  font-family: var(--font-sans);
+}
+
+.sim-card__menu-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2xs);
+  width: 100%;
+  padding: 8px var(--spacing-xs);
+  border: none;
+  border-radius: var(--radius-md, 8px);
+  background: none;
+  font-family: inherit;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  line-height: 20px;
+  color: var(--text-primary);
+  text-align: left;
+  cursor: pointer;
+}
+
+.sim-card__menu-item:hover,
+.sim-card__menu-item:focus-visible {
+  background: var(--interactive-secondary-hover, rgba(0, 0, 0, 0.05));
+  outline: none;
+}
+
+.sim-card__menu-item-icon {
+  display: inline-flex;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.sim-card__menu-item-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.sim-card__menu-item--danger {
+  color: var(--feedback-error);
+}
+
+/* ── Template variant ───────────────────────────────────────────────────────── */
+
+.sim-card--clickable {
+  cursor: pointer;
 }

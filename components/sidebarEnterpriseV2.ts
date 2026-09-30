@@ -36,6 +36,27 @@ export type SidebarEnterpriseV2Options = {
   hideCreateButton?: boolean;
   /** Fired when the user toggles the sidebar collapsed/expanded via its own header buttons */
   onCollapsedChange?: (collapsed: boolean) => void;
+  /**
+   * Production (app.mizou.com) nav for admins: My Drafts, My Learning Hub,
+   * Collections (Publications / Templates Library), All Sessions. Default
+   * false keeps the V2 design nav (Learning Hub + Collections) used by the
+   * Team Page.
+   */
+  fullNav?: boolean;
+  /** (fullNav) Top-level item to mark active; expandable items open when active. */
+  activeItem?: SidebarV2NavKey;
+  /** (fullNav) Sub-item label to highlight inside the active expandable item. */
+  activeSubItem?: string;
+  /** (fullNav) Fired when a top-level item or sub-item is clicked. */
+  onNavItemClick?: (item: SidebarV2NavKey, subItem?: string) => void;
+};
+
+export type SidebarV2NavKey = 'my-drafts' | 'learning-hub' | 'collections' | 'all-sessions';
+
+/** Sub-items shown under expandable production nav items. */
+export const SIDEBAR_V2_SUB_ITEMS: Partial<Record<SidebarV2NavKey, string[]>> = {
+  'learning-hub': ['My Assigned Simulations', 'My Sessions'],
+  collections: ['Publications', 'Templates Library'],
 };
 
 const defaultTeams: SidebarV2Team[] = [
@@ -110,6 +131,57 @@ function createExpandableNavItem(label: string, icon: IconName, subItems: string
   return wrap;
 }
 
+/**
+ * Production nav group: header (icon + label) with clickable sub-items.
+ * Open + highlighted when active, like the expanded team accordion.
+ */
+function createNavGroup(
+  key: SidebarV2NavKey,
+  label: string,
+  icon: IconName,
+  subItems: string[],
+  isActive: boolean,
+  activeSubItem: string | undefined,
+  onClick?: (item: SidebarV2NavKey, subItem?: string) => void,
+): HTMLDivElement {
+  const wrap = document.createElement('div');
+  wrap.className = 'sv2-group' + (isActive ? ' sv2-group--active' : '');
+
+  const header = document.createElement('a');
+  header.href = '#';
+  header.className = 'sv2-item sv2-group__header';
+  header.title = label;
+  header.appendChild(iconEl(icon, 'sb-icon sv2-item__icon'));
+  const text = document.createElement('span');
+  text.className = 'sv2-item__label';
+  text.textContent = label;
+  header.appendChild(text);
+  header.addEventListener('click', (e) => {
+    e.preventDefault();
+    onClick?.(key, subItems[0]);
+  });
+  wrap.appendChild(header);
+
+  if (isActive) {
+    const list = document.createElement('div');
+    list.className = 'sv2-group__sublist';
+    subItems.forEach((sub) => {
+      const a = document.createElement('a');
+      a.href = '#';
+      a.className = 'sv2-group__subitem' + (sub === activeSubItem ? ' sv2-group__subitem--active' : '');
+      a.textContent = sub;
+      if (sub === activeSubItem) a.setAttribute('aria-current', 'page');
+      a.addEventListener('click', (e) => {
+        e.preventDefault();
+        onClick?.(key, sub);
+      });
+      list.appendChild(a);
+    });
+    wrap.appendChild(list);
+  }
+  return wrap;
+}
+
 function createTeamNavItem(
   team: SidebarV2Team,
   isExpanded: boolean,
@@ -176,6 +248,10 @@ export function createSidebarEnterpriseV2({
   hideCollections = false,
   hideCreateButton = false,
   onCollapsedChange,
+  fullNav = false,
+  activeItem,
+  activeSubItem,
+  onNavItemClick,
 }: SidebarEnterpriseV2Options = {}): HTMLElement {
   let currentExpandedTeam = expandedTeam;
   const nav = document.createElement('nav');
@@ -255,12 +331,42 @@ export function createSidebarEnterpriseV2({
   }
   if (!hideCreateButton) contentTop.appendChild(createBtnContainer);
 
+  if (fullNav) {
+    // Production order: My Drafts · My Learning Hub · Collections · All Sessions
+    const navList = document.createElement('div');
+    navList.className = 'sv2-nav-list';
+    const simple = (key: SidebarV2NavKey, label: string, icon: IconName) => {
+      const a = createNavItem(label, icon);
+      if (activeItem === key) {
+        a.classList.add('sv2-item--active');
+        a.setAttribute('aria-current', 'page');
+      }
+      a.addEventListener('click', (e) => {
+        e.preventDefault();
+        onNavItemClick?.(key);
+      });
+      return a;
+    };
+    const group = (key: SidebarV2NavKey, label: string, icon: IconName) =>
+      activeItem === key
+        ? createNavGroup(key, label, icon, SIDEBAR_V2_SUB_ITEMS[key] ?? [], true, activeSubItem, onNavItemClick)
+        : simple(key, label, icon);
+
+    navList.append(
+      simple('my-drafts', 'My Drafts', 'edit' as IconName),
+      group('learning-hub', 'My Learning Hub', 'courses' as IconName),
+    );
+    if (!hideCollections) navList.appendChild(group('collections', 'Collections', 'my-collection' as IconName));
+    navList.appendChild(simple('all-sessions', 'All Sessions', 'session-list' as IconName));
+    contentTop.appendChild(navList);
+  } else {
   // My Learning Hub (expandable: My Assigned Simulations / My Sessions — placeholders, not linked yet)
   contentTop.appendChild(
     createExpandableNavItem('My Learning Hub', 'courses' as IconName, ['My Assigned Simulations', 'My Sessions']),
   );
+  }
 
-  if (!hideCollections) {
+  if (!fullNav && !hideCollections) {
     const divider1 = document.createElement('hr');
     divider1.className = 'sv2-divider';
     contentTop.appendChild(divider1);

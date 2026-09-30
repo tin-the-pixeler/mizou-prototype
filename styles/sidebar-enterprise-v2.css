@@ -352,6 +352,82 @@
   user-select: none;
 }
 
+/* ----- Production nav (fullNav): My Drafts / Learning Hub / Collections / All Sessions ----- */
+.sv2-nav-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3xs);
+}
+
+.sv2-item--active {
+  background: var(--interactive-secondary);
+  color: var(--interactive-primary);
+}
+
+.sv2-item--active .sv2-item__label {
+  font-weight: var(--fw-bold);
+}
+
+.sv2-group {
+  width: 100%;
+  border-radius: var(--radius-md);
+}
+
+.sv2-group--active {
+  background: var(--interactive-secondary);
+  padding-bottom: 4px;
+}
+
+.sv2-group--active .sv2-group__header {
+  color: var(--interactive-primary);
+}
+
+.sv2-group--active .sv2-group__header .sv2-item__label {
+  font-weight: var(--fw-bold);
+}
+
+.sv2-group--active .sv2-group__header:hover {
+  background: transparent;
+}
+
+.sv2-group__sublist {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 0 8px 0 28px;
+}
+
+.sv2-group__subitem {
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-regular);
+  line-height: 24px;
+  letter-spacing: 0.24px;
+  text-decoration: none;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.sv2-group__subitem:hover {
+  background: var(--interactive-secondary-active);
+  color: var(--interactive-primary);
+}
+
+.sv2-group__subitem--active {
+  background: var(--interactive-secondary-active);
+  color: var(--interactive-primary);
+}
+
+.sv2-sidebar.sv2-collapsed .sv2-group__sublist {
+  display: none;
+}
+
+.sv2-sidebar.sv2-collapsed .sv2-group--active {
+  background: transparent;
+  padding-bottom: 0;
+}
+
 /* ----- Feedback ----- */
 .sv2-feedback-wrap {
   flex-shrink: 0;
