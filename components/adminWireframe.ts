@@ -1,12 +1,12 @@
-// components/adminPage.ts
+// components/adminWireframe.ts
 // Full Admin Page wireframe: sidebar navigation, multiple pages,
 // share modal, view toggle, and draft publish flow.
 
-import '../styles/admin-page.css';
+import '../styles/admin-wireframe.css';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
-export type AdminPageOptions = {
+export type AdminWireframeOptions = {
   userInitial?: string;
 };
 
@@ -252,7 +252,7 @@ function activeStatusDot(): string {
 
 // ─── Main factory ─────────────────────────────────────────────────────────────
 
-export function createAdminPage({ userInitial = 'JD' }: AdminPageOptions = {}): HTMLElement {
+export function createAdminWireframe({ userInitial = 'JD' }: AdminWireframeOptions = {}): HTMLElement {
   const root = h('div', 'ap-root');
 
   // ═══ SIDEBAR ═══════════════════════════════════════════════════════════════
