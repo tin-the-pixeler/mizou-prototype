@@ -41,6 +41,11 @@ const FLOW_TITLE = 'Share and Assign a Simulation';
 /** The card the flow walks through (a plain published simulation). */
 const CARD = '.sim-card[data-id="pub-late-delivery"]';
 
+/** Label of the Share modal's active tab ("Member Link" | "Teams" | "Individual"). */
+function activeShareTab(doc: Document): string {
+  return doc.querySelector('.share-modal__tab.is-active span')?.textContent?.trim() ?? '';
+}
+
 /** Storybook story rendered in the frame — the whole flow runs inside it. */
 const FRAME_STORY = 'pages-collections-admin-view--publications';
 
@@ -61,15 +66,71 @@ const STEPS: FlowStep[] = [
     ],
   },
   {
-    id: 'share-modal',
+    id: 'share-member-link',
     description: 'Share Modal - Share a simulation 3 ways: copy the link, assign it to a team, or assign it to individual members.',
-    when: (doc) => !!doc.querySelector('.share-modal'),
+    when: (doc) => !!doc.querySelector('.share-modal') && activeShareTab(doc) === 'Member Link',
     annotations: [
       {
         id: 'A',
-        title: 'Share modal',
-        body: 'One tab per way to share. Share Link: copy a link that any organisation member can open (or only assigned people, when set to Restricted). Teams and Individual: assign the simulation directly; the badge shows how many are already assigned.',
-        target: '.share-modal',
+        title: 'Three ways to share',
+        body: 'Member Link, Teams and Individual. They can all be used together on the same simulation. The badges show how many teams and members are already assigned.',
+        target: '.share-modal__tabs',
+      },
+      {
+        id: 'B',
+        title: 'Link access',
+        body: 'Who can open the link. Public: any user with the link. Organization: members of the organization. Restricted: only assigned teams or individuals. Starts from the default set in Organization Settings.',
+        target: '.share-modal__access-trigger',
+      },
+      {
+        id: 'C',
+        title: 'Copy link',
+        body: 'Copies the simulation link to paste anywhere: email, chat or an LMS.',
+        target: '.share-modal__access .share-modal__btn',
+      },
+      {
+        id: 'D',
+        title: 'Embed code',
+        body: 'Copies an iframe snippet to embed the simulation in another site or LMS page.',
+        target: '.share-modal__embed-link',
+      },
+    ],
+  },
+  {
+    id: 'share-teams',
+    description: 'Share Modal [Teams tab] - assign the simulation to one or more teams.',
+    when: (doc) => !!doc.querySelector('.share-modal') && activeShareTab(doc) === 'Teams',
+    annotations: [
+      {
+        id: 'A',
+        title: 'Select a team',
+        body: 'Search and tick one or more teams, then Apply. Every member of an assigned team gets access.',
+        target: '.share-modal__ms',
+      },
+      {
+        id: 'B',
+        title: 'Assigned teams',
+        body: 'Remove a team with × to end its access. Members who are also assigned individually keep access until they are removed on the Individual tab too.',
+        target: '.share-modal__list',
+      },
+    ],
+  },
+  {
+    id: 'share-individual',
+    description: 'Share Modal [Individual tab] - assign the simulation to specific organisation members.',
+    when: (doc) => !!doc.querySelector('.share-modal') && activeShareTab(doc) === 'Individual',
+    annotations: [
+      {
+        id: 'A',
+        title: 'Find members',
+        body: 'Search organisation members by name or email, tick them, then Apply. People outside the organisation can\'t be assigned: invite them to the organisation first.',
+        target: '.share-modal__ms',
+      },
+      {
+        id: 'B',
+        title: 'Assigned members',
+        body: 'A member can be assigned individually and through a team at the same time. Removing the team keeps their individual access; to remove access completely, remove both assignments.',
+        target: '.share-modal__list',
       },
     ],
   },
@@ -153,6 +214,10 @@ function ShareAssignFlow({ steps = STEPS, frameStory = FRAME_STORY }: { steps?: 
     const frameRight = frameRect.left - stageRect.left + SCREEN_W * scale;
     const frameBottom = frameRect.top - stageRect.top + SCREEN_H * scale;
     const next: Record<string, Link> = {};
+    type Pending = { id: string; box: Link['box']; startX: number; startY: number; endX: number; endY: number; aroundRight: number | null };
+    const pending: Pending[] = [];
+    const frameTop = frameRect.top - stageRect.top;
+    const pad = 3;
 
     for (const a of step.annotations) {
       const target = doc.querySelector<HTMLElement>(a.target);
@@ -160,7 +225,7 @@ function ShareAssignFlow({ steps = STEPS, frameStory = FRAME_STORY }: { steps?: 
       if (!target || !note) continue;
       const r = target.getBoundingClientRect();
       if (r.width === 0) continue;
-      // Hide the connector while something (e.g. a modal) covers the target
+      // Hide the connector while something (e.g. a modal or dropdown) covers the target
       const hit = doc.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
       if (!hit || !(target === hit || target.contains(hit))) continue;
 
@@ -171,29 +236,43 @@ function ShareAssignFlow({ steps = STEPS, frameStory = FRAME_STORY }: { steps?: 
         h: r.height * scale,
       };
       // Skip targets scrolled out of the visible frame
-      const frameTop = frameRect.top - stageRect.top;
       if (box.y + box.h < frameTop || box.y > frameBottom) continue;
 
-      const pad = 3;
-      const startX = box.x + box.w + pad;
-      const startY = box.y + box.h / 2;
       const n = note.getBoundingClientRect();
-      const endX = n.left - stageRect.left;
-      const endY = n.top - stageRect.top + 30; // level with the badge row
-      // Turn in the gutter just right of the target's container (e.g. its card),
-      // so the vertical run doesn't cross neighbouring content.
       const around = a.routeAround ? target.closest<HTMLElement>(a.routeAround) : null;
-      const aroundRight = around
-        ? frameRect.left - stageRect.left + around.getBoundingClientRect().right * scale
-        : startX;
-      const elbowX = around
-        ? Math.min(frameRight - 8, Math.max(startX + 12, aroundRight + 8 * scale))
-        : startX + Math.max(12, (frameRight - startX) * 0.5); // midway to the frame edge, as in the mockup
-      next[a.id] = {
+      pending.push({
+        id: a.id,
         box: { x: box.x - pad, y: box.y - pad, w: box.w + pad * 2, h: box.h + pad * 2 },
-        path: `M ${startX} ${startY} H ${elbowX} V ${endY} H ${endX}`,
-      };
+        startX: box.x + box.w + pad,
+        startY: box.y + box.h / 2,
+        endX: n.left - stageRect.left,
+        endY: n.top - stageRect.top + 30, // level with the badge row
+        aroundRight: around ? frameRect.left - stageRect.left + around.getBoundingClientRect().right * scale : null,
+      });
     }
+
+    // Free-standing targets share one vertical lane just right of the widest
+    // one, stepped per note so parallel connectors never overlap.
+    const free = pending.filter((p) => p.aroundRight === null);
+    const laneBase = free.length ? Math.max(...free.map((p) => p.startX)) : 0;
+    const single = free.length === 1;
+
+    pending.forEach((p) => {
+      let elbowX: number;
+      if (p.aroundRight !== null) {
+        // Turn in the gutter just right of the target's container (e.g. its card)
+        elbowX = Math.min(frameRight - 8, Math.max(p.startX + 12, p.aroundRight + 8 * scale));
+      } else if (single) {
+        elbowX = p.startX + Math.max(12, (frameRight - p.startX) * 0.5); // midway, as in the mockup
+      } else {
+        const i = free.indexOf(p);
+        elbowX = Math.min(frameRight - 6, laneBase + 16 + i * 12);
+      }
+      next[p.id] = {
+        box: p.box,
+        path: `M ${p.startX} ${p.startY} H ${elbowX} V ${p.endY} H ${p.endX}`,
+      };
+    });
 
     setLinks((prev) => (JSON.stringify(prev) === JSON.stringify(next) ? prev : next));
   }, [scale, step.annotations, steps, stepId]);

@@ -325,13 +325,8 @@ export function createCollectionsPageAdminView({
   }
 
   function openShare() {
-    const backdrop = el('div', 'sb-modal-backdrop cpav__share-backdrop');
-    const close = () => { backdrop.remove(); document.removeEventListener('keydown', onKey); };
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') close(); };
-    backdrop.appendChild(createShareModal({ onClose: close }));
-    backdrop.addEventListener('mousedown', (e) => { if (e.target === backdrop) close(); });
-    document.addEventListener('keydown', onKey);
-    document.body.appendChild(backdrop);
+    // createShareModal brings its own backdrop, Escape and click-outside handling
+    document.body.appendChild(createShareModal());
   }
 
   function openPreview(item: CollectionsItem) {

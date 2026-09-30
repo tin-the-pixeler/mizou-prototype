@@ -1,5 +1,10 @@
 // components/shareModal.ts
-// Share simulation modal — tabbed pattern: Member Link / Teams / Individual.
+// Share / assign simulation modal — tabbed pattern: Member Link / Teams / Individual.
+// Copy and rules follow production (mizou-business AssignSimulation.modal):
+// title "Assign Simulation", link access Public / Organization / Restricted,
+// Individual tab only accepts existing organisation members.
+// Team + individual assignments are independent: removing a team does not
+// remove a member who is also assigned individually.
 // Source: Figma "Sales-trainer-MVP" — Modal-ShareAssignLink
 // (https://www.figma.com/design/fCyTvXFmw7f5TKFU0KCtRo/Sales-trainer-MVP?node-id=15643-261920)
 
@@ -9,7 +14,7 @@ import { iconEl } from '../icons';
 export type ShareTeam = { id: string; label: string; members: number };
 export type SharePerson = { id: string; name: string; email: string };
 export type ShareModalTab = 'member' | 'team' | 'individual';
-export type LinkAccess = 'organisation' | 'restricted';
+export type LinkAccess = 'public' | 'organisation' | 'restricted';
 
 export type ShareModalOptions = {
   memberLinkUrl?: string;
@@ -18,6 +23,8 @@ export type ShareModalOptions = {
   directory?: SharePerson[];
   assignedIndividuals?: SharePerson[];
   initialTab?: ShareModalTab;
+  /** Starting link access (production default comes from Organization Settings). */
+  defaultLinkAccess?: LinkAccess;
   dismissible?: boolean;
   onClose?: () => void;
 };
@@ -45,9 +52,13 @@ const DEFAULT_ASSIGNED_INDIVIDUALS: SharePerson[] = [
 ];
 
 const ACCESS_COPY: Record<LinkAccess, { title: string; desc: string }> = {
+  public: {
+    title: 'Public Access',
+    desc: 'Any user with the link can access the simulation',
+  },
   organisation: {
-    title: 'Organisation Access',
-    desc: 'Any member of the organisation with the link can access the simulation',
+    title: 'Organization Access',
+    desc: 'Any member of the organization with the link can access the simulation',
   },
   restricted: {
     title: 'Restricted Access',
@@ -72,9 +83,6 @@ function initialsOf(name: string): string {
     .toUpperCase();
 }
 
-function isEmail(s: string): boolean {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s.trim());
-}
 
 function svgClose(): SVGElement {
   const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -127,6 +135,23 @@ function svgCheckCircleFill(): SVGElement {
   s.innerHTML =
     '<path fill-rule="evenodd" clip-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.7-9.3a1 1 0 0 0-1.4-1.4L9 10.59l-1.3-1.3a1 1 0 0 0-1.4 1.42l2 2a1 1 0 0 0 1.4 0l4-4Z"/>';
   return s;
+}
+
+function svgGlobe(): SVGElement {
+  const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  s.setAttribute('viewBox', '0 0 24 24');
+  s.setAttribute('fill', 'none');
+  s.setAttribute('stroke', 'currentColor');
+  s.setAttribute('stroke-width', '1.8');
+  s.setAttribute('stroke-linecap', 'round');
+  s.setAttribute('stroke-linejoin', 'round');
+  s.innerHTML =
+    '<circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a14 14 0 0 1 0 18a14 14 0 0 1 0-18"/>';
+  return s;
+}
+
+function accessIcon(kind: LinkAccess): SVGElement {
+  return kind === 'public' ? svgGlobe() : kind === 'organisation' ? svgTeamIcon() : svgLockFill();
 }
 
 function svgTeamIcon(): SVGElement {
@@ -203,16 +228,16 @@ export function createShareModal(options: ShareModalOptions = {}): HTMLElement {
     directory = DEFAULT_DIRECTORY,
     assignedIndividuals = DEFAULT_ASSIGNED_INDIVIDUALS,
     initialTab = 'member',
+    defaultLinkAccess = 'organisation',
     dismissible = true,
     onClose,
   } = options;
 
   // ---- Shared state ----
   let activeTab: ShareModalTab = initialTab;
-  let linkAccess: LinkAccess = 'organisation';
+  let linkAccess: LinkAccess = defaultLinkAccess;
   const teams: ShareTeam[] = [...assignedTeams];
   const individuals: SharePerson[] = [...assignedIndividuals];
-  const customPeople: SharePerson[] = [];
 
   // ---- Shell ----
   const backdrop = document.createElement('div');
@@ -222,7 +247,7 @@ export function createShareModal(options: ShareModalOptions = {}): HTMLElement {
   card.className = 'share-modal';
   card.setAttribute('role', 'dialog');
   card.setAttribute('aria-modal', 'true');
-  card.setAttribute('aria-label', 'Share simulation');
+  card.setAttribute('aria-label', 'Assign simulation');
   card.setAttribute('tabindex', '-1');
 
   function close() {
@@ -260,7 +285,7 @@ export function createShareModal(options: ShareModalOptions = {}): HTMLElement {
 
   const title = document.createElement('h2');
   title.className = 'share-modal__title';
-  title.textContent = 'Share Simulation';
+  title.textContent = 'Assign Simulation';
   header.appendChild(title);
 
   const closeBtn = document.createElement('button');
@@ -275,7 +300,7 @@ export function createShareModal(options: ShareModalOptions = {}): HTMLElement {
   const intro = document.createElement('p');
   intro.className = 'share-modal__intro';
   intro.innerHTML =
-    'Select your sharing option. Choose a <b>Member link</b> where any organisation member can join. ' +
+    'Select your sharing option. Choose a <strong>Member link</strong> where any organisation member can join. ' +
     'You can also assign to specific teams, or individuals.';
 
   // ---- Tab bar ----
@@ -293,7 +318,7 @@ export function createShareModal(options: ShareModalOptions = {}): HTMLElement {
   function renderTabBar() {
     tabBar.innerHTML = '';
     const defs: { id: ShareModalTab; label: string; count?: number }[] = [
-      { id: 'member', label: 'Share Link' },
+      { id: 'member', label: 'Member Link' },
       { id: 'team', label: 'Teams', count: teams.length },
       { id: 'individual', label: 'Individual', count: individuals.length },
     ];
@@ -386,7 +411,7 @@ export function createShareModal(options: ShareModalOptions = {}): HTMLElement {
     function renderControl() {
       const copy = ACCESS_COPY[linkAccess];
       iconWrap.innerHTML = '';
-      iconWrap.appendChild(linkAccess === 'organisation' ? svgTeamIcon() : svgLockFill());
+      iconWrap.appendChild(accessIcon(linkAccess));
       titleEl.textContent = copy.title;
       descEl.textContent = copy.desc;
     }
@@ -401,7 +426,7 @@ export function createShareModal(options: ShareModalOptions = {}): HTMLElement {
 
       const optIcon = document.createElement('span');
       optIcon.className = `share-modal__access-option-icon share-modal__access-option-icon--${kind}`;
-      optIcon.appendChild(kind === 'organisation' ? svgTeamIcon() : svgLockFill());
+      optIcon.appendChild(accessIcon(kind));
 
       const optInfo = document.createElement('span');
       optInfo.className = 'share-modal__access-option-info';
@@ -433,6 +458,7 @@ export function createShareModal(options: ShareModalOptions = {}): HTMLElement {
 
     function renderOptions() {
       dropdown.innerHTML = '';
+      dropdown.appendChild(buildOption('public'));
       dropdown.appendChild(buildOption('organisation'));
       dropdown.appendChild(buildOption('restricted'));
     }
@@ -600,8 +626,11 @@ export function createShareModal(options: ShareModalOptions = {}): HTMLElement {
     searchInput.addEventListener('input', renderOptions);
 
     applyBtn.addEventListener('click', () => {
+      const before = teams.length;
       teams.length = 0;
       allTeams.filter((t) => pending.has(t.id)).forEach((t) => teams.push(t));
+      if (teams.length > before) showToast('Team assigned!');
+      else if (teams.length < before) showToast('Team assignment removed!');
       closeDropdown();
       renderTabBar();
       renderAssignedTeams();
@@ -625,6 +654,7 @@ export function createShareModal(options: ShareModalOptions = {}): HTMLElement {
           onRemove: () => {
             const idx = teams.findIndex((x) => x.id === t.id);
             if (idx >= 0) teams.splice(idx, 1);
+            showToast('Team assignment removed!');
             renderTabBar();
             renderAssignedTeams();
           },
@@ -644,7 +674,7 @@ export function createShareModal(options: ShareModalOptions = {}): HTMLElement {
 
     const heading = document.createElement('div');
     heading.className = 'share-modal__heading';
-    heading.textContent = 'Assign to specific people by name or email.';
+    heading.textContent = 'Assign to specific members by name or email.';
     wrap.appendChild(heading);
 
     const msWrap = document.createElement('div');
@@ -655,7 +685,7 @@ export function createShareModal(options: ShareModalOptions = {}): HTMLElement {
     const input = document.createElement('input');
     input.type = 'text';
     input.className = 'share-modal__ms-input';
-    input.placeholder = 'Name or email address';
+    input.placeholder = 'Enter name or email address';
     fieldWrap.appendChild(input);
     const chevWrap = document.createElement('span');
     chevWrap.appendChild(iconEl('chevron-down-sm', 'sb-icon share-modal__ms-chev'));
@@ -696,23 +726,9 @@ export function createShareModal(options: ShareModalOptions = {}): HTMLElement {
     let pending = new Set<string>();
     let isOpen = false;
 
+    // Production: only existing organisation members can be assigned.
     function allPeople(): SharePerson[] {
-      return [...directory, ...customPeople];
-    }
-
-    function draftFromQuery(v: string): SharePerson {
-      if (isEmail(v)) {
-        const local = v.split('@')[0];
-        const name =
-          local
-            .split(/[._-]/)
-            .filter(Boolean)
-            .map((p) => p[0].toUpperCase() + p.slice(1))
-            .join(' ') || v;
-        return { id: v.toLowerCase(), name, email: v };
-      }
-      const email = v.toLowerCase().replace(/\s+/g, '.') + '@invite.mizou.com';
-      return { id: email, name: v, email };
+      return directory;
     }
 
     function openDropdown() {
@@ -748,26 +764,12 @@ export function createShareModal(options: ShareModalOptions = {}): HTMLElement {
         (p) => p.name.toLowerCase().includes(q) || p.email.toLowerCase().includes(q),
       );
 
-      const exactMatch = q && allPeople().some((p) => p.email.toLowerCase() === q || p.name.toLowerCase() === q);
-      if (q && !exactMatch) {
-        const addRow = document.createElement('button');
-        addRow.type = 'button';
-        addRow.className = 'share-modal__ms-add-custom';
-        addRow.textContent = `Add "${input.value.trim()}"`;
-        addRow.addEventListener('click', () => {
-          const draft = draftFromQuery(input.value.trim());
-          if (!allPeople().find((p) => p.id === draft.id)) customPeople.push(draft);
-          pending.add(draft.id);
-          input.value = '';
-          renderOptions();
-        });
-        optionsList.appendChild(addRow);
-      }
-
-      if (filtered.length === 0 && !q) {
+      if (filtered.length === 0) {
         const empty = document.createElement('div');
         empty.className = 'share-modal__ms-empty';
-        empty.textContent = 'No people found';
+        empty.textContent = q
+          ? 'This account is not part of the organisation yet. Invite them to the organisation first.'
+          : 'No members found';
         optionsList.appendChild(empty);
         return;
       }
@@ -793,19 +795,24 @@ export function createShareModal(options: ShareModalOptions = {}): HTMLElement {
     input.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') {
         e.preventDefault();
-        const v = input.value.trim();
+        const v = input.value.trim().toLowerCase();
         if (!v) return;
-        const draft = draftFromQuery(v);
-        if (!allPeople().find((p) => p.id === draft.id)) customPeople.push(draft);
-        pending.add(draft.id);
-        input.value = '';
+        // Enter selects an exact organisation match; anything else shows the not-in-org message
+        const match = allPeople().find((p) => p.email.toLowerCase() === v || p.name.toLowerCase() === v);
+        if (match) {
+          pending.add(match.id);
+          input.value = '';
+        }
         renderOptions();
       }
     });
 
     applyBtn.addEventListener('click', () => {
+      const before = individuals.length;
       individuals.length = 0;
       allPeople().filter((p) => pending.has(p.id)).forEach((p) => individuals.push(p));
+      if (individuals.length > before) showToast('Member assigned!');
+      else if (individuals.length < before) showToast('Member removed!');
       closeDropdown();
       input.value = '';
       renderTabBar();
@@ -817,7 +824,7 @@ export function createShareModal(options: ShareModalOptions = {}): HTMLElement {
       if (individuals.length === 0) {
         const empty = document.createElement('div');
         empty.className = 'share-modal__empty';
-        empty.textContent = 'No individuals assigned yet.';
+        empty.textContent = 'No members assigned yet.';
         list.appendChild(empty);
         return;
       }
@@ -830,6 +837,7 @@ export function createShareModal(options: ShareModalOptions = {}): HTMLElement {
           onRemove: () => {
             const idx = individuals.findIndex((x) => x.id === p.id);
             if (idx >= 0) individuals.splice(idx, 1);
+            showToast('Member removed!');
             renderTabBar();
             renderAssignedIndividuals();
           },
