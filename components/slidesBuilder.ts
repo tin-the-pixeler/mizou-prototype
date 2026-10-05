@@ -28,7 +28,16 @@ export type SlidesBuilderOptions = {
 };
 
 const DEMO_PROMPT = 'Make a presentation about effective communication in Tech Teams';
-const FORMATS = ['Chatbot', 'Roleplay', 'Slides'];
+type Format = { id: string; name: string; title: string; description: string; icon: string };
+/** Same options, order and copy as production's ChatFormat dropdown, plus Slides. */
+const FORMATS: Format[] = [
+  { id: 'text', name: 'Chatbot', title: 'Text Chatbot', description: 'Master concepts through interactive text-based practice', icon: 'format-chatbot' },
+  { id: 'audio', name: 'Voice Role Play', title: 'Voice role play', description: 'Build speaking confidence with realistic voice simulations', icon: 'format-voice' },
+  { id: 'video', name: 'Video Role Play', title: 'Video role play', description: 'Hone face-to-face interaction skills via video call with an AI avatar', icon: 'format-video' },
+  { id: 'slides', name: 'Slides', title: 'Slides', description: 'Build a presentation through chat, ready to share', icon: 'format-slides' },
+];
+const CHECK_SVG = '<svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="8" fill="url(#slides-format-grad)"/><path d="M4.6 8.2l2.2 2.2 4.6-4.8" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const GRAD_DEFS = '<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="slides-format-grad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#34D399"/><stop offset="1" stop-color="#4F46E5"/></linearGradient></defs></svg>';
 const THINK_MS = 2800;
 const BUILD_MS = 4200;
 
@@ -110,7 +119,7 @@ function createHome(onSend: () => void): HTMLElement {
   return page;
 }
 
-/** Format pill opens a menu; picking Slides fills the demo prompt. Send needs a format. */
+/** Format pill opens production's format menu; picking Slides fills the demo prompt. Send needs Slides. */
 function wireFormatPicker(input: HTMLElement, onSend: () => void): void {
   const left = input.querySelector<HTMLElement>('.input-field-landing__left')!;
   const pill = left.querySelector<HTMLButtonElement>('.sb-button')!;
@@ -119,21 +128,43 @@ function wireFormatPicker(input: HTMLElement, onSend: () => void): void {
   const sendBtn = input.querySelector<HTMLButtonElement>('.input-field-landing__send-btn')!;
   pill.dataset.id = 'format-pill';
   left.classList.add('slides-format');
+  let selected: Format | null = null;
 
   const menu = div('slides-format__menu');
   menu.dataset.id = 'format-menu';
   menu.hidden = true;
-  for (const format of FORMATS) {
+  menu.insertAdjacentHTML('afterbegin', GRAD_DEFS);
+
+  const options = FORMATS.map((format) => {
     const option = document.createElement('button');
     option.type = 'button';
     option.className = 'slides-format__option';
-    option.dataset.format = format;
-    option.textContent = format;
+    option.dataset.format = format.id;
+
+    const tile = div('slides-format__tile');
+    tile.appendChild(iconEl(format.icon as never, 'slides-format__tile-icon'));
+    const text = div('slides-format__text');
+    const title = document.createElement('strong');
+    title.className = 'slides-format__title';
+    title.textContent = format.title;
+    const desc = document.createElement('span');
+    desc.className = 'slides-format__desc';
+    desc.textContent = format.description;
+    text.append(title, desc);
+    const check = document.createElement('span');
+    check.className = 'slides-format__check';
+    check.innerHTML = CHECK_SVG;
+    option.append(tile, text, check);
+
     option.addEventListener('click', () => {
-      pillLabel.textContent = format;
-      pill.classList.toggle('slides-format__pill--selected', format === 'Slides');
+      selected = format;
+      options.forEach((o) => o.classList.toggle('is-selected', o === option));
+      pill.classList.add('slides-format__pill--selected');
+      pill.querySelector('.slides-format__pill-icon')?.remove();
+      pill.insertBefore(iconEl(format.icon as never, 'slides-format__pill-icon'), pillLabel);
+      pillLabel.textContent = format.name;
       menu.hidden = true;
-      if (format === 'Slides' && !textarea.textContent?.trim()) {
+      if (format.id === 'slides' && !textarea.textContent?.trim()) {
         textarea.textContent = DEMO_PROMPT;
         input.classList.remove('input-field-landing--default');
         input.classList.add('input-field-landing--populated');
@@ -141,7 +172,9 @@ function wireFormatPicker(input: HTMLElement, onSend: () => void): void {
       }
     });
     menu.appendChild(option);
-  }
+    return option;
+  });
+
   left.appendChild(menu);
   pill.addEventListener('click', (e) => {
     e.stopPropagation();
@@ -149,11 +182,11 @@ function wireFormatPicker(input: HTMLElement, onSend: () => void): void {
   });
   document.addEventListener('click', () => (menu.hidden = true));
 
-  // Send is only allowed with Slides selected; otherwise nudge the picker open.
+  // Only Slides is prototyped: sending with another (or no) format nudges the picker open.
   sendBtn.addEventListener(
     'click',
     (e) => {
-      if (pillLabel.textContent !== 'Slides') {
+      if (selected?.id !== 'slides') {
         e.stopImmediatePropagation();
         menu.hidden = false;
       }
