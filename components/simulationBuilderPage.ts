@@ -37,7 +37,7 @@ export type SimBuilderOptions = {
 };
 
 // Default prompts per mode
-const CREATE_PROMPTS: SimBuilderPrompt[] = [
+export const CREATE_PROMPTS: SimBuilderPrompt[] = [
   {
     title: 'Leadership Scenario',
     text: 'Give constructive feedback to an employee missing deadlines. Objective: motivate improvement without damaging trust.',

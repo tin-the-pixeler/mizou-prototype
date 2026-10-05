@@ -46,6 +46,7 @@ import '../styles/team-members-table.css';
 import '../styles/team-settings-form.css';
 import '../styles/team-page.css';
 import '../styles/modal.css';
+import '../styles/slides-builder.css';
 import type { Preview } from '@storybook/react';
 import React, { useEffect, useRef } from 'react';
 
