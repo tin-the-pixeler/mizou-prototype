@@ -22,19 +22,27 @@ import { DECK, DECK_TITLE } from './slideDeck';
 
 export type SlidesBuilderStage = 'home' | 'building' | 'ready';
 
+export type CreateFormatId = 'text' | 'audio' | 'video' | 'slides' | 'flashcards';
+
 export type SlidesBuilderOptions = {
   /** Where the prototype starts (default: home) */
   stage?: SlidesBuilderStage;
 };
 
 const DEMO_PROMPT = 'Make a presentation about effective communication in Tech Teams';
-type Format = { id: string; name: string; title: string; description: string; icon: string };
+/** Prompt filled in when a prototyped format is picked on the home page. */
+export const DEMO_PROMPTS: Partial<Record<CreateFormatId, string>> = {
+  slides: DEMO_PROMPT,
+  flashcards: 'Create flashcards to help new hires learn effective communication in Tech Teams',
+};
+export type Format = { id: string; name: string; title: string; description: string; icon: string };
 /** Same options, order and copy as production's ChatFormat dropdown, plus Slides. */
-const FORMATS: Format[] = [
+export const FORMATS: Format[] = [
   { id: 'text', name: 'Chatbot', title: 'Text Chatbot', description: 'Master concepts through interactive text-based practice', icon: 'format-chatbot' },
   { id: 'audio', name: 'Voice Role Play', title: 'Voice role play', description: 'Build speaking confidence with realistic voice simulations', icon: 'format-voice' },
   { id: 'video', name: 'Video Role Play', title: 'Video role play', description: 'Hone face-to-face interaction skills via video call with an AI avatar', icon: 'format-video' },
   { id: 'slides', name: 'Slides', title: 'Slides', description: 'Build a presentation through chat, ready to share', icon: 'format-slides' },
+  { id: 'flashcards', name: 'Flashcards', title: 'Flashcards', description: 'Turn a topic into a flashcard set for quick study and recall', icon: 'format-flashcards' },
 ];
 const CHECK_SVG = '<svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="8" fill="url(#slides-format-grad)"/><path d="M4.6 8.2l2.2 2.2 4.6-4.8" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 const GRAD_DEFS = '<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="slides-format-grad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#34D399"/><stop offset="1" stop-color="#4F46E5"/></linearGradient></defs></svg>';
@@ -49,7 +57,7 @@ const REPLY_HTML = `
 <p><strong>Slide 4:</strong> Best practices &amp; action items – concrete strategies teams can implement to improve clarity and efficiency</p>
 <p>The presentation is ready to go with a clean, professional design. If you'd like to tweak anything – swap out content, adjust the flow, change the styling, or add more slides – just let me know what you're thinking and I'll make those changes for you!</p>`;
 
-function div(className: string): HTMLDivElement {
+export function div(className: string): HTMLDivElement {
   const node = document.createElement('div');
   node.className = className;
   return node;
@@ -57,7 +65,8 @@ function div(className: string): HTMLDivElement {
 
 /* ============================== HOME ============================== */
 
-function createHome(onSend: () => void): HTMLElement {
+export function createHome(onSend: (format: CreateFormatId) => void, supported: CreateFormatId[] = ['slides']): HTMLElement {
+  let picked: CreateFormatId | null = null;
   const page = div('sim-builder slides-home');
   page.appendChild(div('sim-builder__bg'));
 
@@ -90,7 +99,7 @@ function createHome(onSend: () => void): HTMLElement {
   const input = createInputFieldLandingPage({
     placeholder:
       'Describe your scenario and create it right away. e.g. A product demo where a sales rep must highlight key features and handle tough questions from a skeptical buyer.',
-    onSend,
+    onSend: () => picked && onSend(picked),
   });
   inputContainer.appendChild(input);
   inputSection.appendChild(inputContainer);
@@ -115,12 +124,12 @@ function createHome(onSend: () => void): HTMLElement {
   layout.appendChild(main);
   page.appendChild(layout);
 
-  wireFormatPicker(input, onSend);
+  wireFormatPicker(input, supported, (id) => (picked = id));
   return page;
 }
 
-/** Format pill opens production's format menu; picking Slides fills the demo prompt. Send needs Slides. */
-function wireFormatPicker(input: HTMLElement, onSend: () => void): void {
+/** Format pill opens production's format menu; picking a prototyped format fills its demo prompt. Send needs one. */
+function wireFormatPicker(input: HTMLElement, supported: CreateFormatId[], onPick: (id: CreateFormatId) => void): void {
   const left = input.querySelector<HTMLElement>('.input-field-landing__left')!;
   const pill = left.querySelector<HTMLButtonElement>('.sb-button')!;
   const pillLabel = pill.querySelector('span')!;
@@ -158,14 +167,16 @@ function wireFormatPicker(input: HTMLElement, onSend: () => void): void {
 
     option.addEventListener('click', () => {
       selected = format;
+      onPick(format.id as CreateFormatId);
       options.forEach((o) => o.classList.toggle('is-selected', o === option));
       pill.classList.add('slides-format__pill--selected');
       pill.querySelector('.slides-format__pill-icon')?.remove();
       pill.insertBefore(iconEl(format.icon as never, 'slides-format__pill-icon'), pillLabel);
       pillLabel.textContent = format.name;
       menu.hidden = true;
-      if (format.id === 'slides' && !textarea.textContent?.trim()) {
-        textarea.textContent = DEMO_PROMPT;
+      const demo = DEMO_PROMPTS[format.id as CreateFormatId];
+      if (supported.includes(format.id as CreateFormatId) && demo && (!textarea.textContent?.trim() || Object.values(DEMO_PROMPTS).includes(textarea.textContent))) {
+        textarea.textContent = demo;
         input.classList.remove('input-field-landing--default');
         input.classList.add('input-field-landing--populated');
         sendBtn.disabled = false;
@@ -182,11 +193,11 @@ function wireFormatPicker(input: HTMLElement, onSend: () => void): void {
   });
   document.addEventListener('click', () => (menu.hidden = true));
 
-  // Only Slides is prototyped: sending with another (or no) format nudges the picker open.
+  // Only some formats are prototyped: sending with another (or no) format nudges the picker open.
   sendBtn.addEventListener(
     'click',
     (e) => {
-      if (selected?.id !== 'slides') {
+      if (!selected || !supported.includes(selected.id as CreateFormatId)) {
         e.stopImmediatePropagation();
         menu.hidden = false;
       }
@@ -199,12 +210,11 @@ function wireFormatPicker(input: HTMLElement, onSend: () => void): void {
       if (!sendBtn.disabled) sendBtn.click();
     }
   });
-  void onSend;
 }
 
 /* ============================ WORKSPACE =========================== */
 
-function bulbLine(text: string): HTMLElement {
+export function bulbLine(text: string): HTMLElement {
   const line = div('slides-ws__thought');
   line.append(iconEl('light-bulb-fill' as never, 'slides-ws__thought-icon'));
   const label = document.createElement('span');
@@ -213,7 +223,7 @@ function bulbLine(text: string): HTMLElement {
   return line;
 }
 
-function createBuildingView(): HTMLElement {
+export function createBuildingView(): HTMLElement {
   const view = div('slides-building');
   view.dataset.id = 'building-state';
   const badge = div('slides-building__badge');
