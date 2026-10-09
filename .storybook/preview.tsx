@@ -84,8 +84,8 @@ const preview: Preview = {
       // `originalStoryFn` is typed as `LegacyStoryFn | ArgsStoryFn` (different
       // arities), which TS can't call directly — narrow to the legacy shape,
       // the one every pre-existing HTML story actually uses.
-      const callLegacy = context.originalStoryFn as unknown as ((ctx: typeof context) => unknown) | undefined;
-      const raw = callLegacy?.(context);
+      const callLegacy = context.originalStoryFn as unknown as ((args: typeof context.args, ctx: typeof context) => unknown) | undefined;
+      const raw = callLegacy?.(context.args, context);
       if (raw instanceof Node) {
         return React.createElement(DomHost, { node: raw });
       }
