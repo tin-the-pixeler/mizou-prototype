@@ -99,6 +99,13 @@
   padding-right: var(--spacing-sm);
 }
 
+/* Stats tiles sit above that same filter bar, inside the sessions card — give
+   them the matching horizontal inset plus a little top breathing room, since
+   the tab's own gap is zeroed out below. */
+.team-page__tab--sessions .sstats {
+  padding: var(--spacing-sm) var(--spacing-sm) 0;
+}
+
 /* .sfb already has its own symmetric 12px top/bottom padding. The generic
    .team-page__tab gap would stack an extra 16px under it (but not above,
    since the filter bar is the first child), making the bottom look wider —

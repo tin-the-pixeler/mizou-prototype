@@ -11,6 +11,7 @@ import { createCollectionsFilterBar, DEFAULT_CATEGORY_OPTIONS, collectionsFilter
 import { createSimulationCard, type SimulationCardOptions } from './simulationCard';
 import { createSessionsFilterBar, sessionFilterPredicate, type SessionsFilterState, type FilterOption } from './sessionsFilterBar';
 import { createSessionsTable, sortSessions, DEFAULT_SORT, type SortState, type SessionRowData } from './sessionsTable';
+import { createSessionsStats } from './sessionsStats';
 import { createTeamMembersTable, sortMembers, DEFAULT_MEMBERS_SORT, type MembersSortState, type TeamMemberRow } from './teamMembersTable';
 import { createTeamSettingsForm } from './teamSettingsForm';
 import { createButton } from './button';
@@ -288,6 +289,9 @@ function buildSessionsTab(
   const wrap = document.createElement('div');
   wrap.className = 'team-page__tab team-page__tab--sessions sessions-card';
 
+  const statsHost = document.createElement('div');
+  wrap.appendChild(statsHost);
+
   const filterWrap = document.createElement('div');
   filterWrap.className = 'team-page__filters';
   wrap.appendChild(filterWrap);
@@ -316,9 +320,11 @@ function buildSessionsTab(
   };
 
   const renderTable = () => {
+    const rows = visibleRows();
+    statsHost.replaceChildren(createSessionsStats({ rows }));
     tableHost.replaceChildren(
       createSessionsTable({
-        rows: sortSessions(visibleRows(), sort),
+        rows: sortSessions(rows, sort),
         sort,
         onSortChange: (next) => { sort = next; renderTable(); },
       }),

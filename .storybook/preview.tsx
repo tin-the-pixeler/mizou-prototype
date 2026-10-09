@@ -32,6 +32,7 @@ import '../styles/create-button.css';
 import '../styles/simulation-card.css';
 import '../styles/sessions-filter-bar.css';
 import '../styles/sessions-table.css';
+import '../styles/sessions-stats.css';
 import '../styles/timestamp-chip.css';
 import '../styles/criteria-card.css';
 import '../styles/reference-chip.css';

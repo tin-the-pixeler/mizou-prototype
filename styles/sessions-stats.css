@@ -1,0 +1,55 @@
+/* styles/sessions-stats.css */
+/* Summary stat tiles above the sessions table. Companion to
+   sessions-table.css and sessions-filter-bar.css. */
+
+.sstats {
+  display: flex;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+  margin-bottom: var(--spacing-sm);
+}
+
+.sstats__tile {
+  flex: 1;
+  min-width: 180px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3xs);
+  background: var(--surface-emphasis);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-container);
+  padding: var(--spacing-xs);
+}
+
+.sstats__tile-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-2xs);
+}
+
+.sstats__tile-label {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 20px;
+  color: var(--text-primary);
+}
+
+.sstats__tile-icon {
+  display: inline-flex;
+  flex: none;
+  width: 18px;
+  height: 18px;
+  color: var(--icon-fill-default);
+}
+
+.sstats__tile-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.sstats__tile-value {
+  font-size: 27px;
+  font-weight: 400;
+  color: var(--text-primary);
+}
