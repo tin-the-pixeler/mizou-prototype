@@ -139,3 +139,21 @@
   letter-spacing: 0.24px;
   flex-shrink: 0;
 }
+
+/* ── Contact link (account pages) ── */
+.tbp-contact-link {
+  font-size: var(--fs-sm);
+  color: var(--interactive-primary);
+  text-decoration: none;
+  letter-spacing: 0.33px;
+}
+
+.tbp-contact-link:hover {
+  text-decoration: underline;
+}
+
+.tbp-plan-badge--free {
+  background: var(--surface-emphasis);
+  border-color: transparent;
+  color: var(--interactive-primary);
+}

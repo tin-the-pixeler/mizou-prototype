@@ -27,6 +27,10 @@ export type SidebarOptions = {
   teamInitials?: string;
   /** Team avatar color (enterprise only) */
   teamColor?: string;
+  /** Drop the "PRACTICE" section label (account pages). Default false. */
+  hideSectionLabels?: boolean;
+  /** Render no nav item as active, e.g. on pages that aren't one of the nav destinations. Default false. */
+  noActiveItem?: boolean;
 };
 
 export function createSidebar({
@@ -37,6 +41,8 @@ export function createSidebar({
   teamName = 'Team Name',
   teamInitials = 'TN',
   teamColor = '#b17979',
+  hideSectionLabels = false,
+  noActiveItem = false,
 }: SidebarOptions = {}): HTMLElement {
   const resolvedOrgName = orgName ?? (variant === 'enterprise' ? 'ACME' : 'My Space');
   const resolvedOrgLogo = orgLogo ?? (variant === 'enterprise' ? 'logo-sq-acme' as IconName : 'logo-sq-mizou' as IconName);
@@ -174,12 +180,14 @@ export function createSidebar({
   const practiceSection = document.createElement('div');
   practiceSection.className = 'sb-sidebar-section';
 
-  const practiceTitle = document.createElement('div');
-  practiceTitle.className = 'sb-sidebar-section__title';
-  practiceTitle.textContent = 'PRACTICE';
-  practiceSection.appendChild(practiceTitle);
+  if (!hideSectionLabels) {
+    const practiceTitle = document.createElement('div');
+    practiceTitle.className = 'sb-sidebar-section__title';
+    practiceTitle.textContent = 'PRACTICE';
+    practiceSection.appendChild(practiceTitle);
+  }
 
-  practiceSection.appendChild(createSidebarItem({ label: 'My Collection', icon: 'my-collection' as IconName, active: true }));
+  practiceSection.appendChild(createSidebarItem({ label: 'My Collection', icon: 'my-collection' as IconName, active: !noActiveItem }));
   practiceSection.appendChild(createSidebarItem({ label: 'Sessions', icon: 'session-list' as IconName }));
   nav.appendChild(practiceSection);
 

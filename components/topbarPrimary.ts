@@ -24,6 +24,8 @@ export type TopbarPrimaryOptions = {
   userColor?: string;
   /** Hide the title's dropdown chevron (plain page title, e.g. "Collections"). Default false. */
   hideTitleChevron?: boolean;
+  /** Text link shown before the plan badge, e.g. "Contact Mizou" (account pages). Omitted by default. */
+  contactLabel?: string;
 };
 
 export function createTopbarPrimary({
@@ -34,6 +36,7 @@ export function createTopbarPrimary({
   userInitial = 'A',
   userColor = '#6963FC',
   hideTitleChevron = false,
+  contactLabel,
 }: TopbarPrimaryOptions): HTMLElement {
   const bar = document.createElement('div');
   bar.className = 'tbp-topbar';
@@ -123,8 +126,17 @@ export function createTopbarPrimary({
   const right = document.createElement('div');
   right.className = 'tbp-right';
 
+  if (contactLabel) {
+    const contact = document.createElement('a');
+    contact.href = '#';
+    contact.className = 'tbp-contact-link';
+    contact.textContent = contactLabel;
+    right.appendChild(contact);
+  }
+
   const badge = document.createElement('span');
-  badge.className = 'tbp-plan-badge';
+  // The Free plan reads as a neutral pill; paid plans keep the amber outline.
+  badge.className = 'tbp-plan-badge' + (planLabel === 'Free' ? ' tbp-plan-badge--free' : '');
   badge.textContent = planLabel;
   right.appendChild(badge);
 
