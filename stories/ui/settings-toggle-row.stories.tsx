@@ -22,6 +22,7 @@ type Story = StoryObj<typeof SettingsToggleRow>;
 
 const FEEDBACK_ARGS = {
   label: 'Allow my manager to see my feedback',
+  statusLabels: { on: 'On', off: 'Off' },
   helperText:
     'When off, only you can see your feedback by default. You can still make individual feedback visible to your manager.',
 };
