@@ -218,3 +218,13 @@ export const TextSimulation: Story = {
   name: 'Text Simulation',
   render: () => createFeedbackDrawer(textData),
 };
+
+export const ManagerVisibilityVisible: Story = {
+  name: 'Manager visibility — visible',
+  render: () => createFeedbackDrawer({ ...audioVideoData, managerVisibility: { defaultVisible: true } }),
+};
+
+export const ManagerVisibilityHidden: Story = {
+  name: 'Manager visibility — hidden',
+  render: () => createFeedbackDrawer({ ...textData, managerVisibility: { defaultVisible: false } }),
+};

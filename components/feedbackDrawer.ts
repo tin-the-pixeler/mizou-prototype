@@ -10,7 +10,10 @@
 // Clicking a criterion's timestamp (select or play) expands the transcript
 // column if it's hidden, then scrolls it to the matching message.
 
+import { createElement } from 'react';
+import { createRoot } from 'react-dom/client';
 import { iconEl } from '../icons';
+import { FeedbackVisibilityControl } from '../ui/feedback-visibility-control';
 import { createTranscript, type TranscriptMessage, type Topic, type TranscriptFormat } from './feedbackTranscript';
 import { createSkillCard } from './skillCard';
 import { createCriteriaCard, type CriteriaCardVariant, type CriteriaExcerpt } from './criteriaCard';
@@ -59,6 +62,11 @@ export type FeedbackData = {
   transcript: TranscriptMessage[];
   /** Audio/video simulations only */
   delivery?: DeliveryData;
+  /**
+   * Opt-in: renders the per-feedback "Visible to / Hidden from manager" control in
+   * the topbar. Omit to leave the drawer exactly as it was (every existing story).
+   */
+  managerVisibility?: { defaultVisible: boolean };
 };
 
 type Tab = 'scorecard' | 'delivery';
@@ -309,6 +317,15 @@ export function createFeedbackDrawer(data: FeedbackData): HTMLElement {
   const spacer = document.createElement('div');
   spacer.className = 'feedback-drawer__topbar-spacer';
   topbar.appendChild(spacer);
+  if (data.managerVisibility) {
+    // React control (ui/) hosted inside this legacy DOM component. Never unmounted
+    // explicitly — the drawer node is discarded wholesale, fine for a prototype.
+    const visibilityHost = document.createElement('div');
+    createRoot(visibilityHost).render(
+      createElement(FeedbackVisibilityControl, { defaultVisible: data.managerVisibility.defaultVisible }),
+    );
+    topbar.appendChild(visibilityHost);
+  }
   const submitted = document.createElement('span');
   submitted.className = 'feedback-drawer__submitted';
   submitted.textContent = data.submitted;
