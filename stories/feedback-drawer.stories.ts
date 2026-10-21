@@ -66,6 +66,8 @@ const DELIVERY = {
 
 const audioVideoData: FeedbackData = {
   format: 'audiovideo',
+  // Private by default, matching Account Settings → "Allow my manager to see my feedback" (off).
+  managerVisibility: { defaultVisible: false },
   title: 'Enterprise Sales Discovery Call – Acme Corp',
   submitted: 'Submitted on 16 November 2025',
   status: 'Completed',
@@ -161,6 +163,7 @@ const TEXT_TRANSCRIPT = [
 
 const textData: FeedbackData = {
   format: 'text',
+  managerVisibility: { defaultVisible: false },
   title: 'Pharma Discovery Chat – Dr. Miller',
   submitted: 'Submitted on 16 November 2025',
   status: 'Completed',
@@ -219,12 +222,8 @@ export const TextSimulation: Story = {
   render: () => createFeedbackDrawer(textData),
 };
 
-export const ManagerVisibilityVisible: Story = {
-  name: 'Manager visibility — visible',
+/** Same as Audio / Video, but the learner has already shared this feedback with their manager. */
+export const VisibleToManager: Story = {
+  name: 'Visible to manager',
   render: () => createFeedbackDrawer({ ...audioVideoData, managerVisibility: { defaultVisible: true } }),
-};
-
-export const ManagerVisibilityHidden: Story = {
-  name: 'Manager visibility — hidden',
-  render: () => createFeedbackDrawer({ ...textData, managerVisibility: { defaultVisible: false } }),
 };
