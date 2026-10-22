@@ -1,0 +1,87 @@
+/* ========== FEEDBACK VISIBILITY CONTROL ========== */
+/* "Visible to manager" / "Hidden from manager" toggle. */
+
+.fb-visibility {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-3xs);
+  flex-shrink: 0;
+  border: 1px solid;
+  border-radius: var(--radius-full);
+  font-family: var(--font-sans);
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.fb-visibility:focus-visible {
+  outline: 2px solid var(--interactive-primary);
+  outline-offset: 2px;
+}
+
+.fb-visibility:disabled {
+  opacity: var(--alpha-disabled);
+  cursor: not-allowed;
+}
+
+/* Badge — pill with icon + label */
+.fb-visibility--badge {
+  height: 24px;
+  padding: var(--spacing-3xs) var(--spacing-2xs);
+}
+
+/* Icon — circular, matches button-icon xs/sm sizing */
+.fb-visibility--icon {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+}
+
+.fb-visibility__icon {
+  display: inline-flex;
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  color: inherit;
+}
+
+.fb-visibility--icon .fb-visibility__icon {
+  width: 16px;
+  height: 16px;
+}
+
+.fb-visibility__icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.fb-visibility__label {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-medium);
+  line-height: 18px;
+  letter-spacing: 0.11px;
+  white-space: nowrap;
+  color: inherit;
+}
+
+/* Visible to manager — indigo */
+.fb-visibility--visible {
+  background: var(--feedback-info-bg-subtle);
+  border-color: var(--interactive-primary);
+  color: var(--interactive-primary);
+}
+
+.fb-visibility--visible:hover:not(:disabled) {
+  background: var(--feedback-info-bg);
+}
+
+/* Hidden from manager — neutral */
+.fb-visibility--hidden {
+  background: var(--surface-emphasis);
+  border-color: var(--border-button);
+  color: var(--text-secondary);
+}
+
+.fb-visibility--hidden:hover:not(:disabled) {
+  background: var(--interactive-secondary-hover);
+}
