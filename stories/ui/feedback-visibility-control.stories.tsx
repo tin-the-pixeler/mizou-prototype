@@ -1,9 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import React from 'react';
 import { FeedbackVisibilityControl } from '../../ui/feedback-visibility-control';
+import { FeedbackExportButton } from '../../ui/feedback-export-button';
 
 /**
- * Per-feedback visibility: status badge + icon button. Explicit `render`, per
+ * Per-feedback visibility: eye icon button + settings popover. Explicit `render`, per
  * the convention in stories/ui/sidebar-enterprise-v2.stories.tsx.
  */
 const meta: Meta<typeof FeedbackVisibilityControl> = {
@@ -18,33 +19,22 @@ export const VisibleToManager: Story = { args: { defaultVisible: true } };
 
 export const HiddenFromManager: Story = { args: { defaultVisible: false } };
 
-export const IconOnly: Story = { args: { defaultVisible: false, showLabel: false } };
+export const ReadOnly: Story = { args: { defaultVisible: true, readOnly: true } };
 
 export const Disabled: Story = { args: { defaultVisible: true, disabled: true } };
 
 /**
- * Mirrors the feedback drawer's topbar (components/feedbackDrawer.ts):
- * title, spacer, submitted date, status chip. The control sits just before the
- * date so the privacy state reads as part of the header, not the content.
+ * Mirrors the feedback drawer's metabar right side: eye button, export button,
+ * divider. The popover opens below, right-aligned to the eye button.
  */
-export const InFeedbackHeader: Story = {
+export const InFeedbackMetabar: Story = {
   parameters: { layout: 'padded' },
   render: () => (
-    <div style={{ maxWidth: 880 }}>
-      {(['Visible', 'Hidden'] as const).map((state) => (
-        <div
-          key={state}
-          className="mb-sm flex items-center gap-sm rounded-container bg-surface-page px-sm py-xs font-sans"
-        >
-          <h1 className="m-0 text-sm font-normal text-content-primary">Handling pricing objections</h1>
-          <div className="flex-1" />
-          <FeedbackVisibilityControl defaultVisible={state === 'Visible'} />
-          <span className="whitespace-nowrap text-xs text-content-secondary">Submitted Oct 14, 2026</span>
-          <span className="inline-flex items-center gap-3xs rounded-full bg-feedback-success-bg px-2xs text-xs text-emerald-dark">
-            Completed
-          </span>
-        </div>
-      ))}
+    <div style={{ minHeight: 200 }} className="flex justify-end rounded-container bg-surface-overlay p-sm font-sans">
+      <div className="flex items-center gap-2xs">
+        <FeedbackVisibilityControl defaultVisible />
+        <FeedbackExportButton />
+      </div>
     </div>
   ),
 };

@@ -227,3 +227,16 @@ export const VisibleToManager: Story = {
   name: 'Visible to manager',
   render: () => createFeedbackDrawer({ ...audioVideoData, managerVisibility: { defaultVisible: true } }),
 };
+
+/** The learner has kept this feedback private (the default). */
+export const HiddenFromManager: Story = {
+  name: 'Hidden from manager',
+  render: () => createFeedbackDrawer({ ...audioVideoData, managerVisibility: { defaultVisible: false } }),
+};
+
+/** The manager's view: the eye icon and tooltip show the state, but there is no popover to change it. */
+export const ManagerViewReadOnly: Story = {
+  name: 'Manager view (read-only)',
+  render: () =>
+    createFeedbackDrawer({ ...audioVideoData, managerVisibility: { defaultVisible: true, readOnly: true } }),
+};

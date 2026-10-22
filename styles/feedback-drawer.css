@@ -117,6 +117,10 @@
 
 .feedback-drawer__metabar-card {
   flex-shrink: 0;
+  /* Not clipped: the visibility popover hangs below the metabar. Sits above the main card. */
+  position: relative;
+  z-index: 20;
+  overflow: visible;
 }
 
 .feedback-drawer__main-card {
@@ -172,11 +176,6 @@
   white-space: nowrap;
 }
 
-.feedback-drawer__meta-item--link {
-  color: var(--interactive-primary);
-  cursor: pointer;
-}
-
 .feedback-drawer__meta-icon {
   display: inline-flex;
   width: 14px;
@@ -190,6 +189,19 @@
 
 .feedback-drawer__metabar-spacer {
   flex: 1 0 0;
+}
+
+/* eye + export icon buttons (React, ui/) */
+.feedback-drawer__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2xs);
+  flex-shrink: 0;
+}
+
+/* the metabar gap is 8px; pull the left side in to 4px (right stays 8px) */
+.feedback-drawer__metabar-divider--actions {
+  margin-left: calc(-1 * var(--spacing-3xs));
 }
 
 .feedback-drawer__nav-group {
