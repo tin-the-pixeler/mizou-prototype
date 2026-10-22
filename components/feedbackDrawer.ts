@@ -10,10 +10,11 @@
 // Clicking a criterion's timestamp (select or play) expands the transcript
 // column if it's hidden, then scrolls it to the matching message.
 
-import { createElement } from 'react';
+import { createElement, Fragment } from 'react';
 import { createRoot } from 'react-dom/client';
 import { iconEl } from '../icons';
 import { FeedbackVisibilityControl } from '../ui/feedback-visibility-control';
+import { FeedbackExportButton } from '../ui/feedback-export-button';
 import { createTranscript, type TranscriptMessage, type Topic, type TranscriptFormat } from './feedbackTranscript';
 import { createSkillCard } from './skillCard';
 import { createCriteriaCard, type CriteriaCardVariant, type CriteriaExcerpt } from './criteriaCard';
@@ -63,10 +64,11 @@ export type FeedbackData = {
   /** Audio/video simulations only */
   delivery?: DeliveryData;
   /**
-   * Opt-in: renders the per-feedback "Visible to / Hidden from manager" control in
-   * the topbar. Omit to leave the drawer exactly as it was (every existing story).
+   * Opt-in: renders the per-feedback "Visible to / Hidden from manager" eye button
+   * (with its settings popover) in the metabar. `readOnly` is the manager's view:
+   * icon + tooltip only. Omit to leave the eye button out.
    */
-  managerVisibility?: { defaultVisible: boolean };
+  managerVisibility?: { defaultVisible: boolean; readOnly?: boolean };
 };
 
 type Tab = 'scorecard' | 'delivery';
@@ -317,15 +319,6 @@ export function createFeedbackDrawer(data: FeedbackData): HTMLElement {
   const spacer = document.createElement('div');
   spacer.className = 'feedback-drawer__topbar-spacer';
   topbar.appendChild(spacer);
-  if (data.managerVisibility) {
-    // React control (ui/) hosted inside this legacy DOM component. Never unmounted
-    // explicitly — the drawer node is discarded wholesale, fine for a prototype.
-    const visibilityHost = document.createElement('div');
-    createRoot(visibilityHost).render(
-      createElement(FeedbackVisibilityControl, { defaultVisible: data.managerVisibility.defaultVisible }),
-    );
-    topbar.appendChild(visibilityHost);
-  }
   const submitted = document.createElement('span');
   submitted.className = 'feedback-drawer__submitted';
   submitted.textContent = data.submitted;
@@ -361,9 +354,9 @@ export function createFeedbackDrawer(data: FeedbackData): HTMLElement {
   learnerName.textContent = data.learner;
   metabar.appendChild(learnerName);
 
-  const metaItem = (icon: Parameters<typeof iconEl>[0], text: string, link = false) => {
+  const metaItem = (icon: Parameters<typeof iconEl>[0], text: string) => {
     const item = document.createElement('span');
-    item.className = `feedback-drawer__meta-item${link ? ' feedback-drawer__meta-item--link' : ''}`;
+    item.className = 'feedback-drawer__meta-item';
     item.appendChild(iconEl(icon, 'feedback-drawer__meta-icon'));
     const span = document.createElement('span');
     span.textContent = text;
@@ -374,22 +367,44 @@ export function createFeedbackDrawer(data: FeedbackData): HTMLElement {
   // A vertical divider separates the learner name from the meta items, and
   // each meta item from the next.
   const sessionIcon = data.format === 'audiovideo' ? 'play-btn' : 'feedback';
-  const metaEntries: { icon: Parameters<typeof iconEl>[0]; text: string; link?: boolean }[] = [
+  const metaEntries: { icon: Parameters<typeof iconEl>[0]; text: string }[] = [
     { icon: sessionIcon, text: data.meta.id },
     { icon: 'session-list', text: data.meta.date },
     { icon: 'hourglass', text: data.meta.duration },
-    { icon: 'arrow-up', text: 'Export', link: true },
   ];
   metaEntries.forEach(entry => {
     const divider = document.createElement('span');
     divider.className = 'feedback-drawer__metabar-divider';
     metabar.appendChild(divider);
-    metabar.appendChild(metaItem(entry.icon, entry.text, entry.link));
+    metabar.appendChild(metaItem(entry.icon, entry.text));
   });
 
   const navSpacer = document.createElement('div');
   navSpacer.className = 'feedback-drawer__metabar-spacer';
   metabar.appendChild(navSpacer);
+
+  // React controls (ui/) hosted inside this legacy DOM component. Never unmounted
+  // explicitly — the drawer node is discarded wholesale, fine for a prototype.
+  const actionsHost = document.createElement('div');
+  actionsHost.className = 'feedback-drawer__actions';
+  createRoot(actionsHost).render(
+    createElement(
+      Fragment,
+      null,
+      data.managerVisibility
+        ? createElement(FeedbackVisibilityControl, {
+            defaultVisible: data.managerVisibility.defaultVisible,
+            readOnly: data.managerVisibility.readOnly,
+          })
+        : null,
+      createElement(FeedbackExportButton),
+    ),
+  );
+  metabar.appendChild(actionsHost);
+
+  const actionsDivider = document.createElement('span');
+  actionsDivider.className = 'feedback-drawer__metabar-divider feedback-drawer__metabar-divider--actions';
+  metabar.appendChild(actionsDivider);
 
   const nav = document.createElement('div');
   nav.className = 'feedback-drawer__nav-group';
