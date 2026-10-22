@@ -3,7 +3,7 @@ import { Eye, EyeOff } from 'lucide-react';
 
 import { cn, FOCUS_RING } from '@/ui/lib/cn';
 import { Switch } from '@/ui/switch';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/ui/tooltip';
+import { Tooltip, DsTooltipContent, TooltipProvider, TooltipTrigger } from '@/ui/tooltip';
 
 export interface FeedbackVisibilityControlProps {
   /** true = "Visible to manager", false = "Hidden from manager". */
@@ -115,12 +115,9 @@ function FeedbackVisibilityControl({
       <TooltipProvider delayDuration={200}>
         <Tooltip open={tooltipOpen && !open} onOpenChange={setTooltipOpen}>
           <TooltipTrigger asChild>{button}</TooltipTrigger>
-          <TooltipContent
-            side="bottom"
-            className="border-none bg-content-primary px-2xs py-3xs text-xs text-content-inverse"
-          >
+          <DsTooltipContent>
             {copy.label}
-          </TooltipContent>
+          </DsTooltipContent>
         </Tooltip>
       </TooltipProvider>
 

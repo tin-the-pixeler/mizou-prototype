@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Upload } from 'lucide-react';
 
 import { cn, FOCUS_RING } from '@/ui/lib/cn';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/ui/tooltip';
+import { Tooltip, DsTooltipContent, TooltipProvider, TooltipTrigger } from '@/ui/tooltip';
 
 export interface FeedbackExportButtonProps {
   onClick?: () => void;
@@ -27,12 +27,9 @@ function FeedbackExportButton({ onClick, className }: FeedbackExportButtonProps)
             <Upload aria-hidden="true" size={16} />
           </button>
         </TooltipTrigger>
-        <TooltipContent
-          side="bottom"
-          className="border-none bg-content-primary px-2xs py-3xs text-xs text-content-inverse"
-        >
+        <DsTooltipContent>
           Export
-        </TooltipContent>
+        </DsTooltipContent>
       </Tooltip>
     </TooltipProvider>
   );

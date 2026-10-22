@@ -25,4 +25,28 @@ const TooltipContent = React.forwardRef<
 ))
 TooltipContent.displayName = TooltipPrimitive.Content.displayName
 
-export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider }
+/**
+ * Design-system tooltip (components/tooltip.ts, styles/tooltip.css): indigo pill,
+ * xs medium inverse text, with an arrow pointing at the trigger. Opens above it.
+ */
+const DsTooltipContent = React.forwardRef<
+  React.ElementRef<typeof TooltipPrimitive.Content>,
+  React.ComponentPropsWithoutRef<typeof TooltipPrimitive.Content>
+>(({ className, children, sideOffset = 6, ...props }, ref) => (
+  <TooltipPrimitive.Content
+    ref={ref}
+    side="top"
+    sideOffset={sideOffset}
+    className={cn(
+      "z-50 max-w-[300px] rounded-sm bg-interactive-primary p-3xs text-center text-xs font-medium text-content-inverse",
+      className
+    )}
+    {...props}
+  >
+    {children}
+    <TooltipPrimitive.Arrow width={12} height={4} className="fill-interactive-primary" />
+  </TooltipPrimitive.Content>
+))
+DsTooltipContent.displayName = "DsTooltipContent"
+
+export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider, DsTooltipContent }
