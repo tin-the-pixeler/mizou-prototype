@@ -376,7 +376,14 @@ export function createFeedbackDrawer(data: FeedbackData): HTMLElement {
     const divider = document.createElement('span');
     divider.className = 'feedback-drawer__metabar-divider';
     metabar.appendChild(divider);
-    metabar.appendChild(metaItem(entry.icon, entry.text));
+    const item = metaItem(entry.icon, entry.text);
+    if (entry.icon === sessionIcon) {
+      const aiLabel = document.createElement('span');
+      aiLabel.className = 'feedback-drawer__ai-label';
+      aiLabel.textContent = 'AI-Generated';
+      item.appendChild(aiLabel);
+    }
+    metabar.appendChild(item);
   });
 
   const navSpacer = document.createElement('div');
