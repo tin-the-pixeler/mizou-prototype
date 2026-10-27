@@ -176,6 +176,18 @@
   white-space: nowrap;
 }
 
+/* "AI-Generated" tag beside the session number */
+.feedback-drawer__ai-label {
+  margin-left: var(--spacing-3xs);
+  padding: var(--spacing-3xs) var(--spacing-2xs);
+  border-radius: var(--radius-sm);
+  background: var(--feedback-info-bg);
+  color: var(--interactive-primary);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-medium);
+  line-height: 18px;
+}
+
 .feedback-drawer__meta-icon {
   display: inline-flex;
   width: 14px;
