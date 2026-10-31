@@ -1,0 +1,92 @@
+/* ========== SETTING TOGGLE ROW ========== */
+/* Label + helper text on the left, switch on the right. */
+
+.setting-toggle-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  width: 100%;
+  max-width: 600px;
+  font-family: var(--font-sans);
+}
+
+.setting-toggle-row__text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3xs);
+  min-width: 0;
+}
+
+.setting-toggle-row__label {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  line-height: 24px;
+  letter-spacing: 0.24px;
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+.setting-toggle-row__helper {
+  margin: 0;
+  font-size: var(--fs-sm);
+  line-height: 18px;
+  letter-spacing: 0.33px;
+  color: var(--text-secondary);
+}
+
+/* Switch track */
+.setting-toggle-row__switch {
+  position: relative;
+  flex-shrink: 0;
+  width: 40px;
+  height: 24px;
+  padding: 0;
+  border: 1px solid var(--border-button);
+  border-radius: var(--radius-full);
+  background: var(--surface-sunken);
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.setting-toggle-row__switch:hover:not(:disabled) {
+  background: var(--interactive-secondary-active);
+}
+
+.setting-toggle-row__switch--on,
+.setting-toggle-row__switch--on:hover:not(:disabled) {
+  background: var(--interactive-primary);
+  border-color: var(--interactive-primary);
+}
+
+.setting-toggle-row__switch--on:hover:not(:disabled) {
+  background: var(--interactive-primary-hover);
+  border-color: var(--interactive-primary-hover);
+}
+
+.setting-toggle-row__switch:focus-visible {
+  outline: 2px solid var(--interactive-primary);
+  outline-offset: 2px;
+}
+
+.setting-toggle-row__switch:disabled {
+  opacity: var(--alpha-disabled);
+  cursor: not-allowed;
+}
+
+/* Switch thumb */
+.setting-toggle-row__thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  border-radius: var(--radius-full);
+  background: var(--surface-emphasis);
+  box-shadow: var(--shadow-1);
+  transition: transform 0.15s ease;
+}
+
+.setting-toggle-row__switch--on .setting-toggle-row__thumb {
+  transform: translateX(16px);
+}
